@@ -28,7 +28,7 @@ nft add element eb-nat tcp2port { $SSH_PORT : 22 }
 # -----------------------------------------------------------------------------
 # INIT
 # -----------------------------------------------------------------------------
-[ "$DONT_RUN_POSTGRES" = true ] && exit
+[[ "$DONT_RUN_POSTGRES" = true ]] && exit
 
 echo
 echo "-------------------------- $MACH --------------------------"
@@ -37,8 +37,7 @@ echo "-------------------------- $MACH --------------------------"
 # REINSTALL_IF_EXISTS
 # -----------------------------------------------------------------------------
 EXISTS=$(lxc-info -n $MACH | egrep '^State' || true)
-if [ -n "$EXISTS" -a "$REINSTALL_POSTGRES_IF_EXISTS" != true ]
-then
+if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_POSTGRES_IF_EXISTS" != true ]]; then
     echo POSTGRES_SKIPPED=true >> $INSTALLER/000-source
 
     echo "Already installed. Skipped..."
@@ -136,12 +135,10 @@ lxc-attach -n $MACH -- \
      apt-get $APT_PROXY_OPTION -y install postgresql postgresql-contrib"
 
 # -----------------------------------------------------------------------------
-# DATABASE
+# POSTGRESQL
 # -----------------------------------------------------------------------------
-# the postgresql config
-#cp etc/postgresql/13/main/*.conf $ROOTFS/etc/postgresql/11/main/
-#cp etc/postgresql/13/main/conf.d/*.conf $ROOTFS/etc/postgresql/11/main/conf.d/
-#lxc-attach -n $MACH -- systemctl restart postgresql.service
+cp etc/postgresql/13/main/*.conf $ROOTFS/etc/postgresql/13/main/
+lxc-attach -n $MACH -- systemctl restart postgresql.service
 
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES
