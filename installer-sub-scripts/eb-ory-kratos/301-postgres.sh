@@ -102,37 +102,37 @@ lxc-wait -n $MACH -s RUNNING
 # -----------------------------------------------------------------------------
 # HOSTNAME
 # -----------------------------------------------------------------------------
-lxc-attach -n $MACH -- \
-    zsh -c \
-    "set -e
-     echo $MACH > /etc/hostname
-     sed -i 's/\(127.0.1.1\s*\).*$/\1$MACH/' /etc/hosts
-     hostname $MACH"
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+echo $MACH > /etc/hostname
+sed -i 's/\(127.0.1.1\s*\).*$/\1$MACH/' /etc/hosts
+hostname $MACH
+EOS
 
 # -----------------------------------------------------------------------------
 # PACKAGES
 # -----------------------------------------------------------------------------
 # fake install
-lxc-attach -n $MACH -- \
-    zsh -c \
-    "set -e
-     export DEBIAN_FRONTEND=noninteractive
-     apt-get $APT_PROXY_OPTION -dy reinstall hostname"
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION -dy reinstall hostname
+EOS
 
 # update
-lxc-attach -n $MACH -- \
-    zsh -c \
-    "set -e
-     export DEBIAN_FRONTEND=noninteractive
-     apt-get $APT_PROXY_OPTION update
-     apt-get $APT_PROXY_OPTION -y dist-upgrade"
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION update
+apt-get $APT_PROXY_OPTION -y dist-upgrade
+EOS
 
 # the packages
-lxc-attach -n $MACH -- \
-    zsh -c \
-    "set -e
-     export DEBIAN_FRONTEND=noninteractive
-     apt-get $APT_PROXY_OPTION -y install postgresql postgresql-contrib"
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION -y install postgresql postgresql-contrib
+EOS
 
 # -----------------------------------------------------------------------------
 # POSTGRESQL

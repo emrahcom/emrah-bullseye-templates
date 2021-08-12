@@ -28,12 +28,12 @@ lxc-start -n $MACH -d
 lxc-wait -n $MACH -s RUNNING
 
 # wait for postgresql
-lxc-attach -n eb-postgres -- \
-    zsh -c \
-    "set -e
-     for try in \$(seq 1 9); do
-         systemctl is-active postgresql.service && break || sleep 1
-     done"
+lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+for try in \$(seq 1 9); do
+    systemctl is-active postgresql.service && break || sleep 1
+done
+EOS
 
 # -----------------------------------------------------------------------------
 # BACKUP
@@ -46,54 +46,56 @@ lxc-attach -n eb-postgres -- \
 # -----------------------------------------------------------------------------
 # drop the old database if RECREATE_KRATOS_DB_IF_EXISTS is set
 if [[ "RECREATE_KRATOS_DB_IF_EXISTS" = true ]]; then
-    lxc-attach -n eb-postgres -- \
-        zsh -c \
-        "set -e
-         su -l postgres -c \
-             'dropdb -f --if-exists kratos'"
+    lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+su -l postgres <<PSQL
+    dropdb -f --if-exists kratos
+PSQL
+EOS
 
-    lxc-attach -n eb-postgres -- \
-        zsh -c \
-        "set -e
-         su -l postgres -c \
-             'dropuser --if-exists kratos'"
+    lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+su -l postgres <<PSQL
+    dropuser --if-exists kratos
+PSQL
+EOS
 fi
 
 # -----------------------------------------------------------------------------
 # EXISTENCE CHECK
 # -----------------------------------------------------------------------------
-IS_DB_EXIST=$(lxc-attach -n eb-postgres -- \
-    zsh -c \
-    "set -e
-     su -l postgres -c \
-         'psql -At <<EOF
-\l kratos
-EOF
-'")
+IS_DB_EXIST=$(lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+su -l postgres <<PSQL
+    psql -At <<< '\l kratos'
+PSQL
+EOS
+)
 
-IS_ROLE_EXIST=$(lxc-attach -n eb-postgres -- \
-    zsh -c \
-    "set -e
-     su -l postgres -c \
-         'psql -At <<EOF
-\dg kratos
-EOF
-'")
+IS_ROLE_EXIST=$(lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+su -l postgres <<PSQL
+    psql -At '\dg kratos'
+PSQL
+EOS
+)
 
 # -----------------------------------------------------------------------------
 # CREATE ROLE & DATABASE
 # -----------------------------------------------------------------------------
-[[ -z "$IS_ROLE_EXIST" ]] && lxc-attach -n eb-postgres -- \
-    zsh -c \
-    "set -e
-     su -l postgres -c \
-         'createuser -l kratos'"
+[[ -z "$IS_ROLE_EXIST" ]] && lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+su -l postgres <<PSQL
+    createuser -l kratos
+PSQL
+EOS
 
-[[ -z "$IS_DB_EXIST" ]] && lxc-attach -n eb-postgres -- \
-    zsh -c \
-    "set -e
-     su -l postgres -c \
-         'createdb -T template0 -O kratos -E UTF-8 -l en_US.UTF-8 kratos'"
+[[ -z "$IS_DB_EXIST" ]] && lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+su -l postgres <<PSQL
+    createdb -T template0 -O kratos -E UTF-8 -l en_US.UTF-8 kratos
+PSQL
+EOS
 
 # -----------------------------------------------------------------------------
 # UPDATE PASSWD
@@ -101,23 +103,24 @@ EOF
 DB_PASSWD=$(openssl rand -hex 20)
 echo DB_PASSWD="$DB_PASSWD" >> $INSTALLER/000-source
 
-lxc-attach -n eb-postgres -- \
-    zsh -c \
-    "set -e
-     su -l postgres -s /usr/bin/psql -c \
-         \"ALTER ROLE kratos WITH PASSWORD '$DB_PASSWD';\""
+lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+su -l postgres -s /usr/bin/psql <<PSQL
+    ALTER ROLE kratos WITH PASSWORD '$DB_PASSWD';
+PSQL
+EOS
 
 # -----------------------------------------------------------------------------
 # ALLOWED HOSTS
 # -----------------------------------------------------------------------------
-lxc-attach -n eb-postgres -- \
-    zsh -c \
-    "set -e
-     sed -i '/kratos/d' /etc/postgresql/13/main/pg_hba.conf
+lxc-attach -n eb-postgres -- zsh <<EOS
+set -e
+sed -i '/kratos/d' /etc/postgresql/13/main/pg_hba.conf
 
-     cat >>/etc/postgresql/13/main/pg_hba.conf <<EOF
+cat >>/etc/postgresql/13/main/pg_hba.conf <<EOF
 # ory-kratos database
 host    kratos          kratos          172.22.22.0/24          md5
 EOF
 
-     systemctl restart postgresql.service"
+systemctl restart postgresql.service
+EOS
