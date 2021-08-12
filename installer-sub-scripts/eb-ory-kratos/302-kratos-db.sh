@@ -31,7 +31,7 @@ lxc-wait -n $MACH -s RUNNING
 lxc-attach -n eb-postgres -- \
     zsh -c \
     "set -e
-     for try in $(seq 1 9); do
+     for try in \$(seq 1 9); do
          systemctl is-active postgresql.service && break || sleep 1
      done"
 
