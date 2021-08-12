@@ -27,6 +27,14 @@ echo "------------------------ KRATOS DB ------------------------"
 lxc-start -n $MACH -d
 lxc-wait -n $MACH -s RUNNING
 
+# wait for postgresql
+lxc-attach -n eb-postgres -- \
+    zsh -c \
+    "set -e
+     for try in $(seq 1 9); do
+         systemctl is-active postgresql.service && break || sleep 1
+     done"
+
 # -----------------------------------------------------------------------------
 # BACKUP
 # -----------------------------------------------------------------------------
@@ -96,11 +104,8 @@ echo DB_PASSWD="$DB_PASSWD" >> $INSTALLER/000-source
 lxc-attach -n eb-postgres -- \
     zsh -c \
     "set -e
-     su -l postgres -c \
-         \"psql <<EOF
-ALTER ROLE kratos WITH PASSWORD '$DB_PASSWD';
-EOF
-\""
+     su -l postgres -s /usr/bin/psql -c \
+         \"ALTER ROLE kratos WITH PASSWORD '$DB_PASSWD';\""
 
 # -----------------------------------------------------------------------------
 # ALLOWED HOSTS
