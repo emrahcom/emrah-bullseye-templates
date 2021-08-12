@@ -127,6 +127,13 @@ apt-get $APT_PROXY_OPTION update
 apt-get $APT_PROXY_OPTION -y dist-upgrade
 EOS
 
+# the packages
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION -y install postgresql-client
+EOS
+
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES
 # -----------------------------------------------------------------------------
