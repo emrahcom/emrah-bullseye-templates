@@ -118,7 +118,7 @@ set -e
 sed -i '/kratos/d' /etc/postgresql/13/main/pg_hba.conf
 
 cat >>/etc/postgresql/13/main/pg_hba.conf <<EOF
-# ory-kratos database
+# kratos database
 host    kratos          kratos          172.22.22.0/24          md5
 EOF
 
