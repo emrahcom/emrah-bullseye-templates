@@ -48,16 +48,16 @@ EOS
 if [[ "RECREATE_KRATOS_DB_IF_EXISTS" = true ]]; then
     lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
-su -l postgres <<PSQL
+su -l postgres <<EOP
     dropdb -f --if-exists kratos
-PSQL
+EOP
 EOS
 
     lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
-su -l postgres <<PSQL
+su -l postgres <<EOP
     dropuser --if-exists kratos
-PSQL
+EOP
 EOS
 fi
 
@@ -66,17 +66,17 @@ fi
 # -----------------------------------------------------------------------------
 IS_DB_EXIST=$(lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
-su -l postgres <<PSQL
+su -l postgres <<EOP
     psql -At <<< '\l kratos'
-PSQL
+EOP
 EOS
 )
 
 IS_ROLE_EXIST=$(lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
-su -l postgres <<PSQL
-    psql -At '\dg kratos'
-PSQL
+su -l postgres <<EOP
+    psql -At <<< '\dg kratos'
+EOP
 EOS
 )
 
@@ -85,16 +85,16 @@ EOS
 # -----------------------------------------------------------------------------
 [[ -z "$IS_ROLE_EXIST" ]] && lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
-su -l postgres <<PSQL
+su -l postgres <<EOP
     createuser -l kratos
-PSQL
+EOP
 EOS
 
 [[ -z "$IS_DB_EXIST" ]] && lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
-su -l postgres <<PSQL
+su -l postgres <<EOP
     createdb -T template0 -O kratos -E UTF-8 -l en_US.UTF-8 kratos
-PSQL
+EOP
 EOS
 
 # -----------------------------------------------------------------------------
