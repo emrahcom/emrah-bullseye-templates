@@ -45,7 +45,7 @@ EOS
 # DROP DATABASE & ROLE
 # -----------------------------------------------------------------------------
 # drop the old database if RECREATE_KRATOS_DB_IF_EXISTS is set
-if [[ "RECREATE_KRATOS_DB_IF_EXISTS" = true ]]; then
+if [[ "$RECREATE_KRATOS_DB_IF_EXISTS" = true ]]; then
     lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
 su -l postgres <<EOP
