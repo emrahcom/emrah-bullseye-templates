@@ -116,11 +116,9 @@ EOS
 lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
 sed -i '/kratos/d' /etc/postgresql/13/main/pg_hba.conf
-
-cat >>/etc/postgresql/13/main/pg_hba.conf <<EOF
-# kratos database
-host    kratos          kratos          172.22.22.0/24          md5
-EOF
-
-systemctl restart postgresql.service
 EOS
+
+cat etc/postgresql/13/main/pg_hba.conf.kratos \
+    >>$ROOTFS/etc/postgresql/13/main/pg_hba.conf
+
+lxc-attach -n eb-postgres -- systemctl restart postgresql.service
