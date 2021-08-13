@@ -135,6 +135,18 @@ apt-get $APT_PROXY_OPTION -y install postgresql-client
 EOS
 
 # -----------------------------------------------------------------------------
+# KRATOS
+# -----------------------------------------------------------------------------
+wget -O $ROOTFS/tmp/kratos-install.sh \
+    https://raw.githubusercontent.com/ory/kratos/$KRATOS_VERSION/install.sh
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+bash /tmp/kratos-install.sh -d /usr/local/bin $KRATOS_VERSION
+kratos version
+EOS
+
+# -----------------------------------------------------------------------------
 # CONTAINER SERVICES
 # -----------------------------------------------------------------------------
 lxc-stop -n $MACH
