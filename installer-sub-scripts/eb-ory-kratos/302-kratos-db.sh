@@ -100,8 +100,17 @@ EOS
 # -----------------------------------------------------------------------------
 # UPDATE PASSWD
 # -----------------------------------------------------------------------------
-DB_PASSWD=$(openssl rand -hex 20)
-echo DB_PASSWD="$DB_PASSWD" >> $INSTALLER/000-source
+# get current passwd if exists
+DB_PASSWD=$(egrep '^kratos:' $ROOTFS/root/postgresql-passwd.txt | tail -n1 | \
+            cut -d: -f2)
+
+# generate a new one if there is no passwd
+if [[ -z "$DB_PASSWD" ]]; then
+    DB_PASSWD=$(openssl rand -hex 20)
+    echo "kratos:$DB_PASSWD" >> $ROOTFS/root/postgresql-passwd.txt
+fi
+
+chmod 600 $ROOTFS/root/postgresql-passwd.txt
 
 lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
