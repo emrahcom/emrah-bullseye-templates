@@ -137,6 +137,14 @@ EOS
 # -----------------------------------------------------------------------------
 # KRATOS
 # -----------------------------------------------------------------------------
+# kratos user
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+adduser kratos --system --group --disabled-password --shell /bin/bash \
+    --gecos ''
+EOS
+
+# kratos app
 wget -O $ROOTFS/tmp/kratos-install.sh \
     https://raw.githubusercontent.com/ory/kratos/$KRATOS_VERSION/install.sh
 
