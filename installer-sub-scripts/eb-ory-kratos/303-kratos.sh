@@ -142,7 +142,7 @@ wget -O $ROOTFS/tmp/kratos-install.sh \
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-bash /tmp/kratos-install.sh -d /usr/local/bin $KRATOS_VERSION
+bash /tmp/kratos-install.sh -b /usr/local/bin $KRATOS_VERSION
 kratos version
 EOS
 
