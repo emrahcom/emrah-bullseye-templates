@@ -166,7 +166,7 @@ echo "IP.2 = $REMOTE_IP" >>ssl-reverse-proxy.ext
 openssl req -nodes -newkey rsa:2048 \
     -keyout ssl-reverse-proxy.key -out ssl-reverse-proxy.csr \
     -subj "/O=emrah-buster/OU=jitsi/CN=$JITSI_HOST"
-openssl x509 -req -CA eb_CA.pem -CAkey eb_CA.key -CAcreateserial \
+openssl x509 -req -CA eb-CA.pem -CAkey eb-CA.key -CAcreateserial \
     -days 10950 -in ssl-reverse-proxy.csr -out ssl-reverse-proxy.pem \
     -extfile ssl-reverse-proxy.ext
 
