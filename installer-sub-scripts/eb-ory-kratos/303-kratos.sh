@@ -154,6 +154,18 @@ bash /tmp/kratos-install.sh -b /usr/local/bin $KRATOS_VERSION
 kratos version
 EOS
 
+# kratos config
+mkdir $ROOTFS/home/kratos/config
+cp home/kratos/config/* $ROOTFS/home/kratos/config/
+sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" $ROOTFS/home/kratos/config/*
+sed -i "s/___APP_FQDN___/$APP_FQDN/g" $ROOTFS/home/kratos/config/*
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chmod 700 /home/kratos/config
+chown kratos:kratos /home/kratos/config -R
+EOS
+
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES
 # -----------------------------------------------------------------------------
