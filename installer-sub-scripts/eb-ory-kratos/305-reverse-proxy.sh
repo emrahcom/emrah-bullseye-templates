@@ -159,7 +159,7 @@ echo "DNS.2 = $SECUREAPP_FQDN" >>ssl-reverse-proxy.ext
 echo "IP.1 = $IP" >>ssl-reverse-proxy.ext
 echo "IP.2 = $REMOTE_IP" >>ssl-reverse-proxy.ext
 [[ -n "$EXTERNAL_IP" ]] && [[ "$EXTERNAL_IP" != "$REMOTE_IP" ]] \
-     && echo "IP.3 = $EXTERNAL_IP" >>ssl-reverse-proxy.ext || \
+     && echo "IP.3 = $EXTERNAL_IP" >>ssl-reverse-proxy.ext \
      || true
 
 # the domain key and the domain certificate
