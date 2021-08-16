@@ -189,6 +189,11 @@ cp etc/nginx/sites-available/eb-secureapp.conf \
     $ROOTFS/etc/nginx/sites-available/
 ln -s ../sites-available/eb-secureapp.conf $ROOTFS/etc/nginx/sites-enabled/
 
+sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
+    $ROOTFS/etc/nginx/sites-available/*
+sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
+    $ROOTFS/etc/nginx/sites-available/*
+
 lxc-attach -n $MACH -- systemctl stop nginx.service
 lxc-attach -n $MACH -- systemctl start nginx.service
 
