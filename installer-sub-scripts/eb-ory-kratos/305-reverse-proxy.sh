@@ -175,8 +175,22 @@ cd $MACHINES/$MACH
 # -----------------------------------------------------------------------------
 # SYSTEM CONFIGURATION
 # -----------------------------------------------------------------------------
+# ssl-eb
 cp /root/eb-ssl/ssl-reverse-proxy.key $ROOTFS/etc/ssl/private/ssl-eb.key
 cp /root/eb-ssl/ssl-reverse-proxy.pem $ROOTFS/etc/ssl/certs/ssl-eb.pem
+
+# nginx
+rm $ROOTFS/etc/nginx/sites-enabled/default
+cp etc/nginx/sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-enabled/
+cp etc/nginx/sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-enabled/
+cp etc/nginx/sites-available/eb-secureapp.conf \
+    $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-secureapp.conf $ROOTFS/etc/nginx/sites-enabled/
+
+lxc-attach -n $MACH -- systemctl stop nginx.service
+lxc-attach -n $MACH -- systemctl start nginx.service
 
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES
