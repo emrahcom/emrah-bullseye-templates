@@ -166,6 +166,15 @@ chmod 700 /home/kratos/config
 chown kratos:kratos /home/kratos/config -R
 EOS
 
+# kratos systemd service
+cp etc/systemd/system/kratos.service $ROOTFS/etc/systemd/system/
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+systemctl daemon-reload
+systemctl enable kratos.service
+systemctl start kratos.service
+EOS
+
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES
 # -----------------------------------------------------------------------------
