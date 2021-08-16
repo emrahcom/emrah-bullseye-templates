@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# KRATOS.SH
+# SECUREAPP.SH
 # -----------------------------------------------------------------------------
 set -e
 source $INSTALLER/000-source
@@ -7,14 +7,14 @@ source $INSTALLER/000-source
 # -----------------------------------------------------------------------------
 # ENVIRONMENT
 # -----------------------------------------------------------------------------
-MACH="eb-kratos"
+MACH="eb-secureapp"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
 DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
-echo KRATOS="$IP" >> $INSTALLER/000-source
+echo SECUREAPP="$IP" >> $INSTALLER/000-source
 
 # -----------------------------------------------------------------------------
 # NFTABLES RULES
@@ -28,7 +28,7 @@ nft add element eb-nat tcp2port { $SSH_PORT : 22 }
 # -----------------------------------------------------------------------------
 # INIT
 # -----------------------------------------------------------------------------
-[[ "$DONT_RUN_KRATOS" = true ]] && exit
+[[ "$DONT_RUN_SECUREAPP" = true ]] && exit
 
 echo
 echo "-------------------------- $MACH --------------------------"
@@ -37,12 +37,12 @@ echo "-------------------------- $MACH --------------------------"
 # REINSTALL_IF_EXISTS
 # -----------------------------------------------------------------------------
 EXISTS=$(lxc-info -n $MACH | egrep '^State' || true)
-if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_KRATOS_IF_EXISTS" != true ]]; then
-    echo KRATOS_SKIPPED=true >> $INSTALLER/000-source
+if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_SECUREAPP_IF_EXISTS" != true ]]; then
+    echo SECUREAPP_SKIPPED=true >> $INSTALLER/000-source
 
     echo "Already installed. Skipped..."
     echo
-    echo "Please set REINSTALL_KRATOS_IF_EXISTS in $APP_CONFIG"
+    echo "Please set REINSTALL_SECUREAPP_IF_EXISTS in $APP_CONFIG"
     echo "if you want to reinstall this container"
     exit
 fi
@@ -89,7 +89,7 @@ lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 600
+lxc.start.order = 700
 lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot
@@ -135,35 +135,13 @@ apt-get $APT_PROXY_OPTION -y install postgresql-client
 EOS
 
 # -----------------------------------------------------------------------------
-# KRATOS
+# SECUREAPP
 # -----------------------------------------------------------------------------
-# kratos user
+# secureapp user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser kratos --system --group --disabled-password --shell /bin/bash \
+adduser secureapp --system --group --disabled-password --shell /bin/bash \
     --gecos ''
-EOS
-
-# kratos app
-wget -O $ROOTFS/tmp/kratos-install.sh \
-    https://raw.githubusercontent.com/ory/kratos/$KRATOS_VERSION/install.sh
-
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-bash /tmp/kratos-install.sh -b /usr/local/bin $KRATOS_VERSION
-kratos version
-EOS
-
-# kratos config
-mkdir $ROOTFS/home/kratos/config
-cp home/kratos/config/* $ROOTFS/home/kratos/config/
-sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" $ROOTFS/home/kratos/config/*
-sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" $ROOTFS/home/kratos/config/*
-
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-chmod 700 /home/kratos/config
-chown kratos:kratos /home/kratos/config -R
 EOS
 
 # -----------------------------------------------------------------------------
