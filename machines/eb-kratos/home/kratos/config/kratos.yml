@@ -61,7 +61,7 @@ log:
 
 secrets:
   cookie:
-    - PLEASE-CHANGE-ME-I-AM-VERY-INSECURE
+    - ___COOKIE_SECRET___
 
 hashers:
   argon2:

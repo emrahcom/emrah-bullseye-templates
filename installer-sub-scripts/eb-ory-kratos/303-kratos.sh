@@ -157,6 +157,9 @@ EOS
 # kratos config
 mkdir $ROOTFS/home/kratos/config
 cp home/kratos/config/* $ROOTFS/home/kratos/config/
+
+COOKIE_SECRET=$(openssl rand -hex 60)
+sed -i "s/___COOKIE_SECRET___/$COOKIE_SECRET/g" $ROOTFS/home/kratos/config/*
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" $ROOTFS/home/kratos/config/*
 sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" $ROOTFS/home/kratos/config/*
 
