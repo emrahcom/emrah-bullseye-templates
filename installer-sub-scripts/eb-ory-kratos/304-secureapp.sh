@@ -131,6 +131,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION -y install git npm
 apt-get $APT_PROXY_OPTION -y install postgresql-client
 EOS
 
@@ -142,6 +143,34 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 adduser secureapp --system --group --disabled-password --shell /bin/bash \
     --gecos ''
+EOS
+
+# secureapp application
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+su -l secureapp <<EOSS
+    set -e
+    git clone https://github.com/ory/kratos-selfservice-ui-node.git
+    cd kratos-selfservice-ui-node
+    git checkout $KRATOS_VERSION
+
+    npm ci
+    npm run build
+EOSS
+EOS
+
+# secureapp systemd service
+cp etc/systemd/system/secureapp.service $ROOTFS/etc/systemd/system/
+sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
+    $ROOTFS/etc/systemd/system/secureapp.service
+sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
+    $ROOTFS/etc/systemd/system/secureapp.service
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+systemctl daemon-reload
+systemctl enable secureapp.service
+systemctl start secureapp.service
 EOS
 
 # -----------------------------------------------------------------------------
