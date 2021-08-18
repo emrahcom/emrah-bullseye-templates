@@ -11,8 +11,8 @@ serve:
     base_url: https://___KRATOS_FQDN___:4434/
 
 cookies:
-  domain: ___SECUREAPP_FQDN___
-  path: /cookies
+  domain: ___BASE_DOMAIN___
+  path: /
   same_site: Lax
 
 session:
@@ -20,6 +20,30 @@ session:
     domain: ___BASE_DOMAIN___
     path: /
     same_site: Strict
+
+secrets:
+  cookie:
+    - ___COOKIE_SECRET___
+
+hashers:
+  argon2:
+    parallelism: 1
+    memory: 128MB
+    iterations: 2
+    salt_length: 16
+    key_length: 16
+
+log:
+  level: debug
+  format: text
+  leak_sensitive_values: true
+
+identity:
+  default_schema_url: file:///etc/config/kratos/identity.schema.json
+
+courier:
+  smtp:
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true&legacy_ssl=true
 
 selfservice:
   default_browser_return_url: https://___SECUREAPP_FQDN___/
@@ -64,27 +88,3 @@ selfservice:
           hooks:
             -
               hook: session
-
-log:
-  level: debug
-  format: text
-  leak_sensitive_values: true
-
-secrets:
-  cookie:
-    - ___COOKIE_SECRET___
-
-hashers:
-  argon2:
-    parallelism: 1
-    memory: 128MB
-    iterations: 2
-    salt_length: 16
-    key_length: 16
-
-identity:
-  default_schema_url: file:///etc/config/kratos/identity.schema.json
-
-courier:
-  smtp:
-    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true&legacy_ssl=true
