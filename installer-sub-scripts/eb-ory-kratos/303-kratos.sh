@@ -178,6 +178,7 @@ sed -i "s/___COOKIE_SECRET___/$COOKIE_SECRET/g" $ROOTFS/home/kratos/config/*
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" $ROOTFS/home/kratos/config/*
 sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" $ROOTFS/home/kratos/config/*
 sed -i "s/___BASE_DOMAIN___/$BASE_DOMAIN/g" $ROOTFS/home/kratos/config/*
+sed -i "s/___DB_PASSWD___/$DB_PASSWD/g" $ROOTFS/home/kratos/config/*
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e

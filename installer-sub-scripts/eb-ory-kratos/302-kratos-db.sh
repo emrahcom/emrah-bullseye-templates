@@ -111,6 +111,7 @@ if [[ -z "$DB_PASSWD" ]]; then
 fi
 
 chmod 600 $ROOTFS/root/postgresql-passwd.txt
+echo DB_PASSWD="$DB_PASSWD" >> $INSTALLER/000-source
 
 lxc-attach -n eb-postgres -- zsh <<EOS
 set -e
