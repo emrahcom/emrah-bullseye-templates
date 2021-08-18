@@ -167,7 +167,7 @@ while true; do
     S=$(echo $SECUREAPP_FQDN | rev | cut -d. -f $i)
     [[ -z "$S" ]] && break
 
-    [[ "$K" = "$S" ]] && B=$(echo $B $S) || break
+    [[ "$K" = "$S" ]] && BASE_DOMAIN=$(echo $BASE_DOMAIN $S) || break
     (( i += 1 ))
 done
 BASE_DOMAIN=$(echo $BASE_DOMAIN | rev | tr ' ' '.')
