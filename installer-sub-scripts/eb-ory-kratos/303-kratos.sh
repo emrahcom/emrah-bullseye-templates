@@ -158,10 +158,26 @@ EOS
 mkdir $ROOTFS/home/kratos/config
 cp home/kratos/config/* $ROOTFS/home/kratos/config/
 
+BASE_DOMAIN=
+i=1
+while true; do
+    K=$(echo $KRATOS_FQDN | rev | cut -d. -f $i)
+    [[ -z "$K" ]] && break
+
+    S=$(echo $SECUREAPP_FQDN | rev | cut -d. -f $i)
+    [[ -z "$S" ]] && break
+
+    [[ "$K" = "$S" ]] && B=$(echo $B $S) || break
+    (( i += 1 ))
+done
+BASE_DOMAIN=$(echo $BASE_DOMAIN | rev | tr ' ' '.')
+echo BASE_DOMAIN="$BASE_DOMAIN" >> $INSTALLER/000-source
+
 COOKIE_SECRET=$(openssl rand -hex 30)
 sed -i "s/___COOKIE_SECRET___/$COOKIE_SECRET/g" $ROOTFS/home/kratos/config/*
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" $ROOTFS/home/kratos/config/*
 sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" $ROOTFS/home/kratos/config/*
+sed -i "s/___BASE_DOMAIN___/$BASE_DOMAIN/g" $ROOTFS/home/kratos/config/*
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e

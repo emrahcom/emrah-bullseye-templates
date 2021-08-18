@@ -10,6 +10,17 @@ serve:
   admin:
     base_url: https://___KRATOS_FQDN___:4434/
 
+cookies:
+  domain: ___SECUREAPP_FQDN___
+  path: /cookies
+  same_site: Lax
+
+session:
+  cookie:
+    domain: ___BASE_DOMAIN___
+    path: /
+    same_site: Strict
+
 selfservice:
   default_browser_return_url: https://___SECUREAPP_FQDN___/
   whitelisted_return_urls:
