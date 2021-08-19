@@ -186,6 +186,16 @@ chmod 700 /home/kratos/config
 chown kratos:kratos /home/kratos/config -R
 EOS
 
+# kratos database migration
+if [[ "$DONT_RUN_KRATOS_DB" != true ]]; then
+    lxc-attach -n $MACH -- zsh <<EOS
+set -e
+su -l kratos <<EOSS
+    kratos migrate sql -c /home/kratos/config/kratos.yml -e --yes
+EOSS
+EOS
+fi
+
 # kratos systemd service
 cp etc/systemd/system/kratos.service $ROOTFS/etc/systemd/system/
 lxc-attach -n $MACH -- zsh <<EOS

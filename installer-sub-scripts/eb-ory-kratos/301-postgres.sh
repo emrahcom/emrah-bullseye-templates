@@ -147,3 +147,14 @@ lxc-stop -n $MACH
 lxc-wait -n $MACH -s STOPPED
 lxc-start -n $MACH -d
 lxc-wait -n $MACH -s RUNNING
+
+# -----------------------------------------------------------------------------
+# POSTGRESQL SERVICE
+# -----------------------------------------------------------------------------
+# wait for postgresql
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+for try in \$(seq 1 9); do
+    systemctl is-active postgresql.service && break || sleep 1
+done
+EOS

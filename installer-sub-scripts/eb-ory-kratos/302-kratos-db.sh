@@ -21,21 +21,6 @@ echo
 echo "------------------------ KRATOS DB ------------------------"
 
 # -----------------------------------------------------------------------------
-# CONTAINER
-# -----------------------------------------------------------------------------
-# start the container
-lxc-start -n $MACH -d
-lxc-wait -n $MACH -s RUNNING
-
-# wait for postgresql
-lxc-attach -n eb-postgres -- zsh <<EOS
-set -e
-for try in \$(seq 1 9); do
-    systemctl is-active postgresql.service && break || sleep 1
-done
-EOS
-
-# -----------------------------------------------------------------------------
 # BACKUP
 # -----------------------------------------------------------------------------
 [[ -f $ROOTFS//etc/postgresql/13/main/pg_hba.conf ]] && \
@@ -131,4 +116,15 @@ EOS
 cat etc/postgresql/13/main/pg_hba.conf.kratos \
     >>$ROOTFS/etc/postgresql/13/main/pg_hba.conf
 
+# -----------------------------------------------------------------------------
+# RESTART POSTGRESQL SERVICE
+# -----------------------------------------------------------------------------
 lxc-attach -n eb-postgres -- systemctl restart postgresql.service
+
+# wait for postgresql
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+for try in \$(seq 1 9); do
+    systemctl is-active postgresql.service && break || sleep 1
+done
+EOS
