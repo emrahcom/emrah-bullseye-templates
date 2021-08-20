@@ -145,13 +145,16 @@ adduser kratos --system --group --disabled-password --shell /bin/bash \
 EOS
 
 # kratos app
-wget -O $ROOTFS/tmp/kratos-install.sh \
-    https://raw.githubusercontent.com/ory/kratos/$KRATOS_VERSION/install.sh
+mkdir $ROOTFS/root/tools
+cp root/tools/kratos-download.sh $ROOTFS/root/
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-bash /tmp/kratos-install.sh -b /usr/local/bin $KRATOS_VERSION
+bash /root/tools/kratos-download.sh -b /usr/local/bin $KRATOS_VERSION
 kratos version
+
+bash /root/tools/kratos-download.sh -b /usr/local/bin -s $KRATOS_VERSION
+kratos-sqlite version
 EOS
 
 # kratos config
