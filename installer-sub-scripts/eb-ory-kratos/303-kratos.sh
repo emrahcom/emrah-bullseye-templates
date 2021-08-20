@@ -146,7 +146,7 @@ EOS
 
 # kratos app
 mkdir $ROOTFS/root/tools
-cp root/tools/kratos-download.sh $ROOTFS/root/
+cp root/tools/kratos-download.sh $ROOTFS/root/tools/
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
