@@ -2,3 +2,4 @@ address=/eb-postgres/172.22.22.11
 address=/eb-kratos/172.22.22.12
 address=/eb-secureapp/172.22.22.13
 address=/eb-reverse-proxy/172.22.22.14
+address=/eb-mailslurper/172.22.22.15

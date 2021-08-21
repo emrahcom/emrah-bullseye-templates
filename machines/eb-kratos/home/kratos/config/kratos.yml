@@ -44,7 +44,7 @@ identity:
 
 courier:
   smtp:
-    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true&legacy_ssl=true
+    connection_uri: smtp://username:password@eb-mailslurper:1025
 
 selfservice:
   default_browser_return_url: https://___SECUREAPP_FQDN___/
