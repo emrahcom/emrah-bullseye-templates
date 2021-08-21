@@ -85,7 +85,7 @@ lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 800
+lxc.start.order = 305
 lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot
