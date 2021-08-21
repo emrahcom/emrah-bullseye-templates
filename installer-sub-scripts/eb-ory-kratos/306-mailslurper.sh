@@ -145,6 +145,7 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 su -l mailslurper <<EOSS
     set -e
+    mkdir /home/mailslurper/app
     cd /home/mailslurper/app
     wget -O mailslurper.zip $MAILSLURPER_DOWNLOAD_LINK
     unzip mailslurper.zip
