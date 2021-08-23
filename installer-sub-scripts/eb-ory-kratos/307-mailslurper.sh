@@ -164,7 +164,7 @@ EOSS
 EOS
 
 # mailslurper config
-mkdir /home/mailslurper/config
+mkdir $ROOTFS/home/mailslurper/config
 cp /root/eb-ssl/eb-kratos.key $ROOTFS/home/mailslurper/config/
 cp /root/eb-ssl/eb-kratos.pem $ROOTFS/home/mailslurper/config/
 cp home/mailslurper/config/config.json $ROOTFS/home/mailslurper/config/
