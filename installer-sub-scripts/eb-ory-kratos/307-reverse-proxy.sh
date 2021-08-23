@@ -11,7 +11,7 @@ MACH="eb-reverse-proxy"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
-DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-kratos | head -n1)
+DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-ory-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
 echo REVERSE_PROXY="$IP" >> $INSTALLER/000-source
@@ -135,8 +135,8 @@ EOS
 # SYSTEM CONFIGURATION
 # -----------------------------------------------------------------------------
 # eb-cert
-cp /root/eb-ssl/eb-kratos.key $ROOTFS/etc/ssl/private/eb-cert.key
-cp /root/eb-ssl/eb-kratos.pem $ROOTFS/etc/ssl/certs/eb-cert.pem
+cp /root/eb-ssl/eb-ory-kratos.key $ROOTFS/etc/ssl/private/eb-cert.key
+cp /root/eb-ssl/eb-ory-kratos.pem $ROOTFS/etc/ssl/certs/eb-cert.pem
 
 # nginx
 rm $ROOTFS/etc/nginx/sites-enabled/default

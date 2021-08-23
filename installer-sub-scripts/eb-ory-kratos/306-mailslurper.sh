@@ -11,7 +11,7 @@ MACH="eb-mailslurper"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
-DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-kratos | head -n1)
+DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-ory-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
 echo MAILSLURPER="$IP" >> $INSTALLER/000-source
@@ -165,8 +165,8 @@ EOS
 
 # mailslurper config
 mkdir $ROOTFS/home/mailslurper/config
-cp /root/eb-ssl/eb-kratos.key $ROOTFS/home/mailslurper/config/
-cp /root/eb-ssl/eb-kratos.pem $ROOTFS/home/mailslurper/config/
+cp /root/eb-ssl/eb-ory-kratos.key $ROOTFS/home/mailslurper/config/eb-cert.key
+cp /root/eb-ssl/eb-ory-kratos.pem $ROOTFS/home/mailslurper/config/eb-cert.pem
 cp home/mailslurper/config/config.json $ROOTFS/home/mailslurper/config/
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
     $ROOTFS/home/mailslurper/config/config.json
@@ -175,8 +175,8 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 chown mailslurper:mailslurper /home/mailslurper/config -R
 chmod 700 /home/mailslurper/config
-chmod 644 /home/mailslurper/config/eb-kratos.pem
-chmod 640 /home/mailslurper/config/eb-kratos.key
+chmod 644 /home/mailslurper/config/eb-cert.pem
+chmod 640 /home/mailslurper/config/eb-cert.key
 
 mkdir /home/mailslurper/data
 chown mailslurper:mailslurper /home/mailslurper/data
