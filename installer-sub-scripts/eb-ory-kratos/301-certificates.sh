@@ -62,6 +62,6 @@ echo "IP.$i = $REMOTE_IP" >>eb-kratos.ext
 # the domain key and the domain certificate
 openssl req -nodes -newkey rsa:2048 \
     -keyout eb-kratos.key -out eb-kratos.csr \
-    -subj "/O=emrah-bullseye/OU=jitsi/CN=$JITSI_HOST"
+    -subj "/O=emrah-bullseye/OU=eb-ory-kratos/CN=$SECUREAPP_FQDN"
 openssl x509 -req -CA eb-CA.pem -CAkey eb-CA.key -CAcreateserial -days 10950 \
     -in eb-kratos.csr -out eb-kratos.pem -extfile eb-kratos.ext
