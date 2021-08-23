@@ -169,7 +169,7 @@ cp /root/eb-ssl/eb-kratos.key $ROOTFS/home/mailslurper/config/
 cp /root/eb-ssl/eb-kratos.pem $ROOTFS/home/mailslurper/config/
 cp home/mailslurper/config/config.json $ROOTFS/home/mailslurper/config/
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
-    /home/mailslurper/config/config.json
+    $ROOTFS/home/mailslurper/config/config.json
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
