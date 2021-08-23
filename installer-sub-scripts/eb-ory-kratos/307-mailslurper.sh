@@ -177,6 +177,9 @@ chown mailslurper:mailslurper /home/mailslurper/config -R
 chmod 700 /home/mailslurper/config
 chmod 644 /home/mailslurper/config/eb-kratos.pem
 chmod 640 /home/mailslurper/config/eb-kratos.key
+
+mkdir /home/mailslurper/data
+chown mailslurper:mailslurper /home/mailslurper/data
 EOS
 
 # mailslurper systemd service

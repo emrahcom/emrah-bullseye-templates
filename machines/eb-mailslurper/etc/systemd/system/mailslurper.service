@@ -6,7 +6,7 @@ After=network-online.target
 User=mailslurper
 Group=mailslurper
 WorkingDirectory=/home/mailslurper/app/
-ExecStart=/home/mailslurper/app/mailslurper -c /home/mailslurper/config/config.json
+ExecStart=/home/mailslurper/app/mailslurper -config /home/mailslurper/config/config.json
 Restart=always
 RestartSec=2s
 
