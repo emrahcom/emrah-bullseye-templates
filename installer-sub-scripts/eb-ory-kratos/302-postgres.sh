@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# REVERSE-PROXY.SH
+# POSTGRES.SH
 # -----------------------------------------------------------------------------
 set -e
 source $INSTALLER/000-source
@@ -7,14 +7,14 @@ source $INSTALLER/000-source
 # -----------------------------------------------------------------------------
 # ENVIRONMENT
 # -----------------------------------------------------------------------------
-MACH="eb-reverse-proxy"
+MACH="eb-postgres"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
 DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
-echo REVERSE_PROXY="$IP" >> $INSTALLER/000-source
+echo POSTGRES="$IP" >> $INSTALLER/000-source
 
 # -----------------------------------------------------------------------------
 # NFTABLES RULES
@@ -24,24 +24,28 @@ nft delete element eb-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2ip { $SSH_PORT : $IP }
 nft delete element eb-nat tcp2port { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2port { $SSH_PORT : 22 }
-# the public http
-nft delete element eb-nat tcp2ip { 80 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 80 : $IP }
-nft delete element eb-nat tcp2port { 80 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 80 : 80 }
-# the public https
-nft delete element eb-nat tcp2ip { 443 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 443 : $IP }
-nft delete element eb-nat tcp2port { 443 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 443 : 443 }
 
 # -----------------------------------------------------------------------------
 # INIT
 # -----------------------------------------------------------------------------
-[[ "$DONT_RUN_REVERSE_PROXY" = true ]] && exit
+[[ "$DONT_RUN_POSTGRES" = true ]] && exit
 
 echo
 echo "-------------------------- $MACH --------------------------"
+
+# -----------------------------------------------------------------------------
+# REINSTALL_IF_EXISTS
+# -----------------------------------------------------------------------------
+EXISTS=$(lxc-info -n $MACH | egrep '^State' || true)
+if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_POSTGRES_IF_EXISTS" != true ]]; then
+    echo POSTGRES_SKIPPED=true >> $INSTALLER/000-source
+
+    echo "Already installed. Skipped..."
+    echo
+    echo "Please set REINSTALL_POSTGRES_IF_EXISTS in $APP_CONFIG"
+    echo "if you want to reinstall this container"
+    exit
+fi
 
 # -----------------------------------------------------------------------------
 # CONTAINER SETUP
@@ -85,7 +89,7 @@ lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 305
+lxc.start.order = 302
 lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot
@@ -127,75 +131,14 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install ssl-cert ca-certificates certbot
-apt-get $APT_PROXY_OPTION -y install nginx
+apt-get $APT_PROXY_OPTION -y install postgresql postgresql-contrib
 EOS
 
 # -----------------------------------------------------------------------------
-# EXTERNAL IP
+# POSTGRESQL
 # -----------------------------------------------------------------------------
-EXTERNAL_IP=$(dig -4 +short myip.opendns.com a @resolver1.opendns.com) || true
-echo EXTERNAL_IP="$EXTERNAL_IP" >> $INSTALLER/000-source
-
-# -----------------------------------------------------------------------------
-# SELF-SIGNED CERTIFICATE
-# -----------------------------------------------------------------------------
-cd /root/eb-ssl
-rm -f /root/eb-ssl/ssl-reverse-proxy.*
-
-# the extension file for multiple hosts:
-# the container IP, the host IP and the host names
-cat >ssl-reverse-proxy.ext <<EOF
-authorityKeyIdentifier=keyid,issuer
-basicConstraints=CA:FALSE
-keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
-subjectAltName = @alt_names
-
-[alt_names]
-EOF
-
-echo "DNS.1 = $KRATOS_FQDN" >>ssl-reverse-proxy.ext
-echo "DNS.2 = $SECUREAPP_FQDN" >>ssl-reverse-proxy.ext
-echo "IP.1 = $IP" >>ssl-reverse-proxy.ext
-echo "IP.2 = $REMOTE_IP" >>ssl-reverse-proxy.ext
-[[ -n "$EXTERNAL_IP" ]] && [[ "$EXTERNAL_IP" != "$REMOTE_IP" ]] \
-     && echo "IP.3 = $EXTERNAL_IP" >>ssl-reverse-proxy.ext \
-     || true
-
-# the domain key and the domain certificate
-openssl req -nodes -newkey rsa:2048 \
-    -keyout ssl-reverse-proxy.key -out ssl-reverse-proxy.csr \
-    -subj "/O=emrah-bullseye/OU=jitsi/CN=$JITSI_HOST"
-openssl x509 -req -CA eb-CA.pem -CAkey eb-CA.key -CAcreateserial \
-    -days 10950 -in ssl-reverse-proxy.csr -out ssl-reverse-proxy.pem \
-    -extfile ssl-reverse-proxy.ext
-
-cd $MACHINES/$MACH
-
-# -----------------------------------------------------------------------------
-# SYSTEM CONFIGURATION
-# -----------------------------------------------------------------------------
-# ssl-eb
-cp /root/eb-ssl/ssl-reverse-proxy.key $ROOTFS/etc/ssl/private/ssl-eb.key
-cp /root/eb-ssl/ssl-reverse-proxy.pem $ROOTFS/etc/ssl/certs/ssl-eb.pem
-
-# nginx
-rm $ROOTFS/etc/nginx/sites-enabled/default
-cp etc/nginx/sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-available/
-ln -s ../sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-enabled/
-cp etc/nginx/sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-available/
-ln -s ../sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-enabled/
-cp etc/nginx/sites-available/eb-secureapp.conf \
-    $ROOTFS/etc/nginx/sites-available/
-ln -s ../sites-available/eb-secureapp.conf $ROOTFS/etc/nginx/sites-enabled/
-
-sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
-    $ROOTFS/etc/nginx/sites-available/*
-sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
-    $ROOTFS/etc/nginx/sites-available/*
-
-lxc-attach -n $MACH -- systemctl stop nginx.service
-lxc-attach -n $MACH -- systemctl start nginx.service
+cp etc/postgresql/13/main/conf.d/*.conf $ROOTFS/etc/postgresql/13/main/conf.d/
+lxc-attach -n $MACH -- systemctl restart postgresql.service
 
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES
@@ -204,3 +147,14 @@ lxc-stop -n $MACH
 lxc-wait -n $MACH -s STOPPED
 lxc-start -n $MACH -d
 lxc-wait -n $MACH -s RUNNING
+
+# -----------------------------------------------------------------------------
+# POSTGRESQL SERVICE
+# -----------------------------------------------------------------------------
+# wait for postgresql
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+for try in \$(seq 1 9); do
+    systemctl is-active postgresql.service && break || sleep 1
+done
+EOS

@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# MAILSLURPER.SH
+# REVERSE-PROXY.SH
 # -----------------------------------------------------------------------------
 set -e
 source $INSTALLER/000-source
@@ -7,14 +7,14 @@ source $INSTALLER/000-source
 # -----------------------------------------------------------------------------
 # ENVIRONMENT
 # -----------------------------------------------------------------------------
-MACH="eb-mailslurper"
+MACH="eb-reverse-proxy"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
 DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
-echo MAILSLURPER="$IP" >> $INSTALLER/000-source
+echo REVERSE_PROXY="$IP" >> $INSTALLER/000-source
 
 # -----------------------------------------------------------------------------
 # NFTABLES RULES
@@ -24,21 +24,21 @@ nft delete element eb-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2ip { $SSH_PORT : $IP }
 nft delete element eb-nat tcp2port { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2port { $SSH_PORT : 22 }
-# tcp/4436
-nft delete element eb-nat tcp2ip { 4436 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 4436 : $IP }
-nft delete element eb-nat tcp2port { 4436 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 4436 : 4436 }
-# tcp/4437
-nft delete element eb-nat tcp2ip { 4437 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 4437 : $IP }
-nft delete element eb-nat tcp2port { 4437 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 4437 : 4437 }
+# the public http
+nft delete element eb-nat tcp2ip { 80 } 2>/dev/null || true
+nft add element eb-nat tcp2ip { 80 : $IP }
+nft delete element eb-nat tcp2port { 80 } 2>/dev/null || true
+nft add element eb-nat tcp2port { 80 : 80 }
+# the public https
+nft delete element eb-nat tcp2ip { 443 } 2>/dev/null || true
+nft add element eb-nat tcp2ip { 443 : $IP }
+nft delete element eb-nat tcp2port { 443 } 2>/dev/null || true
+nft add element eb-nat tcp2port { 443 : 443 }
 
 # -----------------------------------------------------------------------------
 # INIT
 # -----------------------------------------------------------------------------
-[[ "$DONT_RUN_MAILSLURPER" = true ]] && exit
+[[ "$DONT_RUN_REVERSE_PROXY" = true ]] && exit
 
 echo
 echo "-------------------------- $MACH --------------------------"
@@ -127,42 +127,34 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install jq unzip
+apt-get $APT_PROXY_OPTION -y install ssl-cert ca-certificates certbot
+apt-get $APT_PROXY_OPTION -y install nginx
 EOS
 
 # -----------------------------------------------------------------------------
-# MAILSLURPER
+# SYSTEM CONFIGURATION
 # -----------------------------------------------------------------------------
-# mailslurper user
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-adduser mailslurper --system --group --disabled-password --shell /bin/bash \
-    --gecos ''
-EOS
+# eb-cert
+cp /root/eb-ssl/eb-kratos.key $ROOTFS/etc/ssl/private/eb-cert.key
+cp /root/eb-ssl/eb-kratos.pem $ROOTFS/etc/ssl/certs/eb-cert.pem
 
-# mailslurper application
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-su -l mailslurper <<EOSS
-    set -e
-    mkdir /home/mailslurper/app
-    cd /home/mailslurper/app
-    wget -O mailslurper.zip $MAILSLURPER_DOWNLOAD_LINK
-    unzip mailslurper.zip
-EOSS
-EOS
+# nginx
+rm $ROOTFS/etc/nginx/sites-enabled/default
+cp etc/nginx/sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-enabled/
+cp etc/nginx/sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-enabled/
+cp etc/nginx/sites-available/eb-secureapp.conf \
+    $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-secureapp.conf $ROOTFS/etc/nginx/sites-enabled/
 
-cp home/mailslurper/app/config.json $ROOTFS/home/mailslurper/app/
+sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
+    $ROOTFS/etc/nginx/sites-available/*
+sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
+    $ROOTFS/etc/nginx/sites-available/*
 
-# mailslurper systemd service
-cp etc/systemd/system/mailslurper.service $ROOTFS/etc/systemd/system/
-
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-systemctl daemon-reload
-systemctl enable mailslurper.service
-systemctl start mailslurper.service
-EOS
+lxc-attach -n $MACH -- systemctl stop nginx.service
+lxc-attach -n $MACH -- systemctl start nginx.service
 
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES

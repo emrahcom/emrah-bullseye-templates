@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# KRATOS.SH
+# MAILSLURPER.SH
 # -----------------------------------------------------------------------------
 set -e
 source $INSTALLER/000-source
@@ -7,14 +7,14 @@ source $INSTALLER/000-source
 # -----------------------------------------------------------------------------
 # ENVIRONMENT
 # -----------------------------------------------------------------------------
-MACH="eb-kratos"
+MACH="eb-mailslurper"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
 DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
-echo KRATOS="$IP" >> $INSTALLER/000-source
+echo MAILSLURPER="$IP" >> $INSTALLER/000-source
 
 # -----------------------------------------------------------------------------
 # NFTABLES RULES
@@ -24,28 +24,24 @@ nft delete element eb-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2ip { $SSH_PORT : $IP }
 nft delete element eb-nat tcp2port { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2port { $SSH_PORT : 22 }
+# tcp/4436
+nft delete element eb-nat tcp2ip { 4436 } 2>/dev/null || true
+nft add element eb-nat tcp2ip { 4436 : $IP }
+nft delete element eb-nat tcp2port { 4436 } 2>/dev/null || true
+nft add element eb-nat tcp2port { 4436 : 4436 }
+# tcp/4437
+nft delete element eb-nat tcp2ip { 4437 } 2>/dev/null || true
+nft add element eb-nat tcp2ip { 4437 : $IP }
+nft delete element eb-nat tcp2port { 4437 } 2>/dev/null || true
+nft add element eb-nat tcp2port { 4437 : 4437 }
 
 # -----------------------------------------------------------------------------
 # INIT
 # -----------------------------------------------------------------------------
-[[ "$DONT_RUN_KRATOS" = true ]] && exit
+[[ "$DONT_RUN_MAILSLURPER" = true ]] && exit
 
 echo
 echo "-------------------------- $MACH --------------------------"
-
-# -----------------------------------------------------------------------------
-# REINSTALL_IF_EXISTS
-# -----------------------------------------------------------------------------
-EXISTS=$(lxc-info -n $MACH | egrep '^State' || true)
-if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_KRATOS_IF_EXISTS" != true ]]; then
-    echo KRATOS_SKIPPED=true >> $INSTALLER/000-source
-
-    echo "Already installed. Skipped..."
-    echo
-    echo "Please set REINSTALL_KRATOS_IF_EXISTS in $APP_CONFIG"
-    echo "if you want to reinstall this container"
-    exit
-fi
 
 # -----------------------------------------------------------------------------
 # CONTAINER SETUP
@@ -89,7 +85,7 @@ lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 303
+lxc.start.order = 307
 lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot
@@ -131,81 +127,66 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install postgresql-client
+apt-get $APT_PROXY_OPTION --install-recommends -y install git golang
 EOS
 
 # -----------------------------------------------------------------------------
-# KRATOS
+# MAILSLURPER
 # -----------------------------------------------------------------------------
-# kratos user
+# mailslurper user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser kratos --system --group --disabled-password --shell /bin/bash \
+adduser mailslurper --system --group --disabled-password --shell /bin/bash \
     --gecos ''
 EOS
 
-# kratos app
-mkdir $ROOTFS/root/tools
-cp root/tools/kratos-download.sh $ROOTFS/root/tools/
-
+# mailslurper application
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-bash /root/tools/kratos-download.sh -b /usr/local/bin $KRATOS_VERSION
-kratos version
+su -l mailslurper <<EOSS
+    set -e
+    mkdir /home/mailslurper/src
+    cd /home/mailslurper/src
+    git clone https://github.com/mailslurper/mailslurper.git
 
-bash /root/tools/kratos-download.sh -b /usr/local/bin -s $KRATOS_VERSION
-kratos-sqlite version
-EOS
+    export CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
+    export PATH=$PATH:/home/mailslurper/go/bin
+    cd /home/mailslurper/src/mailslurper/cmd/mailslurper/
+    go get github.com/mjibson/esc
+    go get
+    go generate
+    go build
 
-# kratos config
-mkdir $ROOTFS/home/kratos/config
-cp home/kratos/config/* $ROOTFS/home/kratos/config/
-
-BASE_DOMAIN=
-i=1
-while true; do
-    K=$(echo $KRATOS_FQDN | rev | cut -d. -f $i)
-    [[ -z "$K" ]] && break
-
-    S=$(echo $SECUREAPP_FQDN | rev | cut -d. -f $i)
-    [[ -z "$S" ]] && break
-
-    [[ "$K" = "$S" ]] && BASE_DOMAIN=$(echo $BASE_DOMAIN $S) || break
-    (( i += 1 ))
-done
-BASE_DOMAIN=$(echo $BASE_DOMAIN | rev | tr ' ' '.')
-echo BASE_DOMAIN="$BASE_DOMAIN" >> $INSTALLER/000-source
-
-COOKIE_SECRET=$(openssl rand -hex 30)
-sed -i "s/___COOKIE_SECRET___/$COOKIE_SECRET/g" $ROOTFS/home/kratos/config/*
-sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" $ROOTFS/home/kratos/config/*
-sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" $ROOTFS/home/kratos/config/*
-sed -i "s/___BASE_DOMAIN___/$BASE_DOMAIN/g" $ROOTFS/home/kratos/config/*
-sed -i "s/___DB_PASSWD___/$DB_PASSWD/g" $ROOTFS/home/kratos/config/*
-
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-chmod 700 /home/kratos/config
-chown kratos:kratos /home/kratos/config -R
-EOS
-
-# kratos database migration
-if [[ "$DONT_RUN_KRATOS_DB" != true ]]; then
-    lxc-attach -n $MACH -- zsh <<EOS
-set -e
-su -l kratos <<EOSS
-    kratos migrate sql -c /home/kratos/config/kratos.yml -e --yes
+    rm -rf /home/mailslurper/app
+    cp -arp /home/mailslurper/src/mailslurper/cmd/mailslurper/ \
+        /home/mailslurper/app
 EOSS
 EOS
-fi
 
-# kratos systemd service
-cp etc/systemd/system/kratos.service $ROOTFS/etc/systemd/system/
+# mailslurper config
+mkdir /home/mailslurper/config
+cp /root/eb-ssl/eb-kratos.key $ROOTFS/home/mailslurper/config/
+cp /root/eb-ssl/eb-kratos.pem $ROOTFS/home/mailslurper/config/
+cp home/mailslurper/config/config.json $ROOTFS/home/mailslurper/config/
+sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
+    /home/mailslurper/config/config.json
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown mailslurper:mailslurper /home/mailslurper/config -R
+chmod 700 /home/mailslurper/config
+chmod 644 /home/mailslurper/config/eb-kratos.pem
+chmod 640 /home/mailslurper/config/eb-kratos.key
+EOS
+
+# mailslurper systemd service
+cp etc/systemd/system/mailslurper.service $ROOTFS/etc/systemd/system/
+
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 systemctl daemon-reload
-systemctl enable kratos.service
-systemctl start kratos.service
+systemctl enable mailslurper.service
+systemctl start mailslurper.service
 EOS
 
 # -----------------------------------------------------------------------------
