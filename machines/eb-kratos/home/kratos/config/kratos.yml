@@ -44,6 +44,7 @@ identity:
 
 courier:
   smtp:
+    from_address: no-reply@___SECUREAPP_FQDN___
     connection_uri: smtps://username:password@eb-mailslurper:1025/?skip_ssl_verify=true&legacy_ssl=true
 
 selfservice:
