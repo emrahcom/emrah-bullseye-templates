@@ -8,6 +8,8 @@ serve:
     base_url: https://___KRATOS_FQDN___/
     cors:
       enabled: true
+      allowed_origins:
+        - https://___SECUREAPP_FQDN___
   admin:
     base_url: https://___KRATOS_FQDN___:4434/
 
