@@ -14,7 +14,7 @@ serve:
 cookies:
   domain: ___BASE_DOMAIN___
   path: /
-  same_site: Lax
+  same_site: Strict
 
 session:
   cookie:
