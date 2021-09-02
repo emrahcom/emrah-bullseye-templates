@@ -131,7 +131,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install git npm
+apt-get $APT_PROXY_OPTION -y install git npm patch
 apt-get $APT_PROXY_OPTION -y install postgresql-client
 EOS
 
@@ -145,7 +145,7 @@ adduser secureapp --system --group --disabled-password --shell /bin/bash \
     --gecos ''
 EOS
 
-# secureapp application
+# secureapp application (ory)
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 su -l secureapp <<EOSS
@@ -156,6 +156,18 @@ su -l secureapp <<EOSS
 
     npm ci
     npm run build
+EOSS
+EOS
+
+# secureapp application (svelte)
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+su -l secureapp <<EOSS
+    set -e
+    git clone https://github.com/emrahcom/kratos-selfservice-svelte-node.git
+    cd kratos-selfservice-svelte-node
+
+    npm install
 EOSS
 EOS
 
