@@ -136,8 +136,19 @@ EOS
 # mailslurper user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser mailslurper --system --group --disabled-password --shell /bin/bash \
+adduser mailslurper --system --group --disabled-password --shell /bin/zsh \
     --gecos ''
+EOS
+
+cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/mailslurper/
+cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/mailslurper/
+cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/mailslurper/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown mailslurper:mailslurper /home/mailslurper/.tmux.conf
+chown mailslurper:mailslurper /home/mailslurper/.vimrc
+chown mailslurper:mailslurper /home/mailslurper/.zshrc
 EOS
 
 # mailslurper application

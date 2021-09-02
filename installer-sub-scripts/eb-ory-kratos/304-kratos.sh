@@ -140,8 +140,19 @@ EOS
 # kratos user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser kratos --system --group --disabled-password --shell /bin/bash \
+adduser kratos --system --group --disabled-password --shell /bin/zsh \
     --gecos ''
+EOS
+
+cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/kratos/
+cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/kratos/
+cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/kratos/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown kratos:kratos /home/kratos/.tmux.conf
+chown kratos:kratos /home/kratos/.vimrc
+chown kratos:kratos /home/kratos/.zshrc
 EOS
 
 # kratos app

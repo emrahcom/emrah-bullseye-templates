@@ -141,8 +141,19 @@ EOS
 # secureapp user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser secureapp --system --group --disabled-password --shell /bin/bash \
+adduser secureapp --system --group --disabled-password --shell /bin/zsh \
     --gecos ''
+EOS
+
+cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/secureapp/
+cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/secureapp/
+cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/secureapp/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown secureapp:secureapp /home/secureapp/.tmux.conf
+chown secureapp:secureapp /home/secureapp/.vimrc
+chown secureapp:secureapp /home/secureapp/.zshrc
 EOS
 
 # secureapp application (ory)
