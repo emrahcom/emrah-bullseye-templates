@@ -182,6 +182,11 @@ su -l secureapp <<EOSS
 EOSS
 EOS
 
+sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
+    $ROOTFS/home/secureapp/kratos-selfservice-svelte-node/src/lib/config.ts
+sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
+    $ROOTFS/home/secureapp/kratos-selfservice-svelte-node/src/lib/config.ts
+
 # secureapp systemd service
 cp etc/systemd/system/secureapp.service $ROOTFS/etc/systemd/system/
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
