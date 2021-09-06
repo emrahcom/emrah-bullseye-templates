@@ -132,8 +132,22 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install git npm patch
+apt-get $APT_PROXY_OPTION -y install git patch npm unzip
 apt-get $APT_PROXY_OPTION -y install postgresql-client
+EOS
+
+# deno
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+LATEST=$(curl -sSf https://github.com/denoland/deno/releases | \
+    grep -o "/denoland/deno/releases/download/.*/deno-.*linux.*\.zip" | \
+    head -n1)
+
+cd /tmp
+wget -O deno.zip https://github.com/$LATEST
+unzip deno.zip
+cp /tmp/deno /usr/local/bin/
+deno --version
 EOS
 
 # -----------------------------------------------------------------------------
