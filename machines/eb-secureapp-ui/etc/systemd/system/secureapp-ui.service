@@ -1,5 +1,5 @@
 [Unit]
-Description=SecureApp
+Description=SecureApp UI
 After=network-online.target
 
 [Service]
@@ -9,9 +9,9 @@ Environment=KRATOS_BROWSER_URL=https://___KRATOS_FQDN___/
 Environment=BASE_URL=https://___SECUREAPP_FQDN___/
 Environment=PORT=4455
 Environment=SECURITY_MODE=cookie
-User=secureapp
-Group=secureapp
-WorkingDirectory=/home/secureapp/kratos-selfservice-ui-node
+User=secureapp-ui
+Group=secureapp-ui
+WorkingDirectory=/home/secureapp-ui/kratos-selfservice-ui-node
 ExecStart=npm run serve
 Restart=always
 RestartSec=2s

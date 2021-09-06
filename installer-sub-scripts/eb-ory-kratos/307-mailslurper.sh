@@ -44,6 +44,20 @@ echo
 echo "-------------------------- $MACH --------------------------"
 
 # -----------------------------------------------------------------------------
+# REINSTALL_IF_EXISTS
+# -----------------------------------------------------------------------------
+EXISTS=$(lxc-info -n $MACH | egrep '^State' || true)
+if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_MAILSLURPER_IF_EXISTS" != true ]]; then
+    echo MAILSLURPER_SKIPPED=true >> $INSTALLER/000-source
+
+    echo "Already installed. Skipped..."
+    echo
+    echo "Please set REINSTALL_MAILSLURPER_IF_EXISTS in $APP_CONFIG"
+    echo "if you want to reinstall this container"
+    exit
+fi
+
+# -----------------------------------------------------------------------------
 # CONTAINER SETUP
 # -----------------------------------------------------------------------------
 # stop the template container if it's running
@@ -85,7 +99,7 @@ lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 306
+lxc.start.order = 307
 lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot

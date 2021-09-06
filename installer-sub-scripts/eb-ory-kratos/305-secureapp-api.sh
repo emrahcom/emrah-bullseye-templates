@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# SECUREAPP.SH
+# SECUREAPP-API.SH
 # -----------------------------------------------------------------------------
 set -e
 source $INSTALLER/000-source
@@ -7,14 +7,14 @@ source $INSTALLER/000-source
 # -----------------------------------------------------------------------------
 # ENVIRONMENT
 # -----------------------------------------------------------------------------
-MACH="eb-secureapp"
+MACH="eb-secureapp-api"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
 DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-ory-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
-echo SECUREAPP="$IP" >> $INSTALLER/000-source
+echo SECUREAPP_API="$IP" >> $INSTALLER/000-source
 
 # -----------------------------------------------------------------------------
 # NFTABLES RULES
@@ -28,7 +28,7 @@ nft add element eb-nat tcp2port { $SSH_PORT : 22 }
 # -----------------------------------------------------------------------------
 # INIT
 # -----------------------------------------------------------------------------
-[[ "$DONT_RUN_SECUREAPP" = true ]] && exit
+[[ "$DONT_RUN_SECUREAPP_API" = true ]] && exit
 
 echo
 echo "-------------------------- $MACH --------------------------"
@@ -37,12 +37,13 @@ echo "-------------------------- $MACH --------------------------"
 # REINSTALL_IF_EXISTS
 # -----------------------------------------------------------------------------
 EXISTS=$(lxc-info -n $MACH | egrep '^State' || true)
-if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_SECUREAPP_IF_EXISTS" != true ]]; then
-    echo SECUREAPP_SKIPPED=true >> $INSTALLER/000-source
+if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_SECUREAPP_API_IF_EXISTS" != true ]]
+then
+    echo SECUREAPP_API_SKIPPED=true >> $INSTALLER/000-source
 
     echo "Already installed. Skipped..."
     echo
-    echo "Please set REINSTALL_SECUREAPP_IF_EXISTS in $APP_CONFIG"
+    echo "Please set REINSTALL_SECUREAPP_API_IF_EXISTS in $APP_CONFIG"
     echo "if you want to reinstall this container"
     exit
 fi
@@ -89,7 +90,7 @@ lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 305
+lxc.start.order = 306
 lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot
@@ -131,74 +132,29 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install git npm patch
+apt-get $APT_PROXY_OPTION -y install git patch
 apt-get $APT_PROXY_OPTION -y install postgresql-client
 EOS
 
 # -----------------------------------------------------------------------------
-# SECUREAPP
+# SECUREAPP API
 # -----------------------------------------------------------------------------
-# secureapp user
+# secureapp-api user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser secureapp --system --group --disabled-password --shell /bin/zsh \
+adduser secureapp-api --system --group --disabled-password --shell /bin/zsh \
     --gecos ''
 EOS
 
-cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/secureapp/
-cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/secureapp/
-cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/secureapp/
+cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/secureapp-api/
+cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/secureapp-api/
+cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/secureapp-api/
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-chown secureapp:secureapp /home/secureapp/.tmux.conf
-chown secureapp:secureapp /home/secureapp/.vimrc
-chown secureapp:secureapp /home/secureapp/.zshrc
-EOS
-
-# secureapp application (ory)
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-su -l secureapp <<EOSS
-    set -e
-    git clone https://github.com/ory/kratos-selfservice-ui-node.git
-    cd kratos-selfservice-ui-node
-    git checkout $KRATOS_VERSION
-
-    npm ci
-    npm run build
-EOSS
-EOS
-
-# secureapp application (svelte)
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-su -l secureapp <<EOSS
-    set -e
-    git clone https://github.com/emrahcom/kratos-selfservice-svelte-node.git
-    cd kratos-selfservice-svelte-node
-
-    npm install
-EOSS
-EOS
-
-sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
-    $ROOTFS/home/secureapp/kratos-selfservice-svelte-node/src/lib/config.ts
-sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
-    $ROOTFS/home/secureapp/kratos-selfservice-svelte-node/src/lib/config.ts
-
-# secureapp systemd service
-cp etc/systemd/system/secureapp.service $ROOTFS/etc/systemd/system/
-sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
-    $ROOTFS/etc/systemd/system/secureapp.service
-sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
-    $ROOTFS/etc/systemd/system/secureapp.service
-
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-systemctl daemon-reload
-systemctl enable secureapp.service
-systemctl start secureapp.service
+chown secureapp-api:secureapp-api /home/secureapp-api/.tmux.conf
+chown secureapp-api:secureapp-api /home/secureapp-api/.vimrc
+chown secureapp-api:secureapp-api /home/secureapp-api/.zshrc
 EOS
 
 # -----------------------------------------------------------------------------

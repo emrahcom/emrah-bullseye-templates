@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# REVERSE-PROXY.SH
+# SECUREAPP-UI.SH
 # -----------------------------------------------------------------------------
 set -e
 source $INSTALLER/000-source
@@ -7,14 +7,14 @@ source $INSTALLER/000-source
 # -----------------------------------------------------------------------------
 # ENVIRONMENT
 # -----------------------------------------------------------------------------
-MACH="eb-reverse-proxy"
+MACH="eb-secureapp-ui"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
 DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-ory-kratos | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
-echo REVERSE_PROXY="$IP" >> $INSTALLER/000-source
+echo SECUREAPP_UI="$IP" >> $INSTALLER/000-source
 
 # -----------------------------------------------------------------------------
 # NFTABLES RULES
@@ -24,24 +24,29 @@ nft delete element eb-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2ip { $SSH_PORT : $IP }
 nft delete element eb-nat tcp2port { $SSH_PORT } 2>/dev/null || true
 nft add element eb-nat tcp2port { $SSH_PORT : 22 }
-# the public http
-nft delete element eb-nat tcp2ip { 80 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 80 : $IP }
-nft delete element eb-nat tcp2port { 80 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 80 : 80 }
-# the public https
-nft delete element eb-nat tcp2ip { 443 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 443 : $IP }
-nft delete element eb-nat tcp2port { 443 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 443 : 443 }
 
 # -----------------------------------------------------------------------------
 # INIT
 # -----------------------------------------------------------------------------
-[[ "$DONT_RUN_REVERSE_PROXY" = true ]] && exit
+[[ "$DONT_RUN_SECUREAPP_UI" = true ]] && exit
 
 echo
 echo "-------------------------- $MACH --------------------------"
+
+# -----------------------------------------------------------------------------
+# REINSTALL_IF_EXISTS
+# -----------------------------------------------------------------------------
+EXISTS=$(lxc-info -n $MACH | egrep '^State' || true)
+if [[ -n "$EXISTS" ]] && [[ "$REINSTALL_SECUREAPP_UI_IF_EXISTS" != true ]]
+then
+    echo SECUREAPP_UI_SKIPPED=true >> $INSTALLER/000-source
+
+    echo "Already installed. Skipped..."
+    echo
+    echo "Please set REINSTALL_SECUREAPP_UI_IF_EXISTS in $APP_CONFIG"
+    echo "if you want to reinstall this container"
+    exit
+fi
 
 # -----------------------------------------------------------------------------
 # CONTAINER SETUP
@@ -85,7 +90,7 @@ lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 307
+lxc.start.order = 306
 lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot
@@ -127,34 +132,75 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install ssl-cert ca-certificates certbot
-apt-get $APT_PROXY_OPTION -y install nginx
+apt-get $APT_PROXY_OPTION -y install git npm patch
+apt-get $APT_PROXY_OPTION -y install postgresql-client
 EOS
 
 # -----------------------------------------------------------------------------
-# SYSTEM CONFIGURATION
+# SECUREAPP UI
 # -----------------------------------------------------------------------------
-# eb-cert
-cp /root/eb-ssl/eb-ory-kratos.key $ROOTFS/etc/ssl/private/eb-cert.key
-cp /root/eb-ssl/eb-ory-kratos.pem $ROOTFS/etc/ssl/certs/eb-cert.pem
+# secureapp-ui user
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+adduser secureapp-ui --system --group --disabled-password --shell /bin/zsh \
+    --gecos ''
+EOS
 
-# nginx
-rm $ROOTFS/etc/nginx/sites-enabled/default
-cp etc/nginx/sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-available/
-ln -s ../sites-available/eb-default.conf $ROOTFS/etc/nginx/sites-enabled/
-cp etc/nginx/sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-available/
-ln -s ../sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-enabled/
-cp etc/nginx/sites-available/eb-secureapp.conf \
-    $ROOTFS/etc/nginx/sites-available/
-ln -s ../sites-available/eb-secureapp.conf $ROOTFS/etc/nginx/sites-enabled/
+cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/secureapp-ui/
+cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/secureapp-ui/
+cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/secureapp-ui/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown secureapp-ui:secureapp-ui /home/secureapp-ui/.tmux.conf
+chown secureapp-ui:secureapp-ui /home/secureapp-ui/.vimrc
+chown secureapp-ui:secureapp-ui /home/secureapp-ui/.zshrc
+EOS
+
+# secureapp-ui application (ory)
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+su -l secureapp-ui <<EOSS
+    set -e
+    git clone https://github.com/ory/kratos-selfservice-ui-node.git
+    cd kratos-selfservice-ui-node
+    git checkout $KRATOS_VERSION
+
+    npm ci
+    npm run build
+EOSS
+EOS
+
+# secureapp-ui application (svelte)
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+su -l secureapp-ui <<EOSS
+    set -e
+    git clone https://github.com/emrahcom/kratos-selfservice-svelte-node.git
+    cd kratos-selfservice-svelte-node
+
+    npm install
+EOSS
+EOS
 
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
-    $ROOTFS/etc/nginx/sites-available/*
+    $ROOTFS/home/secureapp-ui/kratos-selfservice-svelte-node/src/lib/config.ts
 sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
-    $ROOTFS/etc/nginx/sites-available/*
+    $ROOTFS/home/secureapp-ui/kratos-selfservice-svelte-node/src/lib/config.ts
 
-lxc-attach -n $MACH -- systemctl stop nginx.service
-lxc-attach -n $MACH -- systemctl start nginx.service
+# secureapp-ui systemd service
+cp etc/systemd/system/secureapp-ui.service $ROOTFS/etc/systemd/system/
+sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
+    $ROOTFS/etc/systemd/system/secureapp-ui.service
+sed -i "s/___SECUREAPP_FQDN___/$SECUREAPP_FQDN/g" \
+    $ROOTFS/etc/systemd/system/secureapp-ui.service
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+systemctl daemon-reload
+systemctl enable secureapp-ui.service
+systemctl start secureapp-ui.service
+EOS
 
 # -----------------------------------------------------------------------------
 # CONTAINER SERVICES
