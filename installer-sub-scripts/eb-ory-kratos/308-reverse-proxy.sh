@@ -34,6 +34,11 @@ nft delete element eb-nat tcp2ip { 443 } 2>/dev/null || true
 nft add element eb-nat tcp2ip { 443 : $IP }
 nft delete element eb-nat tcp2port { 443 } 2>/dev/null || true
 nft add element eb-nat tcp2port { 443 : 443 }
+# tcp/24678 sveltekit wss
+nft delete element eb-nat tcp2ip { 24678 } 2>/dev/null || true
+nft add element eb-nat tcp2ip { 24678 : $IP }
+nft delete element eb-nat tcp2port { 24678 } 2>/dev/null || true
+nft add element eb-nat tcp2port { 24678 : 24678 }
 
 # -----------------------------------------------------------------------------
 # INIT
@@ -162,6 +167,9 @@ ln -s ../sites-available/eb-kratos.conf $ROOTFS/etc/nginx/sites-enabled/
 cp etc/nginx/sites-available/eb-secureapp.conf \
     $ROOTFS/etc/nginx/sites-available/
 ln -s ../sites-available/eb-secureapp.conf $ROOTFS/etc/nginx/sites-enabled/
+cp etc/nginx/sites-available/eb-secureapp-wss.conf \
+    $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-secureapp-wss.conf $ROOTFS/etc/nginx/sites-enabled/
 
 sed -i "s/___KRATOS_FQDN___/$KRATOS_FQDN/g" \
     $ROOTFS/etc/nginx/sites-available/*
