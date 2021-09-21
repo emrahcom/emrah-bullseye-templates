@@ -132,6 +132,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION -y install nginx
 apt-get $APT_PROXY_OPTION -y install git patch npm unzip
 apt-get $APT_PROXY_OPTION -y install postgresql-client
 EOS
@@ -149,6 +150,18 @@ unzip deno.zip
 cp /tmp/deno /usr/local/bin/
 deno --version
 EOS
+
+# -----------------------------------------------------------------------------
+# SYSTEM CONFIGURATION
+# -----------------------------------------------------------------------------
+# nginx
+rm $ROOTFS/etc/nginx/sites-enabled/default
+cp etc/nginx/sites-available/eb-secureapp.conf \
+    $ROOTFS/etc/nginx/sites-available/
+ln -s ../sites-available/eb-secureapp.conf $ROOTFS/etc/nginx/sites-enabled/
+
+lxc-attach -n $MACH -- systemctl stop nginx.service
+lxc-attach -n $MACH -- systemctl start nginx.service
 
 # -----------------------------------------------------------------------------
 # SECUREAPP UI
