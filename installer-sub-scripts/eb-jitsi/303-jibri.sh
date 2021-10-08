@@ -68,8 +68,6 @@ lxc.net.0.type = veth
 lxc.net.0.link = $BRIDGE
 lxc.net.0.name = eth0
 lxc.net.0.flags = up
-lxc.net.0.ipv4.address = $IP/24
-lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
