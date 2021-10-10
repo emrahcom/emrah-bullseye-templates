@@ -13,10 +13,10 @@ WATERMARK_LINK="https://jitsi.org"
 BASEDIR=$(dirname $0)
 JITSI_MEET="/var/lib/lxc/eb-jitsi/rootfs/usr/share/jitsi-meet"
 JITSI_MEET_INTERFACE="$JITSI_MEET/interface_config.js"
-JITSI_MEET_CONFIG="/var/lib/lxc/eb-jitsi/rootfs/etc/jitsi/meet/___JITSI_HOST___-config.js"
+JITSI_MEET_CONFIG="/var/lib/lxc/eb-jitsi/rootfs/etc/jitsi/meet/___JITSI_FQDN___-config.js"
 JITSI_MEET_VERSION=$(lxc-attach -n eb-jitsi -- apt-cache policy jitsi-meet | \
                      grep Installed | cut -d: -f2 | xargs)
-PROSODY="/var/lib/lxc/eb-jitsi/rootfs/etc/prosody/conf.avail/___JITSI_HOST___.cfg.lua"
+PROSODY="/var/lib/lxc/eb-jitsi/rootfs/etc/prosody/conf.avail/___JITSI_FQDN___.cfg.lua"
 JICOFO="/var/lib/lxc/eb-jitsi/rootfs/etc/jitsi/jicofo"
 
 FAVICON="$BASEDIR/favicon.ico"

@@ -6,7 +6,7 @@ Add the customization notes, scripts and related files in this folder.
 Run the following command to regenerate the TLS certificates.
 
 ```bash
-set-letsencrypt-cert ___JITSI_HOST___,___TURN_HOST___
+set-letsencrypt-cert ___JITSI_FQDN___,___TURN_FQDN___
 ```
 
 # Customization script
