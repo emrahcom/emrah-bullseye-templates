@@ -208,23 +208,19 @@ EOS
 # prosody config
 sed -i '/^VirtualHost.*"recorder\..*"/, /authentication/d' \
     $JITSI_ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
+sed -i '${/^$/d}' $JITSI_ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 cat >> $JITSI_ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua <<EOF
+
 VirtualHost "recorder.$JITSI_FQDN"
     modules_enabled = {
-      "ping";
+      "limits_exception";
     }
-    authentication = "internal_plain"
+    authentication = "internal_hashed"
 EOF
 
 # prosody register
-JIBRI_DAT=$(find $JITSI_ROOTFS/var/lib/prosody -name 'jibri.dat')
-[[ -z "$JIBRI_DAT" ]] && \
-    PASSWD1=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20) || \
-    PASSWD1=$(grep password $JIBRI_DAT | cut -d '"' -f4)
-RECORDER_DAT=$(find $JITSI_ROOTFS/var/lib/prosody -name 'recorder.dat')
-[[ -z "$RECORDER_DAT" ]] && \
-    PASSWD2=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20) || \
-    PASSWD2=$(grep password $RECORDER_DAT | cut -d '"' -f4)
+PASSWD1=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20) || \
+PASSWD2=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20) || \
 
 lxc-attach -n eb-jitsi -- zsh <<EOS
 set -e
