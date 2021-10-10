@@ -282,7 +282,7 @@ cp /root/.ssh/jibri.pub $JITSI_ROOTFS/usr/share/jitsi-meet/static/
 # JIBRI
 # ------------------------------------------------------------------------------
 # jibri groups
-lxc-attach -n eb-jitsi -- zsh <<EOS
+lxc-attach -n $MACH -- zsh <<EOS
 set -e
 usermod -aG adm,audio,video,plugdev jibri
 EOS
@@ -293,19 +293,19 @@ chmod 700 $ROOTFS/home/jibri/.ssh
 cp home/jibri/.ssh/jibri-config $ROOTFS/home/jibri/.ssh/
 cp /root/.ssh/jibri $ROOTFS/home/jibri/.ssh/
 
-lxc-attach -n eb-jitsi -- zsh <<EOS
+lxc-attach -n $MACH -- zsh <<EOS
 set -e
 chown jibri:jibri /home/jibri/.ssh -R
 EOS
 
 # recordings directory
-lxc-attach -n eb-jitsi -- zsh <<EOS
+lxc-attach -n $MACH -- zsh <<EOS
 set -e
 chown jibri:jibri /usr/local/eb/recordings -R
 EOS
 
 # pki
-lxc-attach -n eb-jitsi -- zsh <<EOS
+lxc-attach -n $MACH -- zsh <<EOS
 set -e
 mkdir -p /home/jibri/.pki/nssdb
 chmod 700 /home/jibri/.pki
@@ -334,21 +334,21 @@ chmod 744 $ROOTFS/usr/local/sbin/jibri-ephemeral-config
 cp etc/systemd/system/jibri-ephemeral-config.service \
     $ROOTFS/etc/systemd/system/
 
-lxc-attach -n eb-jitsi -- zsh <<EOS
+lxc-attach -n $MACH -- zsh <<EOS
 set -e
 systemctl daemon-reload
 systemctl enable jibri-ephemeral-config.service
 EOS
 
 # jibri service
-lxc-attach -n eb-jitsi -- zsh <<EOS
+lxc-attach -n $MACH -- zsh <<EOS
 set -e
 systemctl enable jibri.service
 systemctl start jibri.service
 EOS
 
 # jibri vnc
-lxc-attach -n eb-jitsi -- zsh <<EOS
+lxc-attach -n $MACH -- zsh <<EOS
 set -e
 mkdir -p /home/jibri/.vnc
 x11vnc -storepasswd jibri /home/jibri/.vnc/passwd
