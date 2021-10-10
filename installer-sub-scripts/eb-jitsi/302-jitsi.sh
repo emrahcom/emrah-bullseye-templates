@@ -30,10 +30,10 @@ nft add element eb-nat tcp2ip { 80 : $IP }
 nft delete element eb-nat tcp2port { 80 } 2>/dev/null || true
 nft add element eb-nat tcp2port { 80 : 80 }
 # https
-nft delete element eb-nat tcp2ip { 433 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 433 : $IP }
-nft delete element eb-nat tcp2port { 433 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 433 : 433 }
+nft delete element eb-nat tcp2ip { 443 } 2>/dev/null || true
+nft add element eb-nat tcp2ip { 443 : $IP }
+nft delete element eb-nat tcp2port { 443 } 2>/dev/null || true
+nft add element eb-nat tcp2port { 443 : 443 }
 # tcp/5222
 nft delete element eb-nat tcp2ip { 5222 } 2>/dev/null || true
 nft add element eb-nat tcp2ip { 5222 : $IP }
