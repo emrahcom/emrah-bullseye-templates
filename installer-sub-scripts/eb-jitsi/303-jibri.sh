@@ -192,7 +192,7 @@ modprobe snd_aloop || true
 
 # chromium managed policies
 mkdir -p $ROOTFS/etc/chromium/policies/managed
-cp etc/chromium/policies/managed/eb_policies.json \
+cp etc/chromium/policies/managed/eb-policies.json \
     $ROOTFS/etc/chromium/policies/managed/
 
 # stunnel
