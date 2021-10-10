@@ -219,8 +219,8 @@ VirtualHost "recorder.$JITSI_FQDN"
 EOF
 
 # prosody register
-PASSWD1=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20) || \
-PASSWD2=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20) || \
+PASSWD1=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20)
+PASSWD2=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20)
 
 lxc-attach -n eb-jitsi -- zsh <<EOS
 set -e
