@@ -319,8 +319,8 @@ sed -i "s/___PASSWD1___/$PASSWD1/" $ROOTFS/etc/jitsi/jibri/jibri.conf
 sed -i "s/___PASSWD2___/$PASSWD2/" $ROOTFS/etc/jitsi/jibri/jibri.conf
 
 # the customized scripts
-cp usr/local/bin/finalize_recording.sh $ROOTFS/usr/local/bin/
-chmod 755 $ROOTFS/usr/local/bin/finalize_recording.sh
+cp usr/local/bin/finalize-recording.sh $ROOTFS/usr/local/bin/
+chmod 755 $ROOTFS/usr/local/bin/finalize-recording.sh
 cp usr/local/bin/ffmpeg $ROOTFS/usr/local/bin/
 chmod 755 $ROOTFS/usr/local/bin/ffmpeg
 

@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# JITSI_CUSTOMIZATION.SH
+# JITSI-CUSTOMIZATION.SH
 # -----------------------------------------------------------------------------
 set -e
 source $INSTALLER/000-source
@@ -23,19 +23,19 @@ echo "------------------- JITSI CUSTOMIZATION -------------------"
 # -----------------------------------------------------------------------------
 JITSI_MEET="/var/lib/lxc/eb-jitsi/rootfs/usr/share/jitsi-meet"
 
-if [[ ! -d "/root/jitsi_customization" ]]; then
-    cp -arp root/jitsi_customization /root/
-    cp $JITSI_MEET/images/favicon.ico /root/jitsi_customization/
-    cp $JITSI_MEET/images/watermark.svg /root/jitsi_customization/
+if [[ ! -d "/root/jitsi-customization" ]]; then
+    cp -arp root/jitsi-customization /root/
+    cp $JITSI_MEET/images/favicon.ico /root/jitsi-customization/
+    cp $JITSI_MEET/images/watermark.svg /root/jitsi-customization/
 
     sed -i "s/___TURN_FQDN___/$TURN_FQDN/g" \
-        /root/jitsi_customization/README.md
+        /root/jitsi-customization/README.md
     sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/g" \
-        /root/jitsi_customization/README.md
+        /root/jitsi-customization/README.md
     sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/g" \
-        /root/jitsi_customization/customize.sh
+        /root/jitsi-customization/customize.sh
 
-    bash /root/jitsi_customization/customize.sh
+    bash /root/jitsi-customization/customize.sh
 else
     echo "There is already an old customization folder."
     echo "Automatic customization skipped."
