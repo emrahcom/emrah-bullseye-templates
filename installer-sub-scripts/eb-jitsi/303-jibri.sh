@@ -177,7 +177,7 @@ EOS
 echo -e "$JITSI\t$JITSI_FQDN" >> $ROOTFS/etc/hosts
 
 # certificates
-cp /root/eb_ssl/eb-CA.pem $ROOTFS/usr/local/share/ca-certificates/jms-CA.crt
+cp /root/eb-ssl/eb-CA.pem $ROOTFS/usr/local/share/ca-certificates/jms-CA.crt
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 update-ca-certificates
