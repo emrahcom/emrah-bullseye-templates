@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # JIBRI-EPHEMERAL-START
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # Create and run the ephemeral Jibri containers. The number of containers
 # depends on the CORES count (one Jibri instance per 4 cores) but it can not be
@@ -13,7 +13,7 @@
 # 8 cores are used for the Jibri instances. So there will be 2 active Jibri
 # instances ( 8/4 = 2 )
 #
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # The maximum number of the Jibri instances. This is related with the ALSA
 # loopback count. See /etc/modprobe.d/alsa-loop.conf on the host.
