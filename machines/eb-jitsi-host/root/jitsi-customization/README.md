@@ -1,15 +1,17 @@
-JITSI CUSTOMIZATION
-===================
+## JITSI CUSTOMIZATION
+
 Add the customization notes, scripts and related files in this folder.
 
-# TLS update
+#### TLS update
+
 Run the following command to regenerate the TLS certificates.
 
 ```bash
 set-letsencrypt-cert ___JITSI_FQDN___,___TURN_FQDN___
 ```
 
-# Customization script
+#### Customization script
+
 Customize the `customize.sh` script according to your needs.
 
 Usage:
@@ -18,7 +20,8 @@ Usage:
 bash customize.sh
 ```
 
-# Commands
+#### Commands
+
 Some commands to be useful in the `eb-jitsi` container
 
 ```bash
