@@ -135,7 +135,7 @@ done
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo $MACH > /etc/hostname
-sed -i 's/\(127.0.1.1\s*\).*$/\1$JITS_FQDN $MACH/' /etc/hosts
+sed -i 's/\(127.0.1.1\s*\).*$/\1$JITSI_FQDN $MACH/' /etc/hosts
 hostname $MACH
 EOS
 
@@ -352,15 +352,17 @@ org.jitsi.videobridge.rest.private.jetty.host=0.0.0.0
 EOF
 
 # NAT harvester. these will be needed if this is an in-house server.
-[[ -n "$EXTERNAL_IP" ]] && \
-    PUBLIC_IP=$EXTERNAL_IP || \
-    PUBLIC_IP=$REMOTE_IP
-
 cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
 org.jitsi.videobridge.SINGLE_PORT_HARVESTER_PORT=10000
-org.ice4j.ice.harvest.NAT_HARVESTER_LOCAL_ADDRESS=$IP
-org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=$PUBLIC_IP
+#org.ice4j.ice.harvest.NAT_HARVESTER_LOCAL_ADDRESS=$IP
+#org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=$REMOTE_IP
 EOF
+
+if [[ "$EXTERNAL_IP" != "$REMOTE_IP" ]]; then
+    cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
+#org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=$EXTERNAL_IP
+EOF
+fi
 
 # restart
 lxc-attach -n $MACH -- systemctl restart jitsi-videobridge2.service
