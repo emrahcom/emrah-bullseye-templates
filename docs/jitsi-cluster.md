@@ -136,8 +136,8 @@ addresses must be FQDN, not IP address... Let's say the host address of `JMS` is
 `jitsi.mydomain.corp` and the host address of TURN is `turn.mydomain.corp`
 
 ```bash
-echo export TURN_HOST=turn.mydomain.corp >> eb-jitsi.conf
-echo export JITSI_HOST=jitsi.mydomain.corp >> eb-jitsi.conf
+echo export TURN_FQDN=turn.mydomain.corp >> eb-jitsi.conf
+echo export JITSI_FQDN=jitsi.mydomain.corp >> eb-jitsi.conf
 ```
 
 ##### 2.2.3 Development environment (optional)
