@@ -9,14 +9,13 @@
     - [Main components of eb-jitsi](#main-components-of-eb-jitsi)
     - [Before installing eb-jitsi](#before-installing-eb-jitsi)
     - [To install eb-jitsi](#to-install-eb-jitsi)
-    - [Customizing eb-jitsi](#customizing-eb-jitsi)
     - [Jitsi cluster](#jitsi-cluster)
 - [Let's Encrypt support](#lets-encrypt-support)
 - [Requirements](#requirements)
 
 # About
 
-`emrah-bullseye` is an installer to create the containerized systems on
+`emrah-bullseye` is an installer to create containerized systems on
 `Debian 11 Bullseye` host. It built on top of `LXC` (Linux containers). This
 repository contains the `emrah-bullseye` templates.
 
@@ -37,7 +36,7 @@ bash eb <TEMPLATE_NAME>
 
 This template installs only a containerized `Debian 11 Bullseye`.
 
-### To install eb-base
+#### To install eb-base
 
 ```bash
 wget https://raw.githubusercontent.com/emrahcom/emrah-bullseye-base/main/installer/eb
@@ -49,23 +48,23 @@ bash eb eb-base
 
 This template installs a ready-to-use self-hosted `Jitsi`/`Jibri` service.
 
-### Main components of eb-jitsi
+#### Main components of eb-jitsi
 
 - [Jitsi](https://jitsi.org/)
 - [Jibri](https://github.com/jitsi/jibri)
 - [Nginx](http://nginx.org/)
 
-### Before installing eb-jitsi
+#### Before installing eb-jitsi
 
 - Jibri needs `snd_aloop` kernel module, therefore it's not OK with the cloud
   kernel. Install the standard Linux kernel first if this is the case.
 
 - It's needed resolvable host addresses for `Jitsi` and `TURN` which point to
-  your server. Therefore add the DNS A records first if you didn't add yet.
-  These host addresses will be used as `JITSI_FQDN` and `TURN_FQDN` in the
-  installer config file.
+  your server. Therefore add DNS A records first if you didn't add yet. These
+  host addresses will be used as `JITSI_FQDN` and `TURN_FQDN` in the installer
+  config file.
 
-### To install eb-jitsi
+#### To install eb-jitsi
 
 Download the installer
 
@@ -91,7 +90,7 @@ And run the installer
 bash eb eb-jitsi
 ```
 
-### Jitsi cluster
+#### Jitsi cluster
 
 See [Jitsi cluster document](doc/jitsi-cluster.md)
 
