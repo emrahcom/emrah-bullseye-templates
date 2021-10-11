@@ -292,6 +292,7 @@ kernel on a Debian system.
 apt-get update
 apt-get install linux-image-amd64
 apt-get purge 'linux-image-*cloud*'
+# Abort kernel removal? No
 reboot
 ```
 
