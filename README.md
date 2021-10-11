@@ -9,8 +9,8 @@
     - [Main components of eb-jitsi](#main-components-of-eb-jitsi)
     - [Before installing eb-jitsi](#before-installing-eb-jitsi)
     - [To install eb-jitsi](#to-install-eb-jitsi)
+    - [Let's Encrypt support for eb-jitsi](#lets-encrypt-support-for-eb-jitsi)
     - [Jitsi cluster](#jitsi-cluster)
-- [Let's Encrypt support](#lets-encrypt-support)
 - [Requirements](#requirements)
 
 # About
@@ -90,11 +90,7 @@ And run the installer
 bash eb eb-jitsi
 ```
 
-#### Jitsi cluster
-
-See [Jitsi cluster document](doc/jitsi-cluster.md)
-
-# Let's Encrypt support
+#### Let's Encrypt support for eb-jitsi
 
 To set the Let's Encrypt certificate, run the following commands on the host:
 
@@ -102,6 +98,10 @@ To set the Let's Encrypt certificate, run the following commands on the host:
 FQDNS="jitsi.mydomain.corp,turn.mydomain.corp"
 set-letsencrypt-cert $FQDNS
 ```
+
+#### Jitsi cluster
+
+See [Jitsi cluster document](doc/jitsi-cluster.md)
 
 # Requirements
 
