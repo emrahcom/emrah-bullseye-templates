@@ -101,7 +101,7 @@ set-letsencrypt-cert $FQDNS
 
 #### Jitsi cluster
 
-See [Jitsi cluster document](doc/jitsi-cluster.md)
+See [Jitsi cluster document](docs/jitsi-cluster.md)
 
 # Requirements
 
