@@ -206,26 +206,21 @@ EOS
 # JITSI CUSTOMIZATION FOR JIBRI
 # ------------------------------------------------------------------------------
 # prosody config
-sed -i '/^VirtualHost.*"recorder\..*"/, /authentication/d' \
-    $JITSI_ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
-sed -i '${/^$/d}' $JITSI_ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
-cat >> $JITSI_ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua <<EOF
-
-VirtualHost "recorder.$JITSI_FQDN"
-    modules_enabled = {
-      "limits_exception";
-    }
-    authentication = "internal_hashed"
-EOF
-
-# prosody register
-PASSWD1=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20)
-PASSWD2=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20)
+cp etc/prosody/conf.avail/recorder.cfg.lua \
+   $JITSI_ROOTFS/etc/prosody/conf.avail/recorder.$JITSI_FQDN.cfg.lua
+sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
+    $JITSI_ROOTFS/etc/prosody/conf.avail/recorder.$JITSI_FQDN.cfg.lua
+ln -s ../conf.avail/recorder.$JITSI_FQDN.cfg.lua \
+    $JITSI_ROOTFS/etc/prosody/conf.d/
 
 lxc-attach -n eb-jitsi -- zsh <<EOS
 set -e
 systemctl restart prosody.service
 EOS
+
+# prosody register
+PASSWD1=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20)
+PASSWD2=$(echo -n $RANDOM$RANDOM | sha256sum | cut -c 1-20)
 
 lxc-attach -n eb-jitsi -- zsh <<EOS
 set -e
