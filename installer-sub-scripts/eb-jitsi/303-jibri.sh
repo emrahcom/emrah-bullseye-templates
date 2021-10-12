@@ -206,7 +206,7 @@ EOS
 # JITSI CUSTOMIZATION FOR JIBRI
 # ------------------------------------------------------------------------------
 # prosody config
-cp etc/prosody/conf.avail/recorder.cfg.lua \
+cp $MACHINES/eb-jitsi/etc/prosody/conf.avail/recorder.cfg.lua \
    $JITSI_ROOTFS/etc/prosody/conf.avail/recorder.$JITSI_FQDN.cfg.lua
 sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
     $JITSI_ROOTFS/etc/prosody/conf.avail/recorder.$JITSI_FQDN.cfg.lua
