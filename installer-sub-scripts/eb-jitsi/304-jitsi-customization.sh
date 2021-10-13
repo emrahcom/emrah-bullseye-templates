@@ -41,4 +41,3 @@ else
     echo "Automatic customization skipped."
     echo "Run your own customization script manually."
 fi
-
