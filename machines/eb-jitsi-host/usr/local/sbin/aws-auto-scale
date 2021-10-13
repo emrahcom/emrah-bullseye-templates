@@ -1,0 +1,39 @@
+#!/bin/bash
+set -e
+
+# ------------------------------------------------------------------------------
+# AWS AUTO SCALE
+# ------------------------------------------------------------------------------
+# Number of idle Jibri instances to keep available for upcoming requests.
+JIBRI_IDLE=2
+# Maximum number of Jibri instances.
+JIBRI_MAX=12
+# Number of idle JVB instances to keep available for upcoming requests.
+JVB_IDLE=2
+# Maximum number of JVB instances.
+JVB_MAX=12
+
+SSH_CONFIG=/root/.ssh/jms-config
+STATS=/tmp/jicofo-stats.json
+
+rm -f $STATS
+lxc-attach -n eb-jitsi -- \
+    curl -s http://eb-jitsi:8888/stats >$STATS
+
+jibri_count=$(jq .jibri_detector.count $STATS)
+jibri_available=$(jq .jibri_detector.available $STATS)
+bridge_count=$(jq .bridge_selector.operational_bridge_count $STATS)
+conferences=$(jq .conferences $STATS)
+participants=$(jq .participants $STATS)
+
+(( jibri_needed = JIBRI_IDLE - jibri_available )) || true
+(( bridge_needed = conferences - bridge_count + JVB_IDLE )) || true
+
+echo jibri_count $jibri_count
+echo jibri_available $jibri_available
+echo jibri_needed $jibri_needed
+
+echo participants $participants
+echo conferences $conferences
+echo bridge_count $bridge_count
+echo bridge_needed $bridge_needed
