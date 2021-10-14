@@ -16,24 +16,80 @@ JVB_MAX=12
 SSH_CONFIG=/root/.ssh/jms-config
 STATS=/tmp/jicofo-stats.json
 
+# ------------------------------------------------------------------------------
+# remove jibri instances
+# ------------------------------------------------------------------------------
+function remove-jibri-instances {
+    allowed_idle=$1
+
+    echo "remove jibri instances" $1
+}
+
+# ------------------------------------------------------------------------------
+# add jibri instances
+# ------------------------------------------------------------------------------
+function add-jibri-instances {
+    needed=$1
+
+    echo "add jibri instances" $1
+}
+
+# ------------------------------------------------------------------------------
+# manage jvb instances
+# ------------------------------------------------------------------------------
+function manage-jvb-instances {
+    allowed_idle=$1
+
+    echo "manage jvb instances" $1
+}
+
+# ------------------------------------------------------------------------------
+# main
+# ------------------------------------------------------------------------------
+# get stats
 rm -f $STATS
 lxc-attach -n eb-jitsi -- \
     curl -s http://eb-jitsi:8888/stats >$STATS
 
+# get jibri stats
 jibri_count=$(jq .jibri_detector.count $STATS)
 jibri_available=$(jq .jibri_detector.available $STATS)
-bridge_count=$(jq .bridge_selector.operational_bridge_count $STATS)
+(( jibri_needed = JIBRI_IDLE - jibri_available )) || true
+(( jibri_allowed = JIBRI_MAX - jibri_count )) || true
+
+# manage Jibri instances
+if [[ "$jibri_needed" -eq 0 ]]; then
+    :
+elif [[ "$jibri_needed" -lt 0 ]]; then
+    if [[ "$jibri_allowed" -gt "$JIBRI_IDLE" ]]; then
+        remove-jibri-instances $JIBRI_IDLE
+    else
+        remove-jibri-instances $jibri_allowed
+    fi
+elif [[ "$jibri_allowed" -gt 0 ]]; then
+    if [[ "$jibri_allowed" -gt "$jibri_needed" ]]; then
+        add-jibri-instances $jibri_needed
+    else
+        add-jibri-instances $jibri_allowed
+    fi
+fi
+
+# get jvb stats
+jvb_count=$(jq .bridge_selector.operational_bridge_count $STATS)
 conferences=$(jq .conferences $STATS)
 participants=$(jq .participants $STATS)
+(( jvb_allowed = JVB_MAX - jvb_count )) || true
 
-(( jibri_needed = JIBRI_IDLE - jibri_available )) || true
-(( bridge_needed = conferences - bridge_count + JVB_IDLE )) || true
+# jvb needed
+if [[ "$jvb_allowed" -gt 0 ]]; then
+    if [[ "$jvb_allowed" -gt "$JVB_IDLE" ]]; then
+        jvb_needed=$JVB_IDLE
+    else
+        jvb_needed=$jvb_allowed
+    fi
+else
+    jvb_needed=0
+fi
 
-echo jibri_count $jibri_count
-echo jibri_available $jibri_available
-echo jibri_needed $jibri_needed
-
-echo participants $participants
-echo conferences $conferences
-echo bridge_count $bridge_count
-echo bridge_needed $bridge_needed
+# manage jvb instances
+manage-jvb-instances $jvb_needed
