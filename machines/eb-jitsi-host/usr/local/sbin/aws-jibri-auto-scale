@@ -2,32 +2,17 @@
 set -e
 
 # ------------------------------------------------------------------------------
-# AWS AUTO SCALE
+# AWS JIBRI AUTO SCALE
 # ------------------------------------------------------------------------------
 # Number of idle Jibri instances to keep available for upcoming requests.
 JIBRI_IDLE=2
 # Maximum number of Jibri instances.
 JIBRI_MAX=12
-# Launch template name for JVB
-JIBRI_LAUNCH_TEMPLATE=
-# Number of idle JVB instances to keep available for upcoming requests.
-JVB_IDLE=2
-# Maximum number of JVB instances.
-JVB_MAX=12
-# Launch template name for JVB
-JVB_LAUNCH_TEMPLATE=
+# Launch template name for Jibri.
+JIBRI_LAUNCH_TEMPLATE=""
 
 SSH_CONFIG=/root/.ssh/jms-config
-STATS=/tmp/jicofo-stats.json
-
-# ------------------------------------------------------------------------------
-# remove jibri instances
-# ------------------------------------------------------------------------------
-function remove-jibri-instances {
-    allowed_idle=$1
-
-    echo "remove jibri instances" $1
-}
+STATS=/tmp/jicofo-jibri-stats.json
 
 # ------------------------------------------------------------------------------
 # add jibri instances
@@ -44,17 +29,34 @@ function add-jibri-instances {
 }
 
 # ------------------------------------------------------------------------------
-# manage jvb instances
+# remove jibri instances
+#
+# shutdown idle jibri instances if there are more than needed.
 # ------------------------------------------------------------------------------
-function manage-jvb-instances {
+function remove-jibri-instances {
     allowed_idle=$1
 
-    [[ -z "$JVB_LAUNCH_TEMPLATE" ]] && return
-    [[ "$allowed_idle" -lt 1 ]] && return
+    idle=0
+    for ip in $(lxc-attach -qn eb-jitsi -- bash -c "netstat -tnp | \
+        grep 5222 | grep ESTABLISHED | grep -v '127.0.0.1' | \
+        awk '{print \$5}' | cut -d: -f1 | grep -v '172.22.22.' | sort -R")
+    do
+        # is it idle?
+        status=$(ssh -qF $SSH_CONFIG $ip -- \
+            lxc-attach -qn eb-jibri-1 -- \
+                curl -s http://127.0.0.1:8002/jibri/api/v1.0/health -- | \
+                jq -r .status.busyStatus || true)
+        [[ "$status" = "IDLE" ]] && (( idle += 1 )) || continue
 
-    aws ec2 run-instances --count "$allowed_idle" \
-        --launch-template "LaunchTemplateName=$JVB_LAUNCH_TEMPLATE" \
-        --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=jvb}]"
+        # is its uptime greater than 600 sec?
+        uptime=$(ssh -qF $SSH_CONFIG $ip -- cut -d '.' -f1 /proc/uptime)
+        [[ "$uptime" -lt 600 ]] && continue
+
+        # shutdown it if it's not needed
+        if [[ "$idle" -gt "$allowed_idle" ]]; then
+            ssh -qF $SSH_CONFIG $ip -- poweroff || true
+        fi
+    done
 }
 
 # ------------------------------------------------------------------------------
@@ -62,8 +64,7 @@ function manage-jvb-instances {
 # ------------------------------------------------------------------------------
 # get stats
 rm -f $STATS
-lxc-attach -n eb-jitsi -- \
-    curl -s http://eb-jitsi:8888/stats >$STATS
+lxc-attach -qn eb-jitsi -- curl -s http://eb-jitsi:8888/stats >$STATS
 
 # get jibri stats
 jibri_count=$(jq .jibri_detector.count $STATS)
@@ -87,23 +88,3 @@ elif [[ "$jibri_allowed" -gt 0 ]]; then
         add-jibri-instances $jibri_allowed
     fi
 fi
-
-# get jvb stats
-jvb_count=$(jq .bridge_selector.operational_bridge_count $STATS)
-conferences=$(jq .conferences $STATS)
-participants=$(jq .participants $STATS)
-(( jvb_allowed = JVB_MAX - jvb_count )) || true
-
-# jvb needed
-if [[ "$jvb_allowed" -gt 0 ]]; then
-    if [[ "$jvb_allowed" -gt "$JVB_IDLE" ]]; then
-        jvb_needed=$JVB_IDLE
-    else
-        jvb_needed=$jvb_allowed
-    fi
-else
-    jvb_needed=0
-fi
-
-# manage jvb instances
-manage-jvb-instances $jvb_needed

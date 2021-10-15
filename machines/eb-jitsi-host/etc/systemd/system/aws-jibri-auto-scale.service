@@ -1,0 +1,13 @@
+[Unit]
+Description=AWS Jibri auto scaling
+After=network-online.target
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/local/sbin/aws-jibri-auto-scale
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
