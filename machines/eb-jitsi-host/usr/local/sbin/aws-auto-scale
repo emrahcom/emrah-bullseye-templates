@@ -38,8 +38,9 @@ function add-jibri-instances {
     [[ -z "$JIBRI_LAUNCH_TEMPLATE" ]] && return
     [[ "$needed" -lt 1 ]] && return
 
-    aws ec2 run-instances --launch-template \
-        "LaunchTemplateName=$JIBRI_LAUNCH_TEMPLATE"
+    aws ec2 run-instances --count "$needed" \
+        --launch-template "LaunchTemplateName=$JIBRI_LAUNCH_TEMPLATE" \
+        --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=jbr}]"
 }
 
 # ------------------------------------------------------------------------------
@@ -51,8 +52,9 @@ function manage-jvb-instances {
     [[ -z "$JVB_LAUNCH_TEMPLATE" ]] && return
     [[ "$allowed_idle" -lt 1 ]] && return
 
-    aws ec2 run-instances --launch-template \
-        "LaunchTemplateName=$JVB_LAUNCH_TEMPLATE"
+    aws ec2 run-instances --count "$allowed_idle" \
+        --launch-template "LaunchTemplateName=$JVB_LAUNCH_TEMPLATE" \
+        --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=jvb}]"
 }
 
 # ------------------------------------------------------------------------------
