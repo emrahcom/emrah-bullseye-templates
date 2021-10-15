@@ -27,3 +27,5 @@ apt-get $APT_PROXY_OPTION -y install jq
 # ------------------------------------------------------------------------------
 # SYSTEM CONFIGURATION
 # ------------------------------------------------------------------------------
+cp $MACH/usr/local/sbin/aws-auto-scale /usr/local/sbin/
+chmod 744 /usr/local/sbin/aws-auto-scale

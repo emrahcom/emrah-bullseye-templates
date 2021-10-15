@@ -8,10 +8,14 @@ set -e
 JIBRI_IDLE=2
 # Maximum number of Jibri instances.
 JIBRI_MAX=12
+# Launch template name for JVB
+JIBRI_LAUNCH_TEMPLATE=
 # Number of idle JVB instances to keep available for upcoming requests.
 JVB_IDLE=2
 # Maximum number of JVB instances.
 JVB_MAX=12
+# Launch template name for JVB
+JVB_LAUNCH_TEMPLATE=
 
 SSH_CONFIG=/root/.ssh/jms-config
 STATS=/tmp/jicofo-stats.json
@@ -31,7 +35,11 @@ function remove-jibri-instances {
 function add-jibri-instances {
     needed=$1
 
-    echo "add jibri instances" $1
+    [[ -z "$JIBRI_LAUNCH_TEMPLATE" ]] && return
+    [[ "$needed" -lt 1 ]] && return
+
+    aws ec2 run-instances --launch-template \
+        "LaunchTemplateName=$JIBRI_LAUNCH_TEMPLATE"
 }
 
 # ------------------------------------------------------------------------------
@@ -40,7 +48,11 @@ function add-jibri-instances {
 function manage-jvb-instances {
     allowed_idle=$1
 
-    echo "manage jvb instances" $1
+    [[ -z "$JVB_LAUNCH_TEMPLATE" ]] && return
+    [[ "$allowed_idle" -lt 1 ]] && return
+
+    aws ec2 run-instances --launch-template \
+        "LaunchTemplateName=$JVB_LAUNCH_TEMPLATE"
 }
 
 # ------------------------------------------------------------------------------
