@@ -214,6 +214,11 @@ set -e
 chown jibri:jibri /home/jibri/.ssh -R
 EOS
 
+# jibri icewm startup
+mkdir -p $ROOTFS/home/jibri/.icewm
+cp home/jibri/.icewm/startup $ROOTFS/home/jibri/.icewm/
+chmod 755 $ROOTFS/home/jibri/.icewm/startup
+
 # recordings directory
 lxc-attach -n $MACH -- zsh <<EOS
 set -e

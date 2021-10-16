@@ -1,0 +1,6 @@
+#!/bin/bash
+
+chromium https://jitsi.org &
+(sleep 20 && pkill --oldest --signal TERM chromium)
+
+#x11vnc -display :0 -nolookup -once -loop -usepw -shared -noxdamage -nodpms &
