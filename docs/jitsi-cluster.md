@@ -205,7 +205,7 @@ If the `JVB` server is behind a firewall, open the following ports:
 If `openssh-server` is not installed on the `JVB` node, install it first!
 
 ```bash
-apt-get -y update
+apt-get update
 apt-get install openssh-server curl
 ```
 
@@ -238,7 +238,7 @@ Complete the following steps before starting the `Jibri` installation.
 
 ##### 4.1.1 Machine features
 
-At least 8 cores and 8 GB RAM
+At least 4 cores and 8 GB RAM
 
 ##### 4.1.2 The snd_aloop module
 
@@ -258,7 +258,7 @@ If the `Jibri` server is behind a firewall, open the following ports:
 If `openssh-server` is not installed on the `Jibri` node, install it first!
 
 ```bash
-apt-get -y update
+apt-get update
 apt-get install openssh-server curl
 ```
 
