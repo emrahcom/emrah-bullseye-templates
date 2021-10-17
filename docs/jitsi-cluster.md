@@ -196,7 +196,6 @@ If the `JVB` server is behind a firewall, open the following ports:
 
 - TCP/22 (at least for `JMS` server)
 - TCP/9090 (at least for `JMS` server)
-- TCP/30015 (at least for `JMS` server if auto scaling down is needed)
 - UDP/10000
 
 #### 3.2 Installing JVB
@@ -206,7 +205,7 @@ If the `JVB` server is behind a firewall, open the following ports:
 If `openssh-server` is not installed on the `JVB` node, install it first!
 
 ```bash
-apt-get -y --allow-releaseinfo-change update
+apt-get -y update
 apt-get install openssh-server curl
 ```
 
@@ -259,7 +258,7 @@ If the `Jibri` server is behind a firewall, open the following ports:
 If `openssh-server` is not installed on the `Jibri` node, install it first!
 
 ```bash
-apt-get -y --allow-releaseinfo-change update
+apt-get -y update
 apt-get install openssh-server curl
 ```
 
