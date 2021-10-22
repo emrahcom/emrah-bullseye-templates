@@ -273,6 +273,8 @@ systemctl restart coturn.service
 EOS
 
 # prosody
+sed -i "/rate *=.*kb.s/  s/[0-9]*kb/1024kb/" \
+    $ROOTFS/etc/prosody/prosody.cfg.lua
 sed -i "s/^-- \(https_ports = { };\)/\1/" \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 sed -i "/turns.*tcp/ s/host\s*=[^,]*/host = \"$TURN_FQDN\"/" \
