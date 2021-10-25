@@ -27,6 +27,9 @@ apt-get $APT_PROXY_OPTION -y install jq
 # ------------------------------------------------------------------------------
 # SYSTEM CONFIGURATION
 # ------------------------------------------------------------------------------
+systemctl stop aws-jvb-auto-scale.service || true
+systemctl stop aws-jibri-auto-scale.service || true
+
 cp usr/local/sbin/aws-jvb-auto-scale /usr/local/sbin/
 cp usr/local/sbin/aws-jibri-auto-scale /usr/local/sbin/
 chmod 744 /usr/local/sbin/aws-jvb-auto-scale
