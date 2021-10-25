@@ -146,7 +146,7 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 wget -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
 cat /tmp/jitsi.gpg.key | gpg --dearmor >/usr/share/keyrings/jitsi-keyring.gpg
-apt-get update
+apt-get $APT_PROXY_OPTION update
 EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
