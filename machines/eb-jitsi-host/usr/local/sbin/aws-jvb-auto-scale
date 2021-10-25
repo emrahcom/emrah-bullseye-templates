@@ -20,7 +20,6 @@ STATS=/tmp/jicofo-jvb-stats.json
 function add-jvb-instances {
     needed=$1
 
-    [[ -z "$JVB_LAUNCH_TEMPLATE" ]] && return
     [[ "$needed" -lt 1 ]] && return
 
     aws ec2 run-instances --count "$needed" \
@@ -68,6 +67,9 @@ function manage-jvb-instances {
 # ------------------------------------------------------------------------------
 # main
 # ------------------------------------------------------------------------------
+# do nothing if the template is not set yet
+[[ -z "$JVB_LAUNCH_TEMPLATE" ]] && return
+
 # get stats
 rm -f $STATS
 lxc-attach -qn eb-jitsi -- curl -s http://eb-jitsi:8888/stats >$STATS
