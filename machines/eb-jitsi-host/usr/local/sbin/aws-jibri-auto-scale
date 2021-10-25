@@ -62,7 +62,7 @@ function remove-jibri-instances {
 # main
 # ------------------------------------------------------------------------------
 # do nothing if the template is not set yet
-[[ -z "$JIBRI_LAUNCH_TEMPLATE" ]] && return
+[[ -z "$JIBRI_LAUNCH_TEMPLATE" ]] && exit
 
 # get stats
 rm -f $STATS
