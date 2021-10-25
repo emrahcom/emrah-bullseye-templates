@@ -131,7 +131,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install apt-transport-https gnupg
+apt-get $APT_PROXY_OPTION -y install gnupg
 apt-get $APT_PROXY_OPTION -y install libnss3-tools
 apt-get $APT_PROXY_OPTION -y install va-driver-all vdpau-driver-all
 apt-get $APT_PROXY_OPTION -y --install-recommends install ffmpeg
