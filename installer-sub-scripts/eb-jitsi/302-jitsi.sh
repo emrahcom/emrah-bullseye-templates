@@ -287,6 +287,7 @@ sed -i "/turns.*tcp/ s/5349/443/" \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 cp usr/share/jitsi-meet/prosody-plugins/*.lua \
     $ROOTFS/usr/share/jitsi-meet/prosody-plugins/
+lxc-attach -n $MACH -- systemctl daemon-reload
 lxc-attach -n $MACH -- systemctl restart prosody.service
 
 # jicofo
