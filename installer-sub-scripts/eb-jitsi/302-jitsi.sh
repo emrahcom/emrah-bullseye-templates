@@ -272,6 +272,11 @@ systemctl restart coturn.service
 EOS
 
 # prosody
+mkdir -p $ROOTFS/etc/systemd/system/prosody.service.d
+cp etc/systemd/system/prosody.service.d/override.conf \
+    $ROOTFS/etc/systemd/system/prosody.service.d/
+cp etc/prosody/conf.avail/network.cfg.lua $ROOTFS/etc/prosody/conf.avail/
+ln -s ../conf.avail/network.cfg.lua $ROOTFS/etc/prosody/conf.d/
 sed -i "/rate *=.*kb.s/  s/[0-9]*kb/1024kb/" \
     $ROOTFS/etc/prosody/prosody.cfg.lua
 sed -i "s/^-- \(https_ports = { };\)/\1/" \
@@ -282,7 +287,7 @@ sed -i "/turns.*tcp/ s/5349/443/" \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 cp usr/share/jitsi-meet/prosody-plugins/*.lua \
     $ROOTFS/usr/share/jitsi-meet/prosody-plugins/
-lxc-attach -n $MACH -- systemctl reload prosody.service
+lxc-attach -n $MACH -- systemctl restart prosody.service
 
 # jicofo
 sed -i '/^JICOFO_AUTH_PASSWORD=/a \
