@@ -43,7 +43,7 @@ function remove-jibri-instances {
         # is it idle?
         status=$(ssh -qF $SSH_CONFIG $ip -- \
             lxc-attach -qn eb-jibri-1 -- \
-                curl -s http://127.0.0.1:8002/jibri/api/v1.0/health -- | \
+                curl -s http://127.0.0.1:2222/jibri/api/v1.0/health -- | \
                 jq -r .status.busyStatus || true)
         [[ "$status" = "IDLE" ]] && (( idle += 1 )) || continue
 
