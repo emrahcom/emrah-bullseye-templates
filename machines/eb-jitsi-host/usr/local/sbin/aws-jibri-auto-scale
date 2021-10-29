@@ -4,6 +4,8 @@ set -e
 # ------------------------------------------------------------------------------
 # AWS JIBRI AUTO SCALE
 # ------------------------------------------------------------------------------
+# Jibri external API port
+JIBRI_API_PORT=2222
 # Number of idle Jibri instances to keep available for upcoming requests.
 JIBRI_IDLE=2
 # Maximum number of Jibri instances.
@@ -43,8 +45,8 @@ function remove-jibri-instances {
         # is it idle?
         status=$(ssh -qF $SSH_CONFIG $ip -- \
             lxc-attach -qn eb-jibri-1 -- \
-                curl -s http://127.0.0.1:2222/jibri/api/v1.0/health -- | \
-                jq -r .status.busyStatus || true)
+            curl -s http://127.0.0.1:$JIBRI_API_PORT/jibri/api/v1.0/health | \
+            jq -r .status.busyStatus || true)
         [[ "$status" = "IDLE" ]] && (( idle += 1 )) || continue
 
         # is its uptime greater than 600 sec?
