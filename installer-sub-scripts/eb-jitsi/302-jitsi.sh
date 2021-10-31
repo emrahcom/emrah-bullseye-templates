@@ -177,7 +177,7 @@ cp etc/apt/sources.list.d/jitsi-stable.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 wget -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
-cat /tmp/jitsi.gpg.key | gpg --dearmor >/usr/share/keyrings/jitsi-keyring.gpg
+cat /tmp/jitsi.gpg.key | gpg --dearmor >/usr/share/keyrings/jitsi.gpg
 apt-get update
 EOS
 
