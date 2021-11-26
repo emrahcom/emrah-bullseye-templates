@@ -153,8 +153,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install chromium
-apt-get -y purge chromium chromium-common
+apt-get $APT_PROXY_OPTION -y install libgtk-3-0
 apt-get $APT_PROXY_OPTION -y install ungoogled-chromium
 EOS
 
