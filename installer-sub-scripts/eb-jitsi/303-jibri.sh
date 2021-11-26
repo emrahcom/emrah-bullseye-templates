@@ -159,12 +159,12 @@ EOS
 # chromedriver
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-CHROMIUM_VER=$(dpkg -s ungoogled-chromium | egrep "^Version" | \
+CHROMIUM_VER=\$(dpkg -s ungoogled-chromium | egrep "^Version" | \
     cut -d " " -f2 | cut -d. -f1)
-CHROMEDRIVER_VER=$(curl -s \
-    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMIUM_VER)
+CHROMEDRIVER_VER=\$(curl -s \
+    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROMIUM_VER)
 wget -qO /tmp/chromedriver_linux64.zip \
-    https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VER/chromedriver_linux64.zip
+    https://chromedriver.storage.googleapis.com/\$CHROMEDRIVER_VER/chromedriver_linux64.zip
 unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
 chmod 755 /usr/local/bin/chromedriver
 EOS
