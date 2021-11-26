@@ -135,7 +135,7 @@ apt-get $APT_PROXY_OPTION -y install gnupg unzip
 apt-get $APT_PROXY_OPTION -y install libnss3-tools
 apt-get $APT_PROXY_OPTION -y install va-driver-all vdpau-driver-all
 apt-get $APT_PROXY_OPTION -y --install-recommends install ffmpeg
-apt-get $APT_PROXY_OPTION -y install stunnel x11vnc
+apt-get $APT_PROXY_OPTION -y install x11vnc
 EOS
 
 # ungoogled-chromium
@@ -223,13 +223,6 @@ modprobe snd_aloop || true
 mkdir -p $ROOTFS/etc/chromium/policies/managed
 cp etc/chromium/policies/managed/eb-policies.json \
     $ROOTFS/etc/chromium/policies/managed/
-
-# stunnel
-cp etc/stunnel/facebook.conf $ROOTFS/etc/stunnel/
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-systemctl start stunnel4.service
-EOS
 
 # ------------------------------------------------------------------------------
 # JITSI CUSTOMIZATION FOR JIBRI
