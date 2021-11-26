@@ -153,6 +153,8 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION -y install chromium
+apt-get -y purge chromium chromium-common
 apt-get $APT_PROXY_OPTION -y install ungoogled-chromium
 EOS
 
@@ -189,7 +191,6 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y purge upower
-apt-get -y --purge autoremove
 EOS
 
 # ------------------------------------------------------------------------------
