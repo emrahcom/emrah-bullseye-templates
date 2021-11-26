@@ -163,7 +163,7 @@ set -e
 CHROMIUM_VER=\$(dpkg -s ungoogled-chromium | egrep "^Version" | \
     cut -d " " -f2 | cut -d. -f1)
 CHROMEDRIVER_VER=\$(curl -s \
-    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMIUM_VER)
+    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROMIUM_VER)
 wget -qO /tmp/chromedriver_linux64.zip \
     https://chromedriver.storage.googleapis.com/\$CHROMEDRIVER_VER/chromedriver_linux64.zip
 unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
