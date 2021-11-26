@@ -131,13 +131,42 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install gnupg
+apt-get $APT_PROXY_OPTION -y install gnupg unzip
 apt-get $APT_PROXY_OPTION -y install libnss3-tools
 apt-get $APT_PROXY_OPTION -y install va-driver-all vdpau-driver-all
 apt-get $APT_PROXY_OPTION -y --install-recommends install ffmpeg
-apt-get $APT_PROXY_OPTION -y --install-recommends install chromium \
-    chromium-driver
 apt-get $APT_PROXY_OPTION -y install stunnel x11vnc
+EOS
+
+# ungoogled-chromium
+cp etc/apt/sources.list.d/ungoogled-chromium.list \
+    $ROOTFS/etc/apt/sources.list.d/
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+wget -qO /tmp/ungoogled-chromium.gpg.key \
+    https://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Bullseye/Release.key
+cat /tmp/ungoogled-chromium.gpg.key | gpg --dearmor \
+    >/usr/share/keyrings/ungoogled-chromium.gpg
+apt-get $APT_PROXY_OPTION update
+EOS
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY_OPTION -y install ungoogled-chromium
+EOS
+
+# chromedriver
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+CHROMIUM_VER=$(dpkg -s ungoogled-chromium | egrep "^Version" | \
+    cut -d " " -f2 | cut -d. -f1)
+CHROMEDRIVER_VER=$(curl -s \
+    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMIUM_VER)
+wget -qO /tmp/chromedriver_linux64.zip \
+    https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VER/chromedriver_linux64.zip
+unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
+chmod 755 /usr/local/bin/chromedriver
 EOS
 
 # jibri
