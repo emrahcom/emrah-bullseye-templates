@@ -25,11 +25,15 @@ bash customize.sh
 Some commands to be useful in the `eb-jitsi` container
 
 ```bash
-lxc-attach -n eb-jitsi
+lxc-attach -n eb-jitsi -- curl http://127.0.0.1:8080/colibri/conferences
+lxc-attach -n eb-jitsi -- curl http://127.0.0.1:8888/stats
+lxc-attach -n eb-jitsi -- \
+    egrep -o "\[room=.*\].*(Created|Stopped)" /var/log/jitsi/jicofo.log
+```
 
-curl http://127.0.0.1:8080/colibri/conferences
-curl http://127.0.0.1:8888/stats
-egrep -o "\[room=.*\].*(Created|Stopped)" /var/log/jitsi/jicofo.log
-
-exit
+```bash
+diff /var/lib/lxc/eb-jitsi/rootfs/etc/jitsi/meet/___JITSI_FQDN___-config.js \
+    jitsi.mydomain.corp-config.js
+diff /var/lib/lxc/eb-jitsi/rootfs/usr/share/jitsi-meet/interface_config.js \
+    interface_config.js
 ```

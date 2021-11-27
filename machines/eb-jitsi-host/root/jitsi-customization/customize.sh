@@ -66,7 +66,7 @@ cp $PROSODY_CONFIG $BACKUP/
 #debconf-set-selections <<< \
 #    'jitsi-meet-tokens jitsi-meet-tokens/appsecret password $APP_SECRET'
 #apt-get -y install jitsi-meet-tokens
-#EOF
+#EOS
 
 #sed -i '/allow_empty_token/d' $PROSODY_CONFIG
 #sed -i '/token_affiliation/d' $PROSODY_CONFIG
