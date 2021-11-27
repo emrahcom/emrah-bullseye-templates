@@ -14,7 +14,7 @@ JITSI_ROOTFS="/var/lib/lxc/eb-jitsi/rootfs"
 JITSI_MEET="$JITSI_ROOTFS/usr/share/jitsi-meet"
 JITSI_CONFIG="$JITSI_ROOTFS/etc/jitsi/meet/___JITSI_FQDN___-config.js"
 JITSI_INTERFACE="$JITSI_ROOTFS/usr/share/jitsi-meet/interface_config.js"
-PROSODY_CONFIG="$PROSODY/conf.avail/___JITSI_FQDN___.cfg.lua"
+PROSODY_CONFIG="$JITSI_ROOTFS/etc/prosody/conf.avail/___JITSI_FQDN___.cfg.lua"
 
 # ------------------------------------------------------------------------------
 # backup
