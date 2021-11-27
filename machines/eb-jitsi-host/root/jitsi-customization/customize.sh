@@ -33,22 +33,24 @@ cp $PROSODY_CONFIG $BACKUP/
 # ------------------------------------------------------------------------------
 # config.js
 # ------------------------------------------------------------------------------
-[[ -f "$BASEDIR/___JITSI_FQDN___-config.js" ]] && \
-    cp $BASEDIR/___JITSI_FQDN___-config.js $JITSI_CONFIG
+[[ -f "$BASEDIR/files/___JITSI_FQDN___-config.js" ]] && \
+    cp $BASEDIR/files/___JITSI_FQDN___-config.js $JITSI_CONFIG
 
 # ------------------------------------------------------------------------------
 # interface_config.js
 # ------------------------------------------------------------------------------
-[[ -f "$BASEDIR/interface_config.js" ]] && \
-    cp $BASEDIR/interface_config.js $JITSI_INTERFACE
+[[ -f "$BASEDIR/files/interface_config.js" ]] && \
+    cp $BASEDIR/files/interface_config.js $JITSI_INTERFACE
 
 # ------------------------------------------------------------------------------
 # static
 # ------------------------------------------------------------------------------
-[[ -f "$BASEDIR/favicon.ico" ]] && cp $BASEDIR/favicon.ico $JITSI_MEET/
-[[ -f "$BASEDIR/favicon.ico" ]] && cp $BASEDIR/favicon.ico $JITSI_MEET/images/
-[[ -f "$BASEDIR/watermark.svg" ]] && \
-    cp $BASEDIR/watermark.svg $JITSI_MEET/images/
+[[ -f "$BASEDIR/files/favicon.ico" ]] && \
+    cp $BASEDIR/files/favicon.ico $JITSI_MEET/
+[[ -f "$BASEDIR/files/favicon.ico" ]] && \
+    cp $BASEDIR/files/favicon.ico $JITSI_MEET/images/
+[[ -f "$BASEDIR/files/watermark.svg" ]] && \
+    cp $BASEDIR/files/watermark.svg $JITSI_MEET/images/
 
 # ------------------------------------------------------------------------------
 # jwt
