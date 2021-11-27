@@ -7,22 +7,14 @@ set -e
 # usage:
 #     bash customize.sh
 # ------------------------------------------------------------------------------
-APP_NAME="Jitsi Meet"
-WATERMARK_LINK="https://jitsi.org"
-
 BASEDIR=$(dirname $0)
+JITSI_VERSION=$(lxc-attach -n eb-jitsi -- apt-cache policy jitsi-meet | \
+                     grep Installed | cut -d: -f2 | xargs)
 JITSI_ROOTFS="/var/lib/lxc/eb-jitsi/rootfs"
 JITSI_MEET="$JITSI_ROOTFS/usr/share/jitsi-meet"
-JITSI_MEET_INTERFACE="$JITSI_ROOTFS/usr/share/jitsi-meet/interface_config.js"
-JITSI_MEET_CONFIG="$JITSI_ROOTFS/etc/jitsi/meet/___JITSI_FQDN___-config.js"
-JITSI_MEET_VERSION=$(lxc-attach -n eb-jitsi -- apt-cache policy jitsi-meet | \
-                     grep Installed | cut -d: -f2 | xargs)
-PROSODY="$JITSI_ROOTFS/etc/prosody"
+JITSI_CONFIG="$JITSI_ROOTFS/etc/jitsi/meet/___JITSI_FQDN___-config.js"
+JITSI_INTERFACE="$JITSI_ROOTFS/usr/share/jitsi-meet/interface_config.js"
 PROSODY_CONFIG="$PROSODY/conf.avail/___JITSI_FQDN___.cfg.lua"
-JICOFO="$JITSI_ROOTFS/etc/jitsi/jicofo"
-
-FAVICON="$BASEDIR/favicon.ico"
-WATERMARK="$BASEDIR/watermark.svg"
 
 # ------------------------------------------------------------------------------
 # backup
@@ -31,63 +23,38 @@ DATE=$(date +'%Y%m%d%H%M%S')
 BACKUP=$BASEDIR/backup/$DATE
 
 mkdir -p $BACKUP
-cp $JITSI_MEET_INTERFACE $BACKUP/
-cp $JITSI_MEET_CONFIG $BACKUP/
+cp $JITSI_CONFIG $BACKUP/
+cp $JITSI_INTERFACE $BACKUP/
 cp $JITSI_MEET/images/favicon.ico $BACKUP/
 cp $JITSI_MEET/images/watermark.svg $BACKUP/
+cp $PROSODY_CONFIG $BACKUP/
+cp $PROSODY_CONFIG $BACKUP/
 
 # ------------------------------------------------------------------------------
-# jitsi-meet config.js
+# config.js
 # ------------------------------------------------------------------------------
-sed -i "/startWithVideoMuted:/ s~//\s*~~" $JITSI_MEET_CONFIG
-sed -i "/startWithVideoMuted:/ s~:.*~: true,~" $JITSI_MEET_CONFIG
-#sed -i "/^\s*toolbarButtons:/,/\]/d" $JITSI_MEET_CONFIG
-#sed -i "/\/\/\s*toolbarButtons:/i \
-#\    toolbarButtons: [\\
-#\      'camera',\\
-#\      'chat',\\
-#\      'desktop',\\
-#\      'filmstrip',\\
-#\      'fullscreen',\\
-#\      'hangup',\\
-#\      'livestreaming',\\
-#\      'microphone',\\
-#\      'profile',\\
-#\      'raisehand',\\
-#\      'recording',\\
-#\      'select-background',\\
-#\      'settings',\\
-#\      'shareaudio',\\
-#\      'sharedvideo',\\
-#\      'tileview',\\
-#\      'toggle-camera',\\
-#\      'videoquality',\\
-#\      '__end'\\
-#\    ]," $JITSI_MEET_CONFIG
-#sed -i "/^\s*notifications:/d" $JITSI_MEET_CONFIG
-#sed -i "/\/\/\s*notifications:/i \
-#\    notifications: []," $JITSI_MEET_CONFIG
-
+[[ -f "$BASEDIR/___JITSI_FQDN___-config.js" ]] && \
+    cp $BASEDIR/___JITSI_FQDN___-config.js $JITSI_CONFIG
 
 # ------------------------------------------------------------------------------
-# jitsi-meet interface_config.js
+# interface_config.js
 # ------------------------------------------------------------------------------
-cp $FAVICON $JITSI_MEET/
-cp $FAVICON $JITSI_MEET/images/
-cp $WATERMARK $JITSI_MEET/images/
+[[ -f "$BASEDIR/interface_config.js" ]] && \
+    cp $BASEDIR/interface_config.js $JITSI_INTERFACE
 
-#sed -i "s/watermark.svg/watermark.png/" $JITSI_MEET_INTERFACE
-sed -i "/^\s*APP_NAME:/ s~:.*~: '$APP_NAME',~" $JITSI_MEET_INTERFACE
-sed -i "/^\s*DISABLE_JOIN_LEAVE_NOTIFICATIONS:/ s~:.*~: true,~" \
-    $JITSI_MEET_INTERFACE
-sed -i "/^\s*GENERATE_ROOMNAMES_ON_WELCOME_PAGE:/ s~:.*~: false,~" \
-    $JITSI_MEET_INTERFACE
-sed -i "/^\s*JITSI_WATERMARK_LINK:/ s~:.*~: '$WATERMARK_LINK',~" \
-    $JITSI_MEET_INTERFACE
+# ------------------------------------------------------------------------------
+# static
+# ------------------------------------------------------------------------------
+[[ -f "$BASEDIR/favicon.ico" ]] && cp $BASEDIR/favicon.ico $JITSI_MEET/
+[[ -f "$BASEDIR/favicon.ico" ]] && cp $BASEDIR/favicon.ico $JITSI_MEET/images/
+[[ -f "$BASEDIR/watermark.svg" ]] && \
+    cp $BASEDIR/watermark.svg $JITSI_MEET/images/
 
 # ------------------------------------------------------------------------------
 # jwt
 # ------------------------------------------------------------------------------
+# Set disableProfile and enableFeaturesBasedOnToken in local config.js if needed
+
 #APP_ID="myappid"
 #APP_SECRET="myappsecret"
 
@@ -119,8 +86,3 @@ sed -i "/^\s*JITSI_WATERMARK_LINK:/ s~:.*~: '$WATERMARK_LINK',~" \
 #systemctl restart jicofo.service
 #systemctl restart jitsi-videobridge2.service
 #EOS
-
-#sed -i "/disableProfile:/ s~//\s*~~" $JITSI_MEET_CONFIG
-#sed -i "/disableProfile:/ s~:.*~: true,~" $JITSI_MEET_CONFIG
-#sed -i "/enableFeaturesBasedOnToken:/ s~//\s*~~" $JITSI_MEET_CONFIG
-#sed -i "/enableFeaturesBasedOnToken:/ s~:.*~: true,~" $JITSI_MEET_CONFIG

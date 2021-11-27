@@ -27,9 +27,9 @@ Some commands to be useful in the `eb-jitsi` container
 ```bash
 lxc-attach -n eb-jitsi
 
-    curl http://127.0.0.1:8080/colibri/conferences
-    curl http://127.0.0.1:8888/stats
-    egrep -o "\[room=.*\].*(Created|Stopped)" /var/log/jitsi/jicofo.log
+curl http://127.0.0.1:8080/colibri/conferences
+curl http://127.0.0.1:8888/stats
+egrep -o "\[room=.*\].*(Created|Stopped)" /var/log/jitsi/jicofo.log
 
-    exit
+exit
 ```
