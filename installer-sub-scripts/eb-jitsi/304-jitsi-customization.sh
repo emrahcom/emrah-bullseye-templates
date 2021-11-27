@@ -26,7 +26,7 @@ JITSI_MEET="$JITSI_ROOTFS/usr/share/jitsi-meet"
 
 if [[ ! -d "/root/jitsi-customization" ]]; then
     cp -arp root/jitsi-customization /root/
-    mkdir -f /root/jitsi-customization/files
+    mkdir -p /root/jitsi-customization/files
 
     sed -i "s/___TURN_FQDN___/$TURN_FQDN/g" \
         /root/jitsi-customization/README.md
