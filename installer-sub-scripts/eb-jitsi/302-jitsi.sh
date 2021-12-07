@@ -157,12 +157,13 @@ apt-get $APT_PROXY_OPTION update
 apt-get $APT_PROXY_OPTION -y dist-upgrade
 EOS
 
-# gnupg, ngrep, ncat, jq
+# gnupg, ngrep, ncat, jq, hocon
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y install gnupg
 apt-get $APT_PROXY_OPTION -y install ngrep ncat jq
+apt-get $APT_PROXY_OPTION -y install hocon
 EOS
 
 # ssl packages
