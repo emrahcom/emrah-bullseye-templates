@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chromium https://___JITSI_FQDN___ &
+google-chrome https://___JITSI_FQDN___ &
 sleep 30
 pkill --oldest --signal TERM chrome
 pkill --oldest --signal TERM chromium

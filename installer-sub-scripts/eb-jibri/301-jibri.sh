@@ -138,32 +138,29 @@ apt-get $APT_PROXY_OPTION -y --install-recommends install ffmpeg
 apt-get $APT_PROXY_OPTION -y install x11vnc
 EOS
 
-# ungoogled-chromium
-cp etc/apt/sources.list.d/ungoogled-chromium.list \
-    $ROOTFS/etc/apt/sources.list.d/
+# google chrome
+cp etc/apt/sources.list.d/google-chrome.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-wget -qO /tmp/ungoogled-chromium.gpg.key \
-    https://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Bullseye/Release.key
-cat /tmp/ungoogled-chromium.gpg.key | gpg --dearmor \
-    >/usr/share/keyrings/ungoogled-chromium.gpg
+wget -qO /tmp/google-chrome.gpg.key \
+    https://dl.google.com/linux/linux_signing_key.pub
+apt-key add /tmp/google-chrome.gpg.key
 apt-get $APT_PROXY_OPTION update
 EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install libgtk-3-0
-apt-get $APT_PROXY_OPTION -y install ungoogled-chromium
+apt-get $APT_PROXY_OPTION -y --install-recommends install google-chrome-stable
 EOS
 
 # chromedriver
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-CHROMIUM_VER=\$(dpkg -s ungoogled-chromium | egrep "^Version" | \
+CHROME_VER=\$(dpkg -s google-chrome-stable | egrep "^Version" | \
     cut -d " " -f2 | cut -d. -f1)
 CHROMEDRIVER_VER=\$(curl -s \
-    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROMIUM_VER)
+    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROME_VER)
 wget -qO /tmp/chromedriver_linux64.zip \
     https://chromedriver.storage.googleapis.com/\$CHROMEDRIVER_VER/chromedriver_linux64.zip
 unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
@@ -209,10 +206,10 @@ rmmod -f snd_aloop || true
 modprobe snd_aloop || true
 [[ "$DONT_CHECK_SND_ALOOP" = true ]] || [[ -n "$(lsmod | ack snd_aloop)" ]]
 
-# chromium managed policies
-mkdir -p $ROOTFS/etc/chromium/policies/managed
-cp etc/chromium/policies/managed/eb-policies.json \
-    $ROOTFS/etc/chromium/policies/managed/
+# google chrome managed policies
+mkdir -p $ROOTFS/etc/opt/chrome/policies/managed
+cp etc/opt/chrome/policies/managed/eb-policies.json \
+    $ROOTFS/etc/opt/chrome/policies/managed/
 
 # ------------------------------------------------------------------------------
 # JIBRI
