@@ -75,9 +75,9 @@ cp $PROSODY_CONFIG $BACKUP/
 #sed -i '/token_owner_party/d' $PROSODY_CONFIG
 #sed -i '/\s*app_secret=/a \
 #\    allow_empty_token = false' $PROSODY_CONFIG
-#sed -i '/\s*"token_verification"/a \
+#sed -i '/^Component .conference\./,/admins/!b; /\s*"token_verification"/a \
 #\        "token_affiliation";' $PROSODY_CONFIG
-#sed -i '/\s*"token_affiliation"/a \
+#sed -i '/^Component .conference\./,/admins/!b; /\s*"token_affiliation"/a \
 #\        "token_owner_party";' $PROSODY_CONFIG
 #lxc-attach -n eb-jitsi -- systemctl restart prosody.service
 
