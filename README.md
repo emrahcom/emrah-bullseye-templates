@@ -105,7 +105,7 @@ See [Jitsi cluster document](docs/jitsi-cluster.md)
 
 # Requirements
 
-`emrah-bullseye` requires a `Debian 11 Bullseye` host with a minimal install and
+`emrah-bullseye` requires a `Debian 11 Bullseye` host with a minimal setup and
 the Internet access during the installation. It's not a good idea to use your
 desktop machine or an already in-use production server as a host machine.
 Please, use one of the followings as a host:
