@@ -77,9 +77,6 @@ lxc.group = eb-group
 lxc.group = eb-jibri
 EOF
 
-# dhcp config
-cp etc/network/interfaces $ROOTFS/etc/network/
-
 # start the container
 lxc-start -n $MACH -d
 lxc-wait -n $MACH -s RUNNING
