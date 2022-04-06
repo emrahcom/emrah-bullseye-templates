@@ -72,25 +72,35 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y install nodejs
+npm install npm -g
 EOS
 
 # ------------------------------------------------------------------------------
 # JITSI-MEET DEV
 # ------------------------------------------------------------------------------
+# dev user
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+adduser ui --system --group --disabled-password --shell /bin/zsh --gecos ''
+EOS
+
+cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/dev/
+cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/dev/
+cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/dev/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown dev:dev /home/dev/.tmux.conf
+chown dev:dev /home/dev/.vimrc
+chown dev:dev /home/dev/.zshrc
+EOS
+
 # store folder
 mkdir -p /root/eb-store
 
-# dev folder
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-mkdir -p /home/dev
-cd /home/dev
-EOS
-
 # lib-jitsi-meet
 if [[ ! -d /root/eb-store/lib-jitsi-meet ]]; then
-    git clone --depth=200 -b master \
-        https://github.com/jitsi/lib-jitsi-meet.git \
+    git clone https://github.com/jitsi/lib-jitsi-meet.git \
         /root/eb-store/lib-jitsi-meet
 fi
 
@@ -105,7 +115,7 @@ cp -arp /root/eb-store/lib-jitsi-meet $ROOTFS/home/dev/
 
 # jitsi-meet
 if [[ ! -d /root/eb-store/jitsi-meet ]]; then
-    git clone --depth=200 -b master https://github.com/jitsi/jitsi-meet.git \
+    git clone https://github.com/jitsi/jitsi-meet.git \
         /root/eb-store/jitsi-meet
 fi
 
