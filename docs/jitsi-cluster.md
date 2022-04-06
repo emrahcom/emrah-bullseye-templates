@@ -148,7 +148,6 @@ environment.
 To install the development environment:
 
 ```bash
-echo export INSTALL_JICOFO_DEV=true >> eb-jitsi.conf
 echo export INSTALL_JITSI_MEET_DEV=true >> eb-jitsi.conf
 ```
 
