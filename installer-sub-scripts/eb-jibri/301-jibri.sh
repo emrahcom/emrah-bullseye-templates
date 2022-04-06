@@ -83,6 +83,9 @@ cp etc/network/interfaces $ROOTFS/etc/network/
 # start the container
 lxc-start -n $MACH -d
 lxc-wait -n $MACH -s RUNNING
+# this container needs systemd-networkd to get an IP from DHCP
+lxc-attach -n $MACH -- systemctl enable systemd-networkd
+lxc-attach -n $MACH -- systemctl start systemd-networkd
 
 # wait for the network to be up
 for i in $(seq 0 9); do
