@@ -153,6 +153,7 @@ export DEBIAN_FRONTEND=noninteractive
 debconf-set-selections <<< \
     'jitsi-videobridge2 jitsi-videobridge/jvb-hostname string $JITSI_FQDN'
 
+apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
 apt-get $APT_PROXY_OPTION -y --install-recommends install jitsi-videobridge2
 EOS
 
