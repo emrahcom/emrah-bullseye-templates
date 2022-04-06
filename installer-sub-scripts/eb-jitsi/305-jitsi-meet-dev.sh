@@ -113,6 +113,11 @@ EOS
 rm -rf $ROOTFS/home/dev/lib-jitsi-meet
 cp -arp /root/eb-store/lib-jitsi-meet $ROOTFS/home/dev/
 
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown dev:dev /home/dev/lib-jitsi-meet -R
+EOS
+
 # jitsi-meet
 if [[ ! -d /root/eb-store/jitsi-meet ]]; then
     git clone https://github.com/jitsi/jitsi-meet.git \
@@ -127,6 +132,11 @@ EOS
 
 rm -rf $ROOTFS/home/dev/jitsi-meet
 cp -arp /root/eb-store/jitsi-meet $ROOTFS/home/dev/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown dev:dev /home/dev/jitsi-meet -R
+EOS
 
 # ------------------------------------------------------------------------------
 # SYSTEM CONFIGURATION
