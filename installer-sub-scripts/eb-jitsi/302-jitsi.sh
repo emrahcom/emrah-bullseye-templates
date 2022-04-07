@@ -97,19 +97,9 @@ rm -rf $ROOTFS/var/cache/apt/archives
 mkdir -p $ROOTFS/var/cache/apt/archives
 rm -rf $ROOTFS/usr/local/eb/recordings
 mkdir -p $ROOTFS/usr/local/eb/recordings
-sed -i '/^lxc\.net\./d' /var/lib/lxc/$MACH/config
-sed -i '/^# Network configuration/d' /var/lib/lxc/$MACH/config
 
 cat >> /var/lib/lxc/$MACH/config <<EOF
 lxc.mount.entry = $SHARED/recordings usr/local/eb/recordings none bind 0 0
-
-# Network configuration
-lxc.net.0.type = veth
-lxc.net.0.link = $BRIDGE
-lxc.net.0.name = eth0
-lxc.net.0.flags = up
-lxc.net.0.ipv4.address = $IP/24
-lxc.net.0.ipv4.gateway = auto
 
 # Start options
 lxc.start.auto = 1
@@ -118,6 +108,11 @@ lxc.start.delay = 2
 lxc.group = eb-group
 lxc.group = onboot
 EOF
+
+# container network
+cp $MACHINE_COMMON/etc/systemd/network/eth0.network $ROOTFS/etc/systemd/network/
+sed -i "s/___IP___/$IP/" $ROOTFS/etc/systemd/network/eth0.network
+sed -i "s/___GATEWAY___/$HOST/" $ROOTFS/etc/systemd/network/eth0.network
 
 # start the container
 lxc-start -n $MACH -d
