@@ -53,8 +53,6 @@ rm -rf $ROOTFS/var/cache/apt/archives
 mkdir -p $ROOTFS/var/cache/apt/archives
 rm -rf $ROOTFS/usr/local/eb/recordings
 mkdir -p $ROOTFS/usr/local/eb/recordings
-sed -i '/^lxc\.net\./d' /var/lib/lxc/$MACH/config
-sed -i '/^# Network configuration/d' /var/lib/lxc/$MACH/config
 
 cat >> /var/lib/lxc/$MACH/config <<EOF
 lxc.mount.entry = $SHARED/recordings usr/local/eb/recordings none bind 0 0
@@ -62,12 +60,6 @@ lxc.mount.entry = $SHARED/recordings usr/local/eb/recordings none bind 0 0
 # Devices
 lxc.cgroup2.devices.allow = c 116:* rwm
 lxc.mount.entry = /dev/snd dev/snd none bind,optional,create=dir
-
-# Network configuration
-lxc.net.0.type = veth
-lxc.net.0.link = $BRIDGE
-lxc.net.0.name = eth0
-lxc.net.0.flags = up
 
 # Start options
 lxc.start.auto = 1
