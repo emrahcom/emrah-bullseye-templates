@@ -73,14 +73,6 @@ EOF
 lxc-start -n $MACH -d
 lxc-wait -n $MACH -s RUNNING
 
-# this container needs systemd-networkd to get an IP from DHCP
-for i in $(seq 0 9); do
-    lxc-attach -n $MACH -- systemctl is-active dbus.service && break || true
-    sleep 1
-done
-lxc-attach -n $MACH -- systemctl enable systemd-networkd
-lxc-attach -n $MACH -- systemctl start systemd-networkd
-
 # wait for the network to be up
 for i in $(seq 0 9); do
     lxc-attach -n $MACH -- ping -c1 host && break || true
