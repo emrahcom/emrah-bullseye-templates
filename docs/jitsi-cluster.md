@@ -237,7 +237,7 @@ Complete the following steps before starting the `Jibri` installation.
 
 ##### 4.1.1 Machine features
 
-At least 4 cores and 8 GB RAM
+At least 4 cores and 4 GB RAM
 
 ##### 4.1.2 The snd_aloop module
 
