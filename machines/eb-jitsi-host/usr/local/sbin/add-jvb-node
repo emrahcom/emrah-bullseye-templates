@@ -51,10 +51,13 @@ EOF
 COMPLETED=false
 trap on_exit EXIT
 
-[[ -z "$NODE" ]] && cat <<EOF
+if [[ -z "$NODE" ]]; then
+    cat <<EOF
 Usage:
        add-jvb-node <NODE-ADDRESS>
 EOF
+    exit 1
+fi
 
 
 # ------------------------------------------------------------------------------
