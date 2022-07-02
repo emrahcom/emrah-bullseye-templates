@@ -13,10 +13,9 @@
   - [2.2 Installing JMS](#22-installing-jms)
     - [2.2.1 Downloading the installer](#221-downloading-the-installer)
     - [2.2.2 Setting the host addresses](#222-setting-the-host-addresses)
-    - [2.2.3 Development environment](#223-development-environment-optional)
-    - [2.2.4 Running the installer](#224-running-the-installer)
-    - [2.2.5 Let's Encrypt certificate](#225-lets-encrypt-certificate)
-    - [2.2.6 Reboot](#226-reboot)
+    - [2.2.3 Running the installer](#223-running-the-installer)
+    - [2.2.4 Let's Encrypt certificate](#224-lets-encrypt-certificate)
+    - [2.2.5 Reboot](#225-reboot)
 - [3. Additional Jitsi Videobridge (JVB) node](#3-additional-jitsi-videobridge-jvb-node)
   - [3.1 Prerequisites](#31-prerequisites)
     - [3.1.1 Machine features](#311-machine-features)
@@ -140,24 +139,13 @@ echo export TURN_FQDN=turn.mydomain.corp >> eb-jitsi.conf
 echo export JITSI_FQDN=jitsi.mydomain.corp >> eb-jitsi.conf
 ```
 
-##### 2.2.3 Development environment (optional)
-
-This is an advanced option and skip this step if you don't need a development
-environment.
-
-To install the development environment:
-
-```bash
-echo export INSTALL_JITSI_MEET_DEV=true >> eb-jitsi.conf
-```
-
-##### 2.2.4 Running the installer
+##### 2.2.3 Running the installer
 
 ```bash
 bash eb eb-jitsi
 ```
 
-##### 2.2.5 Let's Encrypt certificate
+##### 2.2.4 Let's Encrypt certificate
 
 Let's say the host address of `JMS` is `jitsi.mydomain.corp` and the host
 address of `TURN` is `turn.mydomain.corp`. To set the Let's Encrypt certificate:
@@ -166,7 +154,7 @@ address of `TURN` is `turn.mydomain.corp`. To set the Let's Encrypt certificate:
 set-letsencrypt-cert jitsi.mydomain.corp,turn.mydomain.corp
 ```
 
-##### 2.2.6 Reboot
+##### 2.2.5 Reboot
 
 Reboot the server
 
