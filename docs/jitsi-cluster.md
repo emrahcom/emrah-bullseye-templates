@@ -3,7 +3,7 @@
 # Easy way to create a Jitsi cluster based on Debian 11 Bullseye
 
 - [1. About](#1-about)
-- [2. Jitsi Meet Server (JMS)](#2-jitsi-meet-server-jms)
+- [2. JMS (Jitsi Meet Server)](#2-jms-jitsi-meet-server)
   - [2.1 Prerequisites](#21-prerequisites)
     - [2.1.1 Machine features](#211-machine-features)
     - [2.1.2 DNS record for JMS](#212-dns-record-for-jms)
@@ -16,7 +16,7 @@
     - [2.2.3 Running the installer](#223-running-the-installer)
     - [2.2.4 Let's Encrypt certificate](#224-lets-encrypt-certificate)
     - [2.2.5 Reboot](#225-reboot)
-- [3. Additional Jitsi Videobridge (JVB) node](#3-additional-jitsi-videobridge-jvb-node)
+- [3. Additional JVB (Jitsi Videobridge) node](#3-additional-jvb-jitsi-videobridge-node)
   - [3.1 Prerequisites](#31-prerequisites)
     - [3.1.1 Machine features](#311-machine-features)
     - [3.1.2 Public ports](#312-public-ports)
@@ -43,7 +43,7 @@ Please, don't install a desktop environment, only the standard packages...
 
 Run each command on this tutorial as `root`.
 
-## 2. Jitsi Meet Server (JMS)
+## 2. JMS (Jitsi Meet Server)
 
 `JMS` is a standalone server with conference room, video recording and streaming
 features. If the load level is low and simultaneous recording will not be made,
@@ -162,7 +162,7 @@ Reboot the server
 reboot
 ```
 
-## 3. Additional Jitsi Videobridge (JVB) node
+## 3. Additional JVB (Jitsi Videobridge) node
 
 A standalone `JMS` installation is good for a limited size of concurrent
 conferences but the first limiting factor is the `JVB` component, that handles
