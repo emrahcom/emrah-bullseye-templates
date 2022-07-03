@@ -110,10 +110,10 @@ modprobe snd_aloop
 
 If the `JMS` server is behind a firewall, open the following ports:
 
+- UDP/10000
 - TCP/80
 - TCP/443
-- TCP/5222
-- UDP/10000
+- TCP/5222 (_if you will have an additional `JVB` or an additional Jibri_)
 
 #### 2.2 Installing JMS
 
@@ -180,8 +180,8 @@ At least 4 cores and 8 GB RAM
 
 If the `JVB` server is behind a firewall, open the following ports:
 
-- TCP/22 (at least for `JMS` server)
-- TCP/9090 (at least for `JMS` server)
+- TCP/22 (_at least for `JMS` server_)
+- TCP/9090 (_at least for `JMS` server_)
 - UDP/10000
 
 #### 3.2 Installing JVB
