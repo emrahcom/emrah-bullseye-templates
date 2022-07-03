@@ -153,6 +153,8 @@ address of `TURN` is `turn.mydomain.corp`. To set the Let's Encrypt certificate:
 set-letsencrypt-cert jitsi.mydomain.corp,turn.mydomain.corp
 ```
 
+_Be careful, no space between host addresses._
+
 ##### 2.2.5 Reboot
 
 Reboot the server
