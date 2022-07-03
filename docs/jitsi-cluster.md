@@ -1,6 +1,6 @@
 ![Jitsi Cluster](images/jitsi-cluster.png)
 
-# Easy way to create a Jitsi cluster based on Debian 11 Bullseye
+# How to create a Jitsi cluster based on Debian 11 Bullseye
 
 - [1. About](#1-about)
 - [2. JMS (Jitsi Meet Server)](#2-jms-jitsi-meet-server)
