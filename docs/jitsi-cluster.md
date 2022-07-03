@@ -117,11 +117,10 @@ If the `JMS` server is behind a firewall, open the following ports:
 
 #### 2.2 Installing JMS
 
-Installation will be done with
-[emrah-bullseye](https://github.com/emrahcom/emrah-bullseye-templates)
-installer.
-
 ##### 2.2.1 Downloading the installer
+
+Download `eb` (**the installer**) and `eb-jitsi.conf` (**the installer config
+file**):
 
 ```bash
 wget -O eb https://raw.githubusercontent.com/emrahcom/emrah-bullseye-base/main/installer/eb
