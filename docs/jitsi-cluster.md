@@ -113,7 +113,7 @@ If the `JMS` server is behind a firewall, open the following ports:
 - UDP/10000
 - TCP/80
 - TCP/443
-- TCP/5222 (_if you will have an additional `JVB` or an additional Jibri_)
+- TCP/5222 (_if you will have an additional `JVB` or an additional `Jibri`_)
 
 #### 2.2 Installing JMS
 
