@@ -180,9 +180,9 @@ At least 4 cores and 8 GB RAM
 
 If the `JVB` server is behind a firewall, open the following ports:
 
+- UDP/10000
 - TCP/22 (_at least for `JMS` server_)
 - TCP/9090 (_at least for `JMS` server_)
-- UDP/10000
 
 #### 3.2 Installing JVB
 
