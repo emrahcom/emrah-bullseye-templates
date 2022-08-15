@@ -77,8 +77,8 @@ SHARD_PASSWD=$(egrep '^org.jitsi.videobridge.xmpp.user.shard.PASSWORD' \
 # ------------------------------------------------------------------------------
 ssh_ apt-get -y --allow-releaseinfo-change update
 ssh_ apt-get -y install wget
-ssh_ wget $INSTALLER -O /tmp/eb
-ssh_ wget $INSTALLER_CONFIG -O /tmp/eb-jvb.conf
+ssh_ wget $INSTALLER -O /tmp/eb -T 30
+ssh_ wget $INSTALLER_CONFIG -O /tmp/eb-jvb.conf -T 30
 
 ssh_ "echo export JITSI_FQDN=$JITSI_FQDN >>/tmp/eb-jvb.conf"
 ssh_ "cd /tmp && bash eb eb-jvb"
