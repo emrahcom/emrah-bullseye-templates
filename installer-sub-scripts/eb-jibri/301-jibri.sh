@@ -131,7 +131,7 @@ EOS
 cp etc/apt/sources.list.d/google-chrome.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-wget -qO /tmp/google-chrome.gpg.key \
+wget -T 30 -qO /tmp/google-chrome.gpg.key \
     https://dl.google.com/linux/linux_signing_key.pub
 apt-key add /tmp/google-chrome.gpg.key
 apt-get $APT_PROXY_OPTION update
@@ -150,7 +150,7 @@ CHROME_VER=\$(dpkg -s google-chrome-stable | egrep "^Version" | \
     cut -d " " -f2 | cut -d. -f1)
 CHROMEDRIVER_VER=\$(curl -s \
     https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROME_VER)
-wget -qO /tmp/chromedriver_linux64.zip \
+wget -T 30 -qO /tmp/chromedriver_linux64.zip \
     https://chromedriver.storage.googleapis.com/\$CHROMEDRIVER_VER/chromedriver_linux64.zip
 unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
 chmod 755 /usr/local/bin/chromedriver
@@ -160,7 +160,7 @@ EOS
 cp etc/apt/sources.list.d/jitsi-stable.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-wget -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
+wget -T 30 -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
 cat /tmp/jitsi.gpg.key | gpg --dearmor >/usr/share/keyrings/jitsi.gpg
 apt-get update
 EOS
