@@ -58,4 +58,3 @@ cp $JITSI_MEET_CONFIG $JITSI_MEET_CONFIG.org
 # INTERFACE_CONFIG.JS
 # ------------------------------------------------------------------------------
 cp $JITSI_MEET_INTERFACE $JITSI_MEET_INTERFACE.org
-
