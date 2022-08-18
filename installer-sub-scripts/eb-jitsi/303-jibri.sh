@@ -278,8 +278,8 @@ sed -i "/^\s*\/\/ Recording$/a \
 lxc-attach -n eb-jitsi -- zsh <<EOS
 set -e
 mkdir -p /root/meta
-VERSION=$(apt-cache policy jibri | grep Candidate | rev | cut -d' ' -f1 | rev)
-echo $VERSION > /root/meta/jibri-version
+META=$(apt-cache policy jibri | grep Candidate | rev | cut -d' ' -f1 | rev)
+echo $META > /root/meta/jibri-version
 EOS
 
 # ------------------------------------------------------------------------------
@@ -307,8 +307,8 @@ cp $ROOTFS/etc/jitsi/jibri/xorg-video-dummy.conf \
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 mkdir -p /root/meta
-VERSION=$(apt-cache policy jibri | grep Installed | rev | cut -d' ' -f1 | rev)
-echo $VERSION > /root/meta/jibri-version
+META=$(apt-cache policy jibri | grep Installed | rev | cut -d' ' -f1 | rev)
+echo $META > /root/meta/jibri-version
 EOS
 
 # jibri groups

@@ -382,9 +382,9 @@ cp $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties \
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 mkdir -p /root/meta
-VERSION=$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
+META=$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
     cut -d' ' -f1 | rev)
-echo $VERSION > /root/meta/jvb-version
+echo $META > /root/meta/jvb-version
 EOS
 
 # default memory limit
