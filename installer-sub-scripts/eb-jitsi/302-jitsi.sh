@@ -197,6 +197,14 @@ apt-get $APT_PROXY_OPTION -y install luarocks liblua5.2-dev
 apt-get $APT_PROXY_OPTION -y install gcc git
 EOS
 
+# hold
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-mark hold jitsi-meet jitsi-meet-web jitsi-meet-web-config \
+    jitsi-meet-prosody jitsi-videobridge2 jicofo
+EOS
+
 # ------------------------------------------------------------------------------
 # EXTERNAL IP
 # ------------------------------------------------------------------------------
@@ -253,7 +261,11 @@ echo 'ExecStartPost=systemctl restart coturn.service' >> \
     $ROOTFS/etc/systemd/system/certbot.service.d/override.conf
 lxc-attach -n $MACH -- systemctl daemon-reload
 
-# coturn
+# ------------------------------------------------------------------------------
+# COTURN
+# ------------------------------------------------------------------------------
+cp $ROOTFS/etc/turnserver.conf $ROOTFS/etc/turnserver.conf.org
+
 cat >>$ROOTFS/etc/turnserver.conf <<EOF
 
 # the following lines added by eb-jitsi
@@ -268,12 +280,19 @@ adduser turnserver ssl-cert
 systemctl restart coturn.service
 EOS
 
-# prosody
+# ------------------------------------------------------------------------------
+# PROSODY
+# ------------------------------------------------------------------------------
+cp $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua \
+    $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua.org
+
 mkdir -p $ROOTFS/etc/systemd/system/prosody.service.d
 cp etc/systemd/system/prosody.service.d/override.conf \
     $ROOTFS/etc/systemd/system/prosody.service.d/
+
 cp etc/prosody/conf.avail/network.cfg.lua $ROOTFS/etc/prosody/conf.avail/
 ln -s ../conf.avail/network.cfg.lua $ROOTFS/etc/prosody/conf.d/
+
 sed -i "/rate *=.*kb.s/  s/[0-9]*kb/1024kb/" \
     $ROOTFS/etc/prosody/prosody.cfg.lua
 sed -i "s/^-- \(https_ports = { };\)/\1/" \
@@ -282,12 +301,19 @@ sed -i "/turns.*tcp/ s/host\s*=[^,]*/host = \"$TURN_FQDN\"/" \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 sed -i "/turns.*tcp/ s/5349/443/" \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
+
 cp usr/share/jitsi-meet/prosody-plugins/*.lua \
     $ROOTFS/usr/share/jitsi-meet/prosody-plugins/
+
 lxc-attach -n $MACH -- systemctl daemon-reload
 lxc-attach -n $MACH -- systemctl restart prosody.service
 
-# jicofo
+# ------------------------------------------------------------------------------
+# JICOFO
+# ------------------------------------------------------------------------------
+cp $ROOTFS/etc/jitsi/jicofo/config $ROOTFS/etc/jitsi/jicofo/config.org
+cp $ROOTFS/etc/jitsi/jicofo/jicofo.conf $ROOTFS/etc/jitsi/jicofo/jicofo.conf.org
+
 sed -i '/^JICOFO_AUTH_PASSWORD=/a \
 \
 # set the maximum memory for the jicofo daemon\
@@ -302,13 +328,20 @@ EOS
 
 lxc-attach -n $MACH -- systemctl restart jicofo.service
 
-# nginx
+# ------------------------------------------------------------------------------
+# NGINX
+# ------------------------------------------------------------------------------
+cp $ROOTFS/etc/nginx/nginx.conf $ROOTFS/etc/nginx/nginx.conf.org
+cp $ROOTFS/etc/nginx/sites-available/$JITSI_FQDN.conf \
+    $ROOTFS/etc/nginx/sites-available/$JITSI_FQDN.conf.org
+
 mkdir -p $ROOTFS/etc/systemd/system/nginx.service.d
 cp etc/systemd/system/nginx.service.d/override.conf \
     $ROOTFS/etc/systemd/system/nginx.service.d/
-cp $ROOTFS/etc/nginx/nginx.conf $ROOTFS/etc/nginx/nginx.conf.old
+
 sed -i "/worker_connections/ s/\\S*;/8192;/" \
     $ROOTFS/etc/nginx/nginx.conf
+
 mkdir -p $ROOTFS/usr/local/share/nginx/modules-available
 cp usr/local/share/nginx/modules-available/jitsi-meet.conf \
     $ROOTFS/usr/local/share/nginx/modules-available/
@@ -316,8 +349,7 @@ sed -i "s/___LOCAL_IP___/$IP/" \
     $ROOTFS/usr/local/share/nginx/modules-available/jitsi-meet.conf
 sed -i "s/___TURN_FQDN___/$TURN_FQDN/" \
     $ROOTFS/usr/local/share/nginx/modules-available/jitsi-meet.conf
-mv $ROOTFS/etc/nginx/sites-available/$JITSI_FQDN.conf \
-    $ROOTFS/etc/nginx/sites-available/$JITSI_FQDN.conf.old
+
 cp etc/nginx/sites-available/jms.conf \
     $ROOTFS/etc/nginx/sites-available/$JITSI_FQDN.conf
 sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
@@ -340,6 +372,12 @@ lxc-attach -n $MACH -- systemctl start nginx.service
 # ------------------------------------------------------------------------------
 # JVB
 # ------------------------------------------------------------------------------
+cp $ROOTFS/etc/jitsi/videobridge/config $ROOTFS/etc/jitsi/videobridge/config.org
+cp $ROOTFS/etc/jitsi/videobridge/jvb.conf \
+    $ROOTFS/etc/jitsi/videobridge/jvb.conf.org
+cp $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties.org
+
 # default memory limit
 sed -i '/^JVB_SECRET=/a \
 \
