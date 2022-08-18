@@ -15,6 +15,7 @@ INSTALLER=https://raw.githubusercontent.com/emrahcom/emrah-bullseye-base/main/in
 INSTALLER_CONFIG=https://raw.githubusercontent.com/emrahcom/emrah-bullseye-templates/main/installer/eb-jvb.conf
 JITSI_ROOTFS=/var/lib/lxc/eb-jitsi/rootfs
 JVB_ROOTFS=/var/lib/lxc/eb-jvb/rootfs
+JVB_VERSION=$(cat $JITSI_ROOTFS/root/meta/jvb-version || true)
 DEFAULT_ROUTE=$(ip route | egrep '^default ' | head -n1)
 PUBLIC_INTERFACE=${DEFAULT_ROUTE##*dev }
 PUBLIC_INTERFACE=${PUBLIC_INTERFACE/% */}
@@ -81,6 +82,7 @@ ssh_ wget $INSTALLER -O /tmp/eb -T 30
 ssh_ wget $INSTALLER_CONFIG -O /tmp/eb-jvb.conf -T 30
 
 ssh_ "echo export JITSI_FQDN=$JITSI_FQDN >>/tmp/eb-jvb.conf"
+ssh_ "echo export JVB_VERSION=$JVB_VERSION >>/tmp/eb-jvb.conf"
 ssh_ "cd /tmp && bash eb eb-jvb"
 
 
