@@ -169,7 +169,12 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
-apt-get $APT_PROXY_OPTION -y install jibri
+
+[[ -z "$JIBRI_VERSION" ]] && \
+    apt-get $APT_PROXY_OPTION -y install jibri || \
+    apt-get $APT_PROXY_OPTION -y install jibri=$JIBRI_VERSION
+
+apt-mark hold jibri
 EOS
 
 # removed packages
@@ -177,13 +182,6 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y purge upower
-EOS
-
-# hold
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-export DEBIAN_FRONTEND=noninteractive
-apt-mark hold jibri
 EOS
 
 # ------------------------------------------------------------------------------
