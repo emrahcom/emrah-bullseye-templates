@@ -2,6 +2,10 @@
 
 Add the customization notes, scripts and related files in this folder.
 
+Before customizing anything, set this folder location as
+`/root/jitsi-customization`.  Otherwise your changes will disappear if you run
+the installer again.
+
 #### TLS update
 
 Run the following command to regenerate the TLS certificates.
@@ -33,7 +37,7 @@ lxc-attach -n eb-jitsi -- \
 
 ```bash
 diff /var/lib/lxc/eb-jitsi/rootfs/etc/jitsi/meet/___JITSI_FQDN___-config.js \
-    files/jitsi.mydomain.corp-config.js
+    files/___JITSI_FQDN___-config.js
 diff /var/lib/lxc/eb-jitsi/rootfs/usr/share/jitsi-meet/interface_config.js \
     files/interface_config.js
 ```
