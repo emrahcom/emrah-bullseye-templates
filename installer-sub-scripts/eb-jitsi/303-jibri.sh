@@ -131,7 +131,7 @@ EOS
 cp etc/apt/sources.list.d/google-chrome.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-wget -qO /tmp/google-chrome.gpg.key \
+wget -T 30 -qO /tmp/google-chrome.gpg.key \
     https://dl.google.com/linux/linux_signing_key.pub
 apt-key add /tmp/google-chrome.gpg.key
 apt-get $APT_PROXY_OPTION update
@@ -150,7 +150,7 @@ CHROME_VER=\$(dpkg -s google-chrome-stable | egrep "^Version" | \
     cut -d " " -f2 | cut -d. -f1)
 CHROMEDRIVER_VER=\$(curl -s \
     https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROME_VER)
-wget -qO /tmp/chromedriver_linux64.zip \
+wget -T 30 -qO /tmp/chromedriver_linux64.zip \
     https://chromedriver.storage.googleapis.com/\$CHROMEDRIVER_VER/chromedriver_linux64.zip
 unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
 chmod 755 /usr/local/bin/chromedriver
@@ -160,7 +160,7 @@ EOS
 cp etc/apt/sources.list.d/jitsi-stable.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-wget -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
+wget -T 30 -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
 cat /tmp/jitsi.gpg.key | gpg --dearmor >/usr/share/keyrings/jitsi.gpg
 apt-get $APT_PROXY_OPTION update
 EOS
@@ -177,6 +177,13 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y purge upower
+EOS
+
+# hold
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-mark hold jibri
 EOS
 
 # ------------------------------------------------------------------------------
@@ -267,6 +274,14 @@ sed -i "/^\s*\/\/ Recording$/a \
 \    hiddenDomain: 'recorder.$JITSI_FQDN'," \
     $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
 
+# meta
+lxc-attach -n eb-jitsi -- zsh <<EOS
+set -e
+mkdir -p /root/meta
+VERSION=$(apt-cache policy jibri | grep Candidate | rev | cut -d' ' -f1 | rev)
+echo $VERSION > /root/meta/jibri-version
+EOS
+
 # ------------------------------------------------------------------------------
 # JIBRI SSH KEY
 # ------------------------------------------------------------------------------
@@ -285,6 +300,17 @@ cp /root/.ssh/jibri.pub $JITSI_ROOTFS/usr/share/jitsi-meet/static/
 # ------------------------------------------------------------------------------
 # JIBRI
 # ------------------------------------------------------------------------------
+cp $ROOTFS/etc/jitsi/jibri/xorg-video-dummy.conf \
+    $ROOTFS/etc/jitsi/jibri/xorg-video-dummy.conf.org
+
+# meta
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+mkdir -p /root/meta
+VERSION=$(apt-cache policy jibri | grep Installed | rev | cut -d' ' -f1 | rev)
+echo $VERSION > /root/meta/jibri-version
+EOS
+
 # jibri groups
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
