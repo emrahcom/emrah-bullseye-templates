@@ -131,6 +131,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y install gnupg
 apt-get $APT_PROXY_OPTION -y install ngrep ncat jq
 apt-get $APT_PROXY_OPTION -y install ruby-hocon
+apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
 EOS
 
 # jvb
@@ -148,13 +149,33 @@ export DEBIAN_FRONTEND=noninteractive
 debconf-set-selections <<< \
     'jitsi-videobridge2 jitsi-videobridge/jvb-hostname string $JITSI_FQDN'
 
-apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
-apt-get $APT_PROXY_OPTION -y --install-recommends install jitsi-videobridge2
+[[ -z "$JVB_VERSION" ]] && \
+    apt-get $APT_PROXY_OPTION -y --install-recommends install \
+        jitsi-videobridge2 || \
+    apt-get $APT_PROXY_OPTION -y --install-recommends install \
+        jitsi-videobridge2=$JVB_VERSION
+
+apt-mark hold jitsi-videobridge2
 EOS
 
 # ------------------------------------------------------------------------------
 # JVB
 # ------------------------------------------------------------------------------
+cp $ROOTFS/etc/jitsi/videobridge/config $ROOTFS/etc/jitsi/videobridge/config.org
+cp $ROOTFS/etc/jitsi/videobridge/jvb.conf \
+    $ROOTFS/etc/jitsi/videobridge/jvb.conf.org
+cp $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties.org
+
+# meta
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+mkdir -p /root/meta
+VERSION=\$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
+    cut -d' ' -f1 | rev)
+echo \$VERSION > /root/meta/jvb-version
+EOS
+
 # disable the certificate check for prosody connection
 cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
 org.jitsi.videobridge.xmpp.user.shard.DISABLE_CERTIFICATE_VERIFICATION=true
