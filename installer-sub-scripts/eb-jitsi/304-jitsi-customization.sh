@@ -11,8 +11,6 @@ MACH="eb-jitsi-host"
 cd $MACHINES/$MACH
 
 JITSI_ROOTFS="/var/lib/lxc/eb-jitsi/rootfs"
-JITSI_MEET_CONFIG="$JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js"
-JITSI_MEET_INTERFACE="$JITSI_ROOTFS/usr/share/jitsi-meet/interface_config.js"
 
 # ------------------------------------------------------------------------------
 # INIT
@@ -48,13 +46,3 @@ cp $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js $FOLDER/files/
 cp $JITSI_ROOTFS//usr/share/jitsi-meet/interface_config.js $FOLDER/files/
 cp $JITSI_ROOTFS/usr/share/jitsi-meet/images/favicon.ico $FOLDER/files/
 cp $JITSI_ROOTFS/usr/share/jitsi-meet/images/watermark.svg $FOLDER/files/
-
-# ------------------------------------------------------------------------------
-# CONFIG.JS
-# ------------------------------------------------------------------------------
-cp $JITSI_MEET_CONFIG $JITSI_MEET_CONFIG.org
-
-# ------------------------------------------------------------------------------
-# INTERFACE_CONFIG.JS
-# ------------------------------------------------------------------------------
-cp $JITSI_MEET_INTERFACE $JITSI_MEET_INTERFACE.org

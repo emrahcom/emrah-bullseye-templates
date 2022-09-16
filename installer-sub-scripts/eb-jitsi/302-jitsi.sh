@@ -16,6 +16,9 @@ IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
 echo JITSI="$IP" >> $INSTALLER/000-source
 
+JITSI_MEET_CONFIG="$ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js"
+JITSI_MEET_INTERFACE="$ROOTFS/usr/share/jitsi-meet/interface_config.js"
+
 # ------------------------------------------------------------------------------
 # NFTABLES RULES
 # ------------------------------------------------------------------------------
@@ -417,6 +420,16 @@ fi
 
 # restart
 lxc-attach -n $MACH -- systemctl restart jitsi-videobridge2.service
+
+# ------------------------------------------------------------------------------
+# CONFIG.JS
+# ------------------------------------------------------------------------------
+cp $JITSI_MEET_CONFIG $JITSI_MEET_CONFIG.org
+
+# ------------------------------------------------------------------------------
+# INTERFACE_CONFIG.JS
+# ------------------------------------------------------------------------------
+cp $JITSI_MEET_INTERFACE $JITSI_MEET_INTERFACE.org
 
 # ------------------------------------------------------------------------------
 # TOOLS & SCRIPTS
