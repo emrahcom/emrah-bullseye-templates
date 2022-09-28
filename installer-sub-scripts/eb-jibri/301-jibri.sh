@@ -224,6 +224,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 usermod -aG adm,audio,video,plugdev jibri
+chown jibri:jibri /home/jibri
 EOS
 
 # jibri ssh
