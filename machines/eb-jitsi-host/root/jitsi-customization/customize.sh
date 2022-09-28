@@ -39,7 +39,7 @@ PROSODY_CONFIG="$JITSI_ROOTFS/etc/prosody/conf.avail/___JITSI_FQDN___.cfg.lua"
 # ------------------------------------------------------------------------------
 # jwt
 # ------------------------------------------------------------------------------
-# Set disableProfile and enableFeaturesBasedOnToken in local config.js if needed
+# Set disableProfile in local config.js if needed
 
 #APP_ID="myappid"
 #APP_SECRET="myappsecret"
