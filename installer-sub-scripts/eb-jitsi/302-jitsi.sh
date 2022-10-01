@@ -190,6 +190,8 @@ debconf-set-selections <<< \
 
 apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
 apt-get $APT_PROXY_OPTION -y --install-recommends install jitsi-meet
+apt-mark hold jitsi-meet jitsi-meet-web jitsi-meet-web-config \
+    jitsi-meet-prosody jitsi-videobridge2 jicofo
 EOS
 
 # jitsi-meet-tokens related packages
@@ -198,14 +200,6 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y install luarocks liblua5.2-dev
 apt-get $APT_PROXY_OPTION -y install gcc git
-EOS
-
-# hold
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-export DEBIAN_FRONTEND=noninteractive
-apt-mark hold jitsi-meet jitsi-meet-web jitsi-meet-web-config \
-    jitsi-meet-prosody jitsi-videobridge2 jicofo
 EOS
 
 # ------------------------------------------------------------------------------

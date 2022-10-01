@@ -141,7 +141,6 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y --install-recommends install google-chrome-stable
-
 apt-mark hold google-chrome-stable
 EOS
 
@@ -172,7 +171,6 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
 apt-get $APT_PROXY_OPTION -y install jibri
-
 apt-mark hold jibri
 EOS
 
