@@ -232,6 +232,13 @@ sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
 ln -s ../conf.avail/sip.$JITSI_FQDN.cfg.lua \
     $JITSI_ROOTFS/etc/prosody/conf.d/
 
+# add recorder and sip accounts into admins list
+sed -i -r "0,/^\s*admins/ s/(^\s*admins).*/\1 = { \
+\"focus@auth.$JITSI_FQDN\", \
+\"recorder@recorder.$JITSI_FQDN\", \
+\"sip@sip.$JITSI_FQDN\" }/" \
+    $JITSI_ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
+
 lxc-attach -n eb-jitsi -- zsh <<EOS
 set -e
 systemctl restart prosody.service
@@ -254,6 +261,8 @@ EOS
 # jicofo config
 lxc-attach -n eb-jitsi -- zsh <<EOS
 set -e
+hocon -f /etc/jitsi/jicofo/jicofo.conf \
+    set jicofo.jibri-sip.brewery-jid "\"SipBrewery@internal.auth.$JITSI_FQDN\""
 hocon -f /etc/jitsi/jicofo/jicofo.conf \
     set jicofo.jibri.brewery-jid "\"JibriBrewery@internal.auth.$JITSI_FQDN\""
 hocon -f /etc/jitsi/jicofo/jicofo.conf \
