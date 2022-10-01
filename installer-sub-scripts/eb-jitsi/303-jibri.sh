@@ -252,6 +252,8 @@ prosodyctl unregister jibri auth.$JITSI_FQDN || true
 prosodyctl register jibri auth.$JITSI_FQDN $PASSWD1
 prosodyctl unregister recorder recorder.$JITSI_FQDN || true
 prosodyctl register recorder recorder.$JITSI_FQDN $PASSWD2
+prosodyctl unregister sip sip.$JITSI_FQDN || true
+prosodyctl register sip sip.$JITSI_FQDN $PASSWD2
 EOS
 
 # jicofo config
