@@ -1,6 +1,8 @@
 [Unit]
 Description=Jibri Ephemeral Config
-Before=jibri-icewm.service jibri-xorg.service jibri.service
+Before=jibri-xorg.service
+Before=jibri-icewm.service
+Before=jibri.service
 
 [Service]
 User=root
