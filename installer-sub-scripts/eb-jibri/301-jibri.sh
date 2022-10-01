@@ -223,6 +223,7 @@ EOS
 # jibri groups
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+chsh -s /bin/bash jibri
 usermod -aG adm,audio,video,plugdev jibri
 chown jibri:jibri /home/jibri
 EOS
