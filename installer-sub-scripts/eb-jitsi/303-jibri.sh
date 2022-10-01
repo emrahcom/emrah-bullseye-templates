@@ -343,8 +343,10 @@ set -e
 chown jibri:jibri /home/jibri/.ssh -R
 EOS
 
-# jibri icewm startup
+# jibri, icewm
 mkdir -p $ROOTFS/home/jibri/.icewm
+cp home/jibri/.icewm/theme $ROOTFS/home/jibri/.icewm/
+cp home/jibri/.icewm/prefoverride $ROOTFS/home/jibri/.icewm/
 cp home/jibri/.icewm/startup $ROOTFS/home/jibri/.icewm/
 chmod 755 $ROOTFS/home/jibri/.icewm/startup
 
