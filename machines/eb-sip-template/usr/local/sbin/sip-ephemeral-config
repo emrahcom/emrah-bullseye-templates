@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# SIP-EPHEMERAL-CONFIG
+# ------------------------------------------------------------------------------
+#
+# Customize the Jibri-SIP config for the current instance
+#
+# ------------------------------------------------------------------------------
+INSTANCE=$(hostname)
+[[ "$INSTANCE" = "eb-sip-template" ]] && exit 0
+[[ -z "$INSTANCE" ]] && exit 0
+
+# the random generated nickname for the SIP client
+sed -i "s/\(^\s*nickname\s*=\).*/\1 \"$INSTANCE-$(date +%s%3N)-$RANDOM\"/" \
+    /etc/jitsi/jibri/jibri.conf
+
+# find the suitable Loopback device for this instance
+(( INSTANCE_ID = $(hostname | egrep -o '[0-9]+$') + 0 ))
+HEX_ID=$(printf '%X' $INSTANCE_ID)
+LOOPBACK=$(ls /proc/asound | egrep "^Loopback_$HEX_ID$")
+[ -z "$LOOPBACK" ] && exit 0
+
+# exit if already changed
+[[ -n "$(egrep 'Loopback_.*_1' /home/jibri/.asoundrc || true)" ]] && exit 0
+
+# set the loopback device
+sed -i "s/Loopback_1,/${LOOPBACK}_1,/" /home/jibri/.asoundrc
+sed -i "s/Loopback,/$LOOPBACK,/" /home/jibri/.asoundrc
+
+# set the video devices
