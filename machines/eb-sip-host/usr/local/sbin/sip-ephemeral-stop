@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# SIP-EPHEMERAL-STOP
+# ------------------------------------------------------------------------------
+#
+# Stop the ephemeral SIP containers.
+#
+# ------------------------------------------------------------------------------
+lxc-autostart -s -g eb-sip -t 30
+lxc-autostart -k -g eb-sip
+
+for i in $(seq 10); do
+    sleep 1
+    [[ -z "$(lxc-ls -g eb-sip | grep -v eb-sip-template)" ]] && exit 0
+done
