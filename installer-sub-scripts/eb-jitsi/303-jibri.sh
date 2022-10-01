@@ -397,12 +397,19 @@ systemctl enable jibri.service
 systemctl start jibri.service
 EOS
 
-# jibri vnc
+# jibri, vnc
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 mkdir -p /home/jibri/.vnc
 x11vnc -storepasswd jibri /home/jibri/.vnc/passwd
 chown jibri:jibri /home/jibri/.vnc -R
+EOS
+
+# jibri, Xdefaults
+cp home/jibri/.Xdefaults $ROOTFS/home/jibri/
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown jibri:jibri /home/jibri/.Xdefaults
 EOS
 
 # ------------------------------------------------------------------------------
