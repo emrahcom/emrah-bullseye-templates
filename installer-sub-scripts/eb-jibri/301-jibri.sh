@@ -11,7 +11,6 @@ MACH="eb-jibri-template"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
-JITSI_ROOTFS="/var/lib/lxc/eb-jitsi/rootfs"
 
 # ------------------------------------------------------------------------------
 # INIT
