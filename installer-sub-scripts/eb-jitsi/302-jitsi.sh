@@ -190,8 +190,7 @@ debconf-set-selections <<< \
 
 apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
 apt-get $APT_PROXY_OPTION -y --install-recommends install jitsi-meet
-apt-mark hold jitsi-meet jitsi-meet-web jitsi-meet-web-config \
-    jitsi-meet-prosody jitsi-videobridge2 jicofo
+apt-mark hold 'jitsi-*' jicofo
 EOS
 
 # jitsi-meet-tokens related packages
