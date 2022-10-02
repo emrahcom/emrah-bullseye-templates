@@ -428,11 +428,13 @@ lxc-wait -n $MACH -s STOPPED
 find $ROOTFS/var/log/jitsi/jibri -type f -delete
 
 # ------------------------------------------------------------------------------
-# HOST CUSTOMIZATION FOR JIBRI
+# HOST CUSTOMIZATION FOR JIBRI AND JIBRI-SIP
 # ------------------------------------------------------------------------------
 # jitsi tools
 cp $MACHINES/eb-jitsi-host/usr/local/sbin/add-jibri-node /usr/local/sbin/
 chmod 744 /usr/local/sbin/add-jibri-node
+cp $MACHINES/eb-jitsi-host/usr/local/sbin/add-sip-node /usr/local/sbin/
+chmod 744 /usr/local/sbin/add-sip-node
 
 # jibri-ephemeral-container service
 cp $MACHINES/eb-jitsi-host/usr/local/sbin/jibri-ephemeral-start /usr/local/sbin/
