@@ -51,7 +51,7 @@ PROSODY_CONFIG="$JITSI_ROOTFS/etc/prosody/conf.avail/___JITSI_FQDN___.cfg.lua"
 #    'jitsi-meet-tokens jitsi-meet-tokens/appid string $APP_ID'
 #debconf-set-selections <<< \
 #    'jitsi-meet-tokens jitsi-meet-tokens/appsecret password $APP_SECRET'
-#apt-get -y install jitsi-meet-tokens
+#apt-get -y --allow-change-held-packages install jitsi-meet-tokens
 #EOS
 
 #sed -i '/allow_empty_token/d' $PROSODY_CONFIG
