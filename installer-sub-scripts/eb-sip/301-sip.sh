@@ -371,6 +371,9 @@ cp /home/jibri/src/pjproject/pjsip-apps/bin/pjsua-x86_64-unknown-linux-gnu \
 chmod 755 /usr/local/bin/pjsua
 EOS
 
+# pjsua scripts
+cp opt/jitsi/jibri/pjsua.sh $ROOTFS/opt/jitsi/jibri/pjsua.sh
+cp opt/jitsi/jibri/finalize_sip.sh $ROOTFS/opt/jitsi/jibri/finalize_sip.sh
 
 # ------------------------------------------------------------------------------
 # CONTAINER SERVICES
