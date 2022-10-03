@@ -217,6 +217,15 @@ rmmod -f snd_aloop || true
 modprobe snd_aloop || true
 [[ "$DONT_CHECK_SND_ALOOP" = true ]] || [[ -n "$(lsmod | ack snd_aloop)" ]]
 
+# v4l2loopback module
+[ -z "$(egrep '^v4l2loopback' /etc/modules)" ] && \
+    echo v4l2loopback >>/etc/modules
+cp $MACHINES/eb-sip-host/etc/modprobe.d/v4l2loopback.conf /etc/modprobe.d/
+rmmod -f v4l2loopback || true
+modprobe v4l2loopback || true
+[[ "$DONT_CHECK_V4L2LOOPBACK" = true ]] || \
+    [[ -n "$(lsmod | ack v4l2loopback)" ]]
+
 # google chrome managed policies
 mkdir -p $ROOTFS/etc/opt/chrome/policies/managed
 cp etc/opt/chrome/policies/managed/eb-policies.json \
