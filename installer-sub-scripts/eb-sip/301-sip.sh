@@ -54,6 +54,7 @@ cat >> /var/lib/lxc/$MACH/config <<EOF
 
 # Devices
 lxc.cgroup2.devices.allow = c 116:* rwm
+lxc.cgroup2.devices.allow = c 81:* rwm
 lxc.mount.entry = /dev/snd dev/snd none bind,optional,create=dir
 
 # Start options
