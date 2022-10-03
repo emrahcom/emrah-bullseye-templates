@@ -375,6 +375,10 @@ EOS
 cp opt/jitsi/jibri/pjsua.sh $ROOTFS/opt/jitsi/jibri/pjsua.sh
 cp opt/jitsi/jibri/finalize_sip.sh $ROOTFS/opt/jitsi/jibri/finalize_sip.sh
 
+# fake google-chrome
+cp usr/local/bin/google-chrome $ROOTFS/usr/local/bin/
+chmod 755 $ROOTFS/usr/local/bin/google-chrome
+
 # ------------------------------------------------------------------------------
 # CONTAINER SERVICES
 # ------------------------------------------------------------------------------
