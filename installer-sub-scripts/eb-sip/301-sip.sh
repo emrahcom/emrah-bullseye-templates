@@ -267,6 +267,15 @@ systemctl daemon-reload
 systemctl enable sip-xorg.service
 EOS
 
+# icewm DISPLAY :1
+cp etc/systemd/system/sip-icewm.service \
+    $ROOTFS/etc/systemd/system/sip-icewm.service
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+systemctl daemon-reload
+systemctl enable sip-icewm.service
+EOS
+
 # jibri groups
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
