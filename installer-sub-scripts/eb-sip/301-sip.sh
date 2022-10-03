@@ -236,6 +236,10 @@ cp etc/opt/chrome/policies/managed/eb-policies.json \
 # ------------------------------------------------------------------------------
 cp $ROOTFS/etc/jitsi/jibri/xorg-video-dummy.conf \
     $ROOTFS/etc/jitsi/jibri/xorg-video-dummy.conf.org
+cp $ROOTFS/etc/jitsi/jibri/pjsua.config $ROOTFS/etc/jitsi/jibri/pjsua.config.org
+cp $ROOTFS/opt/jitsi/jibri/pjsua.sh $ROOTFS/opt/jitsi/jibri/pjsua.sh.org
+cp $ROOTFS/opt/jitsi/jibri/finalize_sip.sh \
+    $ROOTFS/opt/jitsi/jibri/finalize_sip.sh.org
 
 # meta
 lxc-attach -n $MACH -- zsh <<EOS
@@ -243,6 +247,15 @@ set -e
 mkdir -p /root/meta
 VERSION=\$(apt-cache policy jibri | grep Installed | rev | cut -d' ' -f1 | rev)
 echo \$VERSION > /root/meta/jibri-version
+EOS
+
+# resolution 1280x720
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+sed -ri "s/^(\s*)Virtual 1920/\1#Virtual 1920/" \
+    /etc/jitsi/jibri/xorg-video-dummy.conf
+sed -ri "s/^(\s*)#Virtual 1280/\1Virtual 1280/" \
+    /etc/jitsi/jibri/xorg-video-dummy.conf
 EOS
 
 # jibri groups
