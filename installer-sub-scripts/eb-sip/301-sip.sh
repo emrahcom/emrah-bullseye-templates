@@ -364,6 +364,13 @@ su -l jibri <<EOSS
 EOSS
 EOS
 
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+cp /home/jibri/src/pjproject/pjsip-apps/bin/pjsua-x86_64-unknown-linux-gnu \
+    /usr/local/bin/pjsua
+chmod 755 /usr/local/bin/pjsua
+EOS
+
 
 # ------------------------------------------------------------------------------
 # CONTAINER SERVICES
