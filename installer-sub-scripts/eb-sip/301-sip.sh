@@ -258,6 +258,15 @@ sed -ri "s/^(\s*)#Virtual 1280/\1Virtual 1280/" \
     /etc/jitsi/jibri/xorg-video-dummy.conf
 EOS
 
+# xorg DISPLAY :1
+cp etc/systemd/system/sip-xorg.service \
+    $ROOTFS/etc/systemd/system/sip-xorg.service
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+systemctl daemon-reload
+systemctl enable sip-xorg.service
+EOS
+
 # jibri groups
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
