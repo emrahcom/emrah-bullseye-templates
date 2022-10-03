@@ -11,6 +11,8 @@ MACH="eb-sip-template"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
+PJPROJECT_REPO="https://github.com/jitsi/pjproject"
+PJPROJECT_BRANCH="jibri-2.10-dev1"
 
 # ------------------------------------------------------------------------------
 # INIT
@@ -336,6 +338,32 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 chown jibri:jibri /home/jibri/.Xdefaults
 EOS
+
+# ------------------------------------------------------------------------------
+# PJSUA
+# ------------------------------------------------------------------------------
+# build
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+mkdir /home/jibri/src
+chown jibri:jibri /home/jibri/src
+EOS
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+su -l jibri <<EOSS
+    set -e
+
+    cd ~/src
+    git clone -b $PJPROJECT_BRANCH $PJPROJECT_REPO
+    cd pjproject
+
+    ./configure
+    make dep
+    make
+EOSS
+EOS
+
 
 # ------------------------------------------------------------------------------
 # CONTAINER SERVICES
