@@ -188,7 +188,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install build-essential
+apt-get $APT_PROXY_OPTION -y install build-essential git
 apt-get $APT_PROXY_OPTION -y install libv4l-dev libsdl2-dev libavcodec-dev \
     libavdevice-dev libavfilter-dev libavformat-dev libavresample-dev \
     libavutil-dev libswresample-dev libswscale-dev libasound2-dev libopus-dev \
