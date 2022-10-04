@@ -58,14 +58,6 @@ cat >> /var/lib/lxc/$MACH/config <<EOF
 lxc.cgroup2.devices.allow = c 116:* rwm
 lxc.cgroup2.devices.allow = c 81:* rwm
 lxc.mount.entry = /dev/snd dev/snd none bind,optional,create=dir
-lxc.mount.entry = /dev/video2 dev/video2 none bind,optional,create=file
-lxc.mount.entry = /dev/video3 dev/video3 none bind,optional,create=file
-lxc.mount.entry = /dev/video4 dev/video4 none bind,optional,create=file
-lxc.mount.entry = /dev/video5 dev/video5 none bind,optional,create=file
-lxc.mount.entry = /dev/video6 dev/video6 none bind,optional,create=file
-lxc.mount.entry = /dev/video7 dev/video7 none bind,optional,create=file
-lxc.mount.entry = /dev/video8 dev/video8 none bind,optional,create=file
-lxc.mount.entry = /dev/video9 dev/video9 none bind,optional,create=file
 
 # Start options
 lxc.start.auto = 1
