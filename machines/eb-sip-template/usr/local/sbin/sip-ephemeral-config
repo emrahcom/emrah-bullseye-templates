@@ -27,13 +27,3 @@ LOOPBACK=$(ls /proc/asound | egrep "^Loopback_$HEX_ID$")
 # set the loopback device
 sed -i "s/Loopback_1,/${LOOPBACK}_1,/" /home/jibri/.asoundrc
 sed -i "s/Loopback,/$LOOPBACK,/" /home/jibri/.asoundrc
-
-# set the video devices
-(( ID1 = INSTANCE_ID * 2 ))
-(( ID2 = ID1 + 1 ))
-
-rm -f /dev/video0
-ln -s video$ID1 /dev/video0
-
-rm -f /dev/video1
-ln -s video$ID2 /dev/video1
