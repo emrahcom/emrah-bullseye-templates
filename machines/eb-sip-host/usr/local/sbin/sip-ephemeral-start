@@ -43,5 +43,10 @@ for c in $(seq $CPI $CPI $N); do
     rm -rf /var/lib/lxc/eb-sip-$ID
     sleep 2
 
-    lxc-copy -n eb-sip-template -N eb-sip-$ID -e
+    (( VID0 = ID * 2 ))
+    (( VID1 = VID0 + 1 ))
+
+    lxc-copy -n eb-sip-template -N eb-sip-$ID -e \
+        -m bind=/dev/video$VID0:/dev/video0:rw \
+        -m bind=/dev/video$VID1:/dev/video1:rw
 done
