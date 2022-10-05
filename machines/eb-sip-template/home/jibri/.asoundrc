@@ -1,0 +1,85 @@
+pcm.amix {
+  type dmix
+  ipc_key 219345
+  slave.pcm "hw:Loopback,0,0"
+}
+
+pcm.asnoop {
+  type dsnoop
+  ipc_key 219346
+  slave.pcm "hw:Loopback_1,1,0"
+}
+
+pcm.aduplex {
+  type asym
+  playback.pcm "amix"
+  capture.pcm "asnoop"
+}
+
+pcm.bmix {
+  type dmix
+  ipc_key 219347
+  slave.pcm "hw:Loopback_1,0,0"
+}
+
+pcm.bsnoop {
+  type dsnoop
+  ipc_key 219348
+  slave.pcm "hw:Loopback,1,0"
+}
+
+pcm.bduplex {
+  type asym
+  playback.pcm "bmix"
+  capture.pcm "bsnoop"
+}
+
+pcm.pjsua {
+  type plug
+  slave.pcm "bduplex"
+}
+
+pcm.capture1 {
+  type plug
+  slave.pcm "hw:Loopback_2,1,0"
+}
+
+pcm.playback1 {
+  type plug
+  slave.pcm "hw:Loopback_3,0,0"
+}
+
+pcm.capture2 {
+  type plug
+  slave.pcm "hw:Loopback_4,1,0"
+}
+
+pcm.playback2 {
+  type plug
+  slave.pcm "hw:Loopback_5,0,0"
+}
+
+pcm.capture3 {
+  type plug
+  slave.pcm "hw:Loopback_6,1,0"
+}
+
+pcm.playback3 {
+  type plug
+  slave.pcm "hw:Loopback_7,0,0"
+}
+
+pcm.capture4 {
+  type plug
+  slave.pcm "hw:Loopback_8,1,0"
+}
+
+pcm.playback4 {
+  type plug
+  slave.pcm "hw:Loopback_9,0,0"
+}
+
+pcm.!default {
+  type plug
+  slave.pcm "aduplex"
+}
