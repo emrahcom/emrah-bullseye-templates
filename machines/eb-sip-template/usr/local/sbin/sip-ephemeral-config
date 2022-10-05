@@ -34,12 +34,3 @@ LOOPBACK2=$(ls /proc/asound | egrep "^Loopback_$HEX_ID2$")
 # set the loopback device
 sed -i "s/Loopback_1,/$LOOPBACK2,/" /home/jibri/.asoundrc
 sed -i "s/Loopback,/$LOOPBACK1,/" /home/jibri/.asoundrc
-
-# pjsua devices
-(( CAPTURE = INSTANCE_ID * 2 + 7 ))
-(( PLAYBACK = INSTANCE_ID * 2 + 8 ))
-
-sed -i "s/^--capture-dev=.*/--capture-dev=$CAPTURE/" \
-    /etc/jitsi/jibri/pjsua.config
-sed -i "s/^--playback-dev=.*/--playback-dev=$PLAYBACK/" \
-    /etc/jitsi/jibri/pjsua.config
