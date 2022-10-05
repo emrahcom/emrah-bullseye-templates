@@ -22,8 +22,8 @@ LOOPBACK=$(ls /proc/asound | egrep "^Loopback_$HEX_ID$")
 [ -z "$LOOPBACK" ] && exit 0
 
 # exit if already changed
-[[ -n "$(egrep 'Loopback_.*_1' /home/jibri/.asoundrc || true)" ]] && exit 0
+[[ -z "$(egrep 'Loopback,' /home/jibri/.asoundrc || true)" ]] && exit 0
 
 # set the loopback device
-sed -i "s/Loopback_1,/${LOOPBACK}_1,/" /home/jibri/.asoundrc
+sed -i "s/Loopback_1,/Loopback_99,/" /home/jibri/.asoundrc
 sed -i "s/Loopback,/$LOOPBACK,/" /home/jibri/.asoundrc
