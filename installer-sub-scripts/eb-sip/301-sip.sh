@@ -297,6 +297,9 @@ EOS
 # jibri config
 cp etc/jitsi/jibri/jibri.conf $ROOTFS/etc/jitsi/jibri/
 
+# asoundrc
+cp home/jibri/.asoundrc $ROOTFS/home/jibri/
+
 # sip ephemeral config service
 cp usr/local/sbin/sip-ephemeral-config $ROOTFS/usr/local/sbin/
 chmod 744 $ROOTFS/usr/local/sbin/sip-ephemeral-config
