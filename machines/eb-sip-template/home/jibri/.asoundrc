@@ -39,42 +39,52 @@ pcm.pjsua {
   slave.pcm "bduplex"
 }
 
-pcm.capture1 {
+pcm.pj_capture_0 {
+  type plug
+  slave.pcm "hw:Loopback,1,0"
+}
+
+pcm.pj_playback_0 {
+  type plug
+  slave.pcm "hw:Loopback_1,0,0"
+}
+
+pcm.pj_capture_1 {
   type plug
   slave.pcm "hw:Loopback_2,1,0"
 }
 
-pcm.playback1 {
+pcm.pj_playback_1 {
   type plug
   slave.pcm "hw:Loopback_3,0,0"
 }
 
-pcm.capture2 {
+pcm.pj_capture_2 {
   type plug
   slave.pcm "hw:Loopback_4,1,0"
 }
 
-pcm.playback2 {
+pcm.pj_playback_2 {
   type plug
   slave.pcm "hw:Loopback_5,0,0"
 }
 
-pcm.capture3 {
+pcm.pj_capture_3 {
   type plug
   slave.pcm "hw:Loopback_6,1,0"
 }
 
-pcm.playback3 {
+pcm.pj_playback_3 {
   type plug
   slave.pcm "hw:Loopback_7,0,0"
 }
 
-pcm.capture4 {
+pcm.pj_capture_4 {
   type plug
   slave.pcm "hw:Loopback_8,1,0"
 }
 
-pcm.playback4 {
+pcm.pj_playback_4 {
   type plug
   slave.pcm "hw:Loopback_9,0,0"
 }
