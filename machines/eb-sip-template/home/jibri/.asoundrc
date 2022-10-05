@@ -39,54 +39,16 @@ pcm.pjsua {
   slave.pcm "bduplex"
 }
 
-pcm.pj_capture_0 {
+# --capture-dev=7 if there is no sound card
+pcm.pjsua_capture {
   type plug
   slave.pcm "hw:Loopback,1,0"
 }
 
-pcm.pj_playback_0 {
+# --playback-dev=8 if there is no sound card
+pcm.pjsua_playback {
   type plug
   slave.pcm "hw:Loopback_1,0,0"
-}
-
-pcm.pj_capture_1 {
-  type plug
-  slave.pcm "hw:Loopback_2,1,0"
-}
-
-pcm.pj_playback_1 {
-  type plug
-  slave.pcm "hw:Loopback_3,0,0"
-}
-
-pcm.pj_capture_2 {
-  type plug
-  slave.pcm "hw:Loopback_4,1,0"
-}
-
-pcm.pj_playback_2 {
-  type plug
-  slave.pcm "hw:Loopback_5,0,0"
-}
-
-pcm.pj_capture_3 {
-  type plug
-  slave.pcm "hw:Loopback_6,1,0"
-}
-
-pcm.pj_playback_3 {
-  type plug
-  slave.pcm "hw:Loopback_7,0,0"
-}
-
-pcm.pj_capture_4 {
-  type plug
-  slave.pcm "hw:Loopback_8,1,0"
-}
-
-pcm.pj_playback_4 {
-  type plug
-  slave.pcm "hw:Loopback_9,0,0"
 }
 
 pcm.!default {
