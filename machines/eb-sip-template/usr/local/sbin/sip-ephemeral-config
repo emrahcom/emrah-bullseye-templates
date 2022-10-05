@@ -15,8 +15,6 @@ INSTANCE=$(hostname)
 sed -i "s/\(^\s*nickname\s*=\).*/\1 \"$INSTANCE-$(date +%s%3N)-$RANDOM\"/" \
     /etc/jitsi/jibri/jibri.conf
 
-exit 0
-
 # find the suitable Loopback devices for this instance
 (( INSTANCE_ID = $(hostname | egrep -o '[0-9]+$') + 0 ))
 (( ID1 = INSTANCE_ID * 2 ))
