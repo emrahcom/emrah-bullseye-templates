@@ -126,6 +126,26 @@ deno --version
 EOS
 
 # ------------------------------------------------------------------------------
+# SIP-DIAL-PLAN
+# ------------------------------------------------------------------------------
+# sip-dial-plan user
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+adduser dev --system --group --disabled-password --shell /bin/zsh --gecos ''
+EOS
+
+cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/sip-dial-plan/
+cp $MACHINE_COMMON/home/user/.zshrc $ROOTFS/home/sip-dial-plan/
+cp $MACHINE_COMMON/home/user/.vimrc $ROOTFS/home/sip-dial-plan/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+chown sip-dial-plan:sip-dial-plan /home/sip-dial-plan/.tmux.conf
+chown sip-dial-plan:sip-dial-plan /home/sip-dial-plan/.vimrc
+chown sip-dial-plan:sip-dial-plan /home/sip-dial-plan/.zshrc
+EOS
+
+# ------------------------------------------------------------------------------
 # CONTAINER SERVICES
 # ------------------------------------------------------------------------------
 lxc-stop -n $MACH
