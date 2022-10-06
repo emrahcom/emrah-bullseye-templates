@@ -157,6 +157,16 @@ EOS
 sed -i "/HOSTNAME/ s~\".*\"~\"0.0.0.0\"~" \
     $ROOTFS/home/sip-dial-plan/app/config.ts
 
+# systemd
+cp etc/systemd/system/sip-dial-plan.service $ROOTFS/etc/systemd/system/
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+systemctl daemon-reload
+systemctl enable sip-dial-plan.service
+systemctl start sip-dial-plan.service
+EOS
+
 # ------------------------------------------------------------------------------
 # CONTAINER SERVICES
 # ------------------------------------------------------------------------------
