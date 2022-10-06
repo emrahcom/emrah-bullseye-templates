@@ -145,6 +145,15 @@ chown sip-dial-plan:sip-dial-plan /home/sip-dial-plan/.vimrc
 chown sip-dial-plan:sip-dial-plan /home/sip-dial-plan/.zshrc
 EOS
 
+# application
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+git clone https://github.com/jitsi-contrib/sip-dial-plan.git -C app
+EOS
+
+sed -i "/HOSTNAME/ s~\".*\"~\"0.0.0.0\"~" \
+    $ROOTFS/home/sip-dial-plan/app/config.ts
+
 # ------------------------------------------------------------------------------
 # CONTAINER SERVICES
 # ------------------------------------------------------------------------------
