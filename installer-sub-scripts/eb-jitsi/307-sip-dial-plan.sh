@@ -151,7 +151,7 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 su -l sip-dial-plan <<EOSS
     set -e
-    git clone https://github.com/jitsi-contrib/sip-dial-plan.git -C app
+    git clone https://github.com/jitsi-contrib/sip-dial-plan.git app
 EOSS
 EOS
 
