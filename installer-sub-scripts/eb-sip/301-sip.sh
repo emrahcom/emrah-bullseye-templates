@@ -234,6 +234,7 @@ cp $ROOTFS/etc/jitsi/jibri/pjsua.config $ROOTFS/etc/jitsi/jibri/pjsua.config.org
 cp $ROOTFS/opt/jitsi/jibri/pjsua.sh $ROOTFS/opt/jitsi/jibri/pjsua.sh.org
 cp $ROOTFS/opt/jitsi/jibri/finalize_sip.sh \
     $ROOTFS/opt/jitsi/jibri/finalize_sip.sh.org
+cp $ROOTFS/home/jibri/.asoundrc $ROOTFS/home/jibri/.asoundrc.org
 
 # meta
 lxc-attach -n $MACH -- zsh <<EOS
