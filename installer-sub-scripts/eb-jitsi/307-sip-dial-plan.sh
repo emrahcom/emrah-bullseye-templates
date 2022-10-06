@@ -131,7 +131,8 @@ EOS
 # sip-dial-plan user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser dev --system --group --disabled-password --shell /bin/zsh --gecos ''
+adduser sip-dial-plan --system --group --disabled-password --shell /bin/zsh \
+    --gecos ''
 EOS
 
 cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/sip-dial-plan/
