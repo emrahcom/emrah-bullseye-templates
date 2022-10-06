@@ -148,7 +148,10 @@ EOS
 # application
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-git clone https://github.com/jitsi-contrib/sip-dial-plan.git -C app
+su -l sip-dial-plan <<EOSS
+    set -e
+    git clone https://github.com/jitsi-contrib/sip-dial-plan.git -C app
+EOSS
 EOS
 
 sed -i "/HOSTNAME/ s~\".*\"~\"0.0.0.0\"~" \
