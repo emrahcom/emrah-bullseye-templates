@@ -94,7 +94,8 @@ zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY_OPTION -y install kmod alsa-utils
-apt-get $APT_PROXY_OPTION -y install v4l2loopback-dkms v4l2loopback-utils
+apt-get $APT_PROXY_OPTION -y --install-recommends install v4l2loopback-dkms \
+    v4l2loopback-utils
 EOS
 
 # ------------------------------------------------------------------------------
