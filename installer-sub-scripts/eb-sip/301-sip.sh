@@ -93,8 +93,8 @@ EOS
 zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install kmod alsa-utils
-apt-get $APT_PROXY_OPTION -y --install-recommends install v4l2loopback-dkms \
+apt-get $APT_PROXY -y install kmod alsa-utils
+apt-get $APT_PROXY -y --install-recommends install v4l2loopback-dkms \
     v4l2loopback-utils
 EOS
 
@@ -105,26 +105,26 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -dy reinstall hostname
+apt-get $APT_PROXY -dy reinstall hostname
 EOS
 
 # update
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION update
-apt-get $APT_PROXY_OPTION -y dist-upgrade
+apt-get $APT_PROXY update
+apt-get $APT_PROXY -y dist-upgrade
 EOS
 
 # packages
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install gnupg unzip unclutter
-apt-get $APT_PROXY_OPTION -y install libnss3-tools
-apt-get $APT_PROXY_OPTION -y install va-driver-all vdpau-driver-all
-apt-get $APT_PROXY_OPTION -y --install-recommends install ffmpeg
-apt-get $APT_PROXY_OPTION -y install x11vnc
+apt-get $APT_PROXY -y install gnupg unzip unclutter
+apt-get $APT_PROXY -y install libnss3-tools
+apt-get $APT_PROXY -y install va-driver-all vdpau-driver-all
+apt-get $APT_PROXY -y --install-recommends install ffmpeg
+apt-get $APT_PROXY -y install x11vnc
 EOS
 
 # google chrome
@@ -134,13 +134,13 @@ set -e
 wget -T 30 -qO /tmp/google-chrome.gpg.key \
     https://dl.google.com/linux/linux_signing_key.pub
 apt-key add /tmp/google-chrome.gpg.key
-apt-get $APT_PROXY_OPTION update
+apt-get $APT_PROXY update
 EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y --install-recommends install google-chrome-stable
+apt-get $APT_PROXY -y --install-recommends install google-chrome-stable
 apt-mark hold google-chrome-stable
 EOS
 
@@ -169,11 +169,11 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
+apt-get $APT_PROXY -y install openjdk-11-jre-headless
 
 [[ -z "$JIBRI_VERSION" ]] && \
-    apt-get $APT_PROXY_OPTION -y install jibri || \
-    apt-get $APT_PROXY_OPTION -y install jibri=$JIBRI_VERSION
+    apt-get $APT_PROXY -y install jibri || \
+    apt-get $APT_PROXY -y install jibri=$JIBRI_VERSION
 apt-mark hold jibri
 EOS
 
@@ -181,8 +181,8 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install build-essential git
-apt-get $APT_PROXY_OPTION -y install libv4l-dev libsdl2-dev libavcodec-dev \
+apt-get $APT_PROXY -y install build-essential git
+apt-get $APT_PROXY -y install libv4l-dev libsdl2-dev libavcodec-dev \
     libavdevice-dev libavfilter-dev libavformat-dev libavresample-dev \
     libavutil-dev libswresample-dev libswscale-dev libasound2-dev libopus-dev \
     libvpx-dev
