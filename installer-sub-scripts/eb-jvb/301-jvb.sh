@@ -113,25 +113,25 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -dy reinstall hostname
+apt-get $APT_PROXY -dy reinstall hostname
 EOS
 
 # update
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION update
-apt-get $APT_PROXY_OPTION -y dist-upgrade
+apt-get $APT_PROXY update
+apt-get $APT_PROXY -y dist-upgrade
 EOS
 
 # gnupg, ngrep, ncat, jq, ruby-hocon
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install gnupg
-apt-get $APT_PROXY_OPTION -y install ngrep ncat jq
-apt-get $APT_PROXY_OPTION -y install ruby-hocon
-apt-get $APT_PROXY_OPTION -y install openjdk-11-jre-headless
+apt-get $APT_PROXY -y install gnupg
+apt-get $APT_PROXY -y install ngrep ncat jq
+apt-get $APT_PROXY -y install ruby-hocon
+apt-get $APT_PROXY -y install openjdk-11-jre-headless
 EOS
 
 # jvb
@@ -150,9 +150,9 @@ debconf-set-selections <<< \
     'jitsi-videobridge2 jitsi-videobridge/jvb-hostname string $JITSI_FQDN'
 
 [[ -z "$JVB_VERSION" ]] && \
-    apt-get $APT_PROXY_OPTION -y --install-recommends install \
+    apt-get $APT_PROXY -y --install-recommends install \
         jitsi-videobridge2 || \
-    apt-get $APT_PROXY_OPTION -y --install-recommends install \
+    apt-get $APT_PROXY -y --install-recommends install \
         jitsi-videobridge2=$JVB_VERSION
 
 apt-mark hold jitsi-videobridge2
