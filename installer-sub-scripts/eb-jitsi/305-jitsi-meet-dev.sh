@@ -40,22 +40,22 @@ done
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -dy reinstall hostname
+apt-get $APT_PROXY -dy reinstall hostname
 EOS
 
 # update
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION update
-apt-get $APT_PROXY_OPTION -y dist-upgrade
+apt-get $APT_PROXY update
+apt-get $APT_PROXY -y dist-upgrade
 EOS
 
 # packages
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install gnupg git build-essential
+apt-get $APT_PROXY -y install gnupg git build-essential
 EOS
 
 # nodejs
@@ -65,13 +65,13 @@ set -e
 wget -T 30 -qO /tmp/nodesource.gpg.key \
     https://deb.nodesource.com/gpgkey/nodesource.gpg.key
 cat /tmp/nodesource.gpg.key | gpg --dearmor >/usr/share/keyrings/nodesource.gpg
-apt-get $APT_PROXY_OPTION update
+apt-get $APT_PROXY update
 EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY_OPTION -y install nodejs
+apt-get $APT_PROXY -y install nodejs
 npm install npm -g
 EOS
 
