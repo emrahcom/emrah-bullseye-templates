@@ -21,8 +21,8 @@ echo "---------------------- AWS AUTO SCALE ---------------------"
 # ------------------------------------------------------------------------------
 # PACKAGES
 # ------------------------------------------------------------------------------
-apt-get $APT_PROXY_OPTION -y --no-install-recommends install awscli
-apt-get $APT_PROXY_OPTION -y install jq
+apt-get $APT_PROXY -y --no-install-recommends install awscli
+apt-get $APT_PROXY -y install jq
 
 # ------------------------------------------------------------------------------
 # SYSTEM CONFIGURATION
