@@ -15,7 +15,7 @@ JITSI_ROOTFS="/var/lib/lxc/eb-jitsi/rootfs"
 # ------------------------------------------------------------------------------
 # INIT
 # ------------------------------------------------------------------------------
-[ "$DONT_RUN_JITSI_CUSTOMIZATION" = true ] && exit
+[[ "$DONT_RUN_JITSI_CUSTOMIZATION" = true ]] && exit
 
 echo
 echo "------------------- JITSI CUSTOMIZATION -------------------"
