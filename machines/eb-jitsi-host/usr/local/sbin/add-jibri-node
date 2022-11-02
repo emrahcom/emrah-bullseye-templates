@@ -68,7 +68,7 @@ KERNEL=$(ssh_ uname -r)
 ARCH=$(ssh_ dpkg --print-architecture)
 
 ssh_ "modprobe snd_aloop 2>/dev/null || true"
-if [ -z "$(ssh_ grep snd_aloop /proc/modules)" ]; then
+if [[ -z "$(ssh_ grep snd_aloop /proc/modules)" ]]; then
     cat <<EOF
 
 The node's kernel ($KERNEL) does not support snd_aloop module.
