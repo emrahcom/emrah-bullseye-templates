@@ -19,7 +19,7 @@ sed -i "s/\(^\s*nickname\s*=\).*/\1 \"$INSTANCE-$(date +%s%3N)-$RANDOM\"/" \
 (( INSTANCE_ID = $(hostname | egrep -o '[0-9]+$') + 0 ))
 HEX_ID=$(printf '%X' $INSTANCE_ID)
 LOOPBACK=$(ls /proc/asound | egrep "^Loopback_$HEX_ID$")
-[ -z "$LOOPBACK" ] && exit 0
+[[ -z "$LOOPBACK" ]] && exit 0
 
 # exit if already changed
 [[ -z "$(egrep 'Loopback,' /home/jibri/.asoundrc || true)" ]] && exit 0
