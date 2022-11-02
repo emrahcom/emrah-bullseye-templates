@@ -206,14 +206,14 @@ systemctl disable ssh.service
 EOS
 
 # snd_aloop module
-[ -z "$(egrep '^snd_aloop' /etc/modules)" ] && echo snd_aloop >>/etc/modules
+[[ -z "$(egrep '^snd_aloop' /etc/modules)" ]] && echo snd_aloop >>/etc/modules
 cp $MACHINES/eb-sip-host/etc/modprobe.d/alsa-loopback.conf /etc/modprobe.d/
 rmmod -f snd_aloop || true
 modprobe snd_aloop || true
 [[ "$DONT_CHECK_SND_ALOOP" = true ]] || [[ -n "$(lsmod | ack snd_aloop)" ]]
 
 # v4l2loopback module
-[ -z "$(egrep '^v4l2loopback' /etc/modules)" ] && \
+[[ -z "$(egrep '^v4l2loopback' /etc/modules)" ]] && \
     echo v4l2loopback >>/etc/modules
 cp $MACHINES/eb-sip-host/etc/modprobe.d/v4l2loopback.conf /etc/modprobe.d/
 rmmod -f v4l2loopback || true
