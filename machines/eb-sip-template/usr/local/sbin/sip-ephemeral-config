@@ -26,7 +26,7 @@ LOOPBACK1=$(ls /proc/asound | egrep "^Loopback_$HEX_ID1$")
 
 HEX_ID2=$(printf '%X' $ID2)
 LOOPBACK2=$(ls /proc/asound | egrep "^Loopback_$HEX_ID2$")
-[[ -z "$LOOPBACK1" ]] && exit 0
+[[ -z "$LOOPBACK2" ]] && exit 0
 
 # exit if already changed
 [[ -z "$(egrep 'Loopback,' /home/jibri/.asoundrc || true)" ]] && exit 0
