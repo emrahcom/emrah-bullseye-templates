@@ -304,11 +304,11 @@ lxc-attach -n $MACH -- systemctl restart prosody.service
 cp $ROOTFS/etc/jitsi/jicofo/config $ROOTFS/etc/jitsi/jicofo/config.org
 cp $ROOTFS/etc/jitsi/jicofo/jicofo.conf $ROOTFS/etc/jitsi/jicofo/jicofo.conf.org
 
-sed -i '/^JICOFO_AUTH_PASSWORD=/a \
-\
-# set the maximum memory for the jicofo daemon\
-JICOFO_MAX_MEMORY=3072m' \
-    $ROOTFS/etc/jitsi/jicofo/config
+cat >>$ROOTFS/etc/jitsi/jicofo/config <<EOF
+
+# set the maximum memory for the jicofo daemon
+JICOFO_MAX_MEMORY=3072m
+EOF
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
