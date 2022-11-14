@@ -64,8 +64,8 @@ fi
 # ------------------------------------------------------------------------------
 # cluster related parameters
 # ------------------------------------------------------------------------------
-JITSI_FQDN=$(egrep '^JVB_HOSTNAME=' $JITSI_ROOTFS/etc/jitsi/videobridge/config | \
-             cut -d '=' -f2)
+JITSI_FQDN=$(grep 'domain' $JITSI_ROOTFS/etc/jitsi/videobridge/jvb.conf | \
+    cut -d'"' -f2 | cut -d: -f1)
 SHARD_PASSWD=$(egrep '^org.jitsi.videobridge.xmpp.user.shard.PASSWORD' \
     $JITSI_ROOTFS/etc/jitsi/videobridge/sip-communicator.properties | \
     cut -d '=' -f2)
