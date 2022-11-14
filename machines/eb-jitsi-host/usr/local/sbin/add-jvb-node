@@ -66,8 +66,6 @@ fi
 # ------------------------------------------------------------------------------
 JITSI_FQDN=$(egrep '^JVB_HOSTNAME=' $JITSI_ROOTFS/etc/jitsi/videobridge/config | \
              cut -d '=' -f2)
-JVB_SECRET=$(egrep '^JVB_SECRET=' $JITSI_ROOTFS/etc/jitsi/videobridge/config | \
-             cut -d '=' -f2)
 SHARD_PASSWD=$(egrep '^org.jitsi.videobridge.xmpp.user.shard.PASSWORD' \
     $JITSI_ROOTFS/etc/jitsi/videobridge/sip-communicator.properties | \
     cut -d '=' -f2)
@@ -93,8 +91,6 @@ ssh_ sed -i \"s/shard.HOSTNAME=.*/shard.HOSTNAME=$JITSI_FQDN/\" \
     $JVB_ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
 ssh_ sed -i \"s/shard.PASSWORD=.*/shard.PASSWORD=$SHARD_PASSWD/\" \
     $JVB_ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
-ssh_ sed -i \"s/^JVB_SECRET=.*/JVB_SECRET=$JVB_SECRET/\" \
-    $JVB_ROOTFS/etc/jitsi/videobridge/config
 
 [[ -n "$(ssh_ dig +short $JITSI_FQDN)" ]] || \
     ssh_ "echo \"$EXTERNAL_IP $JITSI_FQDN\" >> $JVB_ROOTFS/etc/hosts"
