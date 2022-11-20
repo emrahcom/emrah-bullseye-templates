@@ -12,5 +12,5 @@ lxc-autostart -k -g eb-jibri
 
 for i in $(seq 10); do
     sleep 1
-    [[ -z "$(lxc-ls -g eb-jibri | grep -v eb-jibri-template)" ]] && exit 0
+    [[ -z "$(lxc-ls -1g eb-jibri | grep -v eb-jibri-template)" ]] && exit 0
 done
