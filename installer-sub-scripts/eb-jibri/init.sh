@@ -19,3 +19,7 @@ cd $INSTALLER
 # INSTALLER CONFIGURATION
 # ------------------------------------------------------------------------------
 cp -ap ../eb-base/* .
+
+set +e
+systemctl stop jibri-ephemeral-container.service
+set -e
