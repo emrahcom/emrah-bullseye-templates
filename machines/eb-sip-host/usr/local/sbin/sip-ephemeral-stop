@@ -12,5 +12,5 @@ lxc-autostart -k -g eb-sip
 
 for i in $(seq 10); do
     sleep 1
-    [[ -z "$(lxc-ls -g eb-sip | grep -v eb-sip-template)" ]] && exit 0
+    [[ -z "$(lxc-ls -1g eb-sip | grep -v eb-sip-template)" ]] && exit 0
 done
