@@ -275,20 +275,11 @@ systemctl restart jicofo.service
 EOS
 
 # jitsi-meet config
-sed -i "/^\s*\/\/ Recording$/a \
-\\
-\n\
-\    recordingService: {\n\
-\        enabled: true,\n\
-\        sharingEnabled: true,\n\
-\        hideStorageWarning: false,\n\
-\    },\n\
-\n\
-\    liveStreaming: {\n\
-\       enabled: true,\n\
-\    },\n\
-\n\
-\    hiddenDomain: 'recorder.$JITSI_FQDN'," \
+cat $MACHINES/eb-jitsi/etc/jitsi/meet/config.recording.js >> \
+    $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
+cat $MACHINES/eb-jitsi/etc/jitsi/meet/config.livestreaming.js >> \
+    $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
+sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
     $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
 
 # meta
