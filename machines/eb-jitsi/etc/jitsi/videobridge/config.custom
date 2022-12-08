@@ -1,0 +1,3 @@
+
+# set the maximum memory for the JVB daemon
+VIDEOBRIDGE_MAX_MEMORY=3072m
