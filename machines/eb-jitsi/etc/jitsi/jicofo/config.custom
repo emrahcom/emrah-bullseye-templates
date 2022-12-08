@@ -1,0 +1,3 @@
+
+# set the maximum memory for the jicofo daemon
+JICOFO_MAX_MEMORY=3072m
