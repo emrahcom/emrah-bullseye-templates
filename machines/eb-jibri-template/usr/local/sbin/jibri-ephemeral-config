@@ -11,9 +11,8 @@ INSTANCE=$(hostname)
 [[ "$INSTANCE" = "eb-jibri-template" ]] && exit 0
 [[ -z "$INSTANCE" ]] && exit 0
 
-# the random generated nickname for the Jibri client
-sed -i "s/\(^\s*nickname\s*=\).*/\1 \"$INSTANCE-$(date +%s%3N)-$RANDOM\"/" \
-    /etc/jitsi/jibri/jibri.conf
+# use hostname as nickname for Jibri
+sed -i "s/\(^\s*nickname\s*=\).*/\1 \"$INSTANCE\"/" /etc/jitsi/jibri/jibri.conf
 
 # find the suitable Loopback device for this instance
 (( INSTANCE_ID = $(hostname | egrep -o '[0-9]+$') + 0 ))
