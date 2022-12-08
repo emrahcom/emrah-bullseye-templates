@@ -1,0 +1,14 @@
+[Unit]
+Description=Sip Dialplan
+After=network-online.target
+
+[Service]
+User=dialplan
+Group=dialplan
+WorkingDirectory=/home/dialplan/app
+ExecStart=bash /home/dialplan/app/sip-dial-plan.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
