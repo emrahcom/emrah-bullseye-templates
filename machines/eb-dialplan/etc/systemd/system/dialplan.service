@@ -1,5 +1,5 @@
 [Unit]
-Description=Sip Dialplan
+Description=SIP Dialplan
 After=network-online.target
 
 [Service]
