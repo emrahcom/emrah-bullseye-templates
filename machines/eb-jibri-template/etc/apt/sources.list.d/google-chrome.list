@@ -1,1 +1,1 @@
-deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main
+deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main
