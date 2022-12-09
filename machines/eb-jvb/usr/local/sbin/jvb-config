@@ -3,9 +3,8 @@
 sed -i "/^org.jitsi.videobridge.xmpp.user.shard.MUC_NICKNAME=/ \
      s/=.*/=$(uuidgen)/" /etc/jitsi/videobridge/sip-communicator.properties
 
-EXTERNAL_IP=$(dig -4 +short myip.opendns.com a @resolver1.opendns.com) || true
+EXTERNAL_IP=$(curl -s ifconfig.me || true)
 if [[ -n "$EXTERNAL_IP" ]]; then
-    sed -i "/^\s*server-id\s*=/d" /etc/jitsi/videobridge/jvb.conf
-    sed -i "/websockets/a \        server-id = \"$EXTERNAL_IP\"" \
-        /etc/jitsi/videobridge/jvb.conf
+    hocon -f /etc/jitsi/videobridge/jvb.conf \
+        set videobridge.websockets.server-id "\"$EXTERNAL_IP\""
 fi
