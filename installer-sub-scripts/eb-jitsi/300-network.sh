@@ -7,7 +7,7 @@ source $INSTALLER/000-source
 # ------------------------------------------------------------------------------
 # ENVIRONMENT
 # ------------------------------------------------------------------------------
-MACH="eb-jitsi-host"
+MACH="$TAG-jitsi-host"
 cd $MACHINES/$MACH
 
 # ------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ cd $MACHINES/$MACH
 # NETWORK CONFIG
 # ------------------------------------------------------------------------------
 # changed/added system files
-cp etc/dnsmasq.d/eb-jitsi /etc/dnsmasq.d/
+cp etc/dnsmasq.d/$TAG-jitsi /etc/dnsmasq.d/
 
 # ------------------------------------------------------------------------------
 # NETWORK RELATED SERVICES
