@@ -20,12 +20,12 @@ echo "---------------------- CERTIFICATES -----------------------"
 # ------------------------------------------------------------------------------
 # SELF-SIGNED CERTIFICATE
 # ------------------------------------------------------------------------------
-cd /root/eb-ssl
-rm -f /root/eb-ssl/eb-jitsi.*
+cd /root/$TAG-ssl
+rm -f /root/$TAG-ssl/$TAG-jitsi.*
 
 # the extension file for multiple hosts:
 # the container IP, the host IP and the host names
-cat >eb-jitsi.ext <<EOF
+cat >$TAG-jitsi.ext <<EOF
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
 keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
@@ -35,27 +35,27 @@ subjectAltName = @alt_names
 EOF
 
 # FQDNs
-echo "DNS.1 = $JITSI_FQDN" >>eb-jitsi.ext
-echo "DNS.2 = $TURN_FQDN" >>eb-jitsi.ext
+echo "DNS.1 = $JITSI_FQDN" >>$TAG-jitsi.ext
+echo "DNS.2 = $TURN_FQDN" >>$TAG-jitsi.ext
 
 # internal IPs
 i=1
-for addr in $(egrep '^address=' /etc/dnsmasq.d/eb-jitsi); do
+for addr in $(egrep '^address=' /etc/dnsmasq.d/$TAG-jitsi); do
     ip=$(echo $addr | rev | cut -d '/' -f1 | rev)
-    echo "IP.$i = $ip" >> eb-jitsi.ext
+    echo "IP.$i = $ip" >> $TAG-jitsi.ext
     (( i += 1 ))
 done
 
 # external IPs
-echo "IP.$i = $REMOTE_IP" >>eb-jitsi.ext
+echo "IP.$i = $REMOTE_IP" >>$TAG-jitsi.ext
 (( i += 1 ))
 [[ -n "$EXTERNAL_IP" ]] && [[ "$EXTERNAL_IP" != "$REMOTE_IP" ]] \
-    && echo "IP.$i = $EXTERNAL_IP" >>eb-jitsi.ext \
+    && echo "IP.$i = $EXTERNAL_IP" >>$TAG-jitsi.ext \
     || true
 
 # the domain key and the domain certificate
 openssl req -nodes -newkey rsa:2048 \
-    -keyout eb-jitsi.key -out eb-jitsi.csr \
-    -subj "/O=emrah-bullseye/OU=eb-jitsi/CN=$JITSI_FQDN"
-openssl x509 -req -CA eb-CA.pem -CAkey eb-CA.key -CAcreateserial -days 10950 \
-    -in eb-jitsi.csr -out eb-jitsi.pem -extfile eb-jitsi.ext
+    -keyout $TAG-jitsi.key -out $TAG-jitsi.csr \
+    -subj "/O=emrah-bullseye/OU=$TAG-jitsi/CN=$JITSI_FQDN"
+openssl x509 -req -CA $TAG-CA.pem -CAkey $TAG-CA.key -CAcreateserial -days 10950 \
+    -in $TAG-jitsi.csr -out $TAG-jitsi.pem -extfile $TAG-jitsi.ext
