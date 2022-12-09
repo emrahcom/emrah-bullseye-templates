@@ -1,0 +1,123 @@
+#
+#ASAP_PUB_KEY_TTL=3600
+
+#
+#CANDIDATE_TTL_SEC=120
+
+#
+#CLEANUP_COMPONENTS_INTERVAL_SEC=60
+
+#
+#CLEANUP_SESSIONS_INTERVAL_SEC=3600
+
+#
+#CMD_TIMEOUT_DEFAULT_MS=10000
+
+# Overall start cmd execution timeout
+#CMD_TIMEOUT_START_MS=20000
+
+# Overall stop cmd execution timeout
+#CMD_TIMEOUT_STOP_MS=90000
+
+#
+#COMPONENT_TTL_SEC=3600
+
+# Timeout for the start component
+#COMP_REQ_TIMEOUT_START_MS=18000
+
+# Timeout for the stop request
+#COMP_REQ_TIMEOUT_STOP_MS=80000
+
+# The region this selector is running
+#DEFAULT_REGION='default-region'
+
+# The environment this is deployed to, used to be passed as param on some requests that are performed (e.g. invites)
+#DEFAULT_ENVIRONMENT='default-env'
+
+#
+#JITSI_JIGASI_FEATURE='outbound-call'
+
+#
+#JITSI_SIP_JIBRI_FEATURE='sip-outbound-call'
+
+#
+#KEY_PREFIX_PATTERN='^(.*)/(.*)$'
+
+#
+#LOG_LEVEL='info'
+
+#
+#PORT=8015
+
+#
+#PROTECTED_API=true
+
+#
+#REDIS_DB=0
+
+#
+#REDIS_HOST='127.0.0.1'
+
+#
+#REDIS_PASSWORD=''
+
+#
+#REDIS_PORT=6379
+
+#
+#REDIS_SCAN_COUNT=100
+
+#
+#REDIS_TLS=false
+
+#
+#SESSION_TTL_SEC=86400
+
+#
+#SIP_ADDRESS_PATTERN='(^sips?:)?(.*)(@.*)'
+
+#
+#SIP_CALL_DESTINATION_PATTERN='jitsi_meet_transcriber|^[0-9()-]+$'
+
+#
+#SIP_JIBRI_INBOUND_EMAIL=''
+
+#
+#SIP_JIBRI_OUTBOUND_EMAIL=''
+
+# Used for verifying server tokens, remote services using the selector
+# e.g. [{"kid": "kidPattern", baseUrl": "https://asap.org"}]
+#SYSTEM_ASAP_BASE_URL_MAPPINGS='[{"kid": "^jitsi/(.*)$", "baseUrl": "https://localhost:18443/server"}]'
+SYSTEM_ASAP_BASE_URL_MAPPINGS='[{"kid": "^jitsi/(.*)$", "baseUrl": "https://___JITSI_FQDN___:18443/server"}]'
+
+# The accepted issuers for the server tokens we verify
+#SYSTEM_ASAP_JWT_ACCEPTED_HOOK_ISS='jitsi-component-sidecar,jicofo'
+
+# The audience value to be used in asap jwt tokens
+#SYSTEM_ASAP_JWT_AUD='jitsi-component-selector'
+
+#
+#WS_SERVER_PATH='/jitsi-component-selector/ws'
+
+#
+#
+# SIP JIBRI configs
+#
+#
+# This is the mapping used to validate client tokens that access the selector directly
+# The values should be matching the configuration of the main prosody virtual host
+# whicch has tokens enabled and is alredy doing the validations
+# e.g. [{"kid":"kidPattern","baseUrl":"https://asap.org"]
+#JITSI_ASAP_BASE_URL_MAPPINGS='[{"kid": "^jitsi/(.*)$", "baseUrl": "https://localhost:18433/clients"} ]'
+JITSI_ASAP_BASE_URL_MAPPINGS='[{"kid": "^jitsi/(.*)$", "baseUrl": "https://___JITSI_FQDN___:18433/clients"} ]'
+
+# The issuer that to be validated for incoming client jwt tokens, matches configuration of main virtual host
+# Defaults to jitsi (appId in the main virtual host is jitsi)
+#JITSI_ASAP_JWT_ACCEPTED_HOOK_ISS='jitsi'
+
+# The value to be used in audience field of jitsi jwt token inbound token
+# By default token configurations allow any audience
+#JITSI_ASAP_JWT_AUD='*'
+
+# Nordeck JMS self-signed certificate
+NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/jms-CA.crt
