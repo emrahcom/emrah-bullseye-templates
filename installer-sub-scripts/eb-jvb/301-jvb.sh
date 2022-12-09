@@ -7,11 +7,11 @@ source $INSTALLER/000-source
 # ------------------------------------------------------------------------------
 # ENVIRONMENT
 # ------------------------------------------------------------------------------
-MACH="eb-jvb"
+MACH="$TAG-jvb"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
-DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-jvb | head -n1)
+DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/$TAG-jvb | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
 echo JVB="$IP" >> $INSTALLER/000-source
@@ -20,20 +20,20 @@ echo JVB="$IP" >> $INSTALLER/000-source
 # NFTABLES RULES
 # ------------------------------------------------------------------------------
 # the public ssh
-nft delete element eb-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
-nft add element eb-nat tcp2ip { $SSH_PORT : $IP }
-nft delete element eb-nat tcp2port { $SSH_PORT } 2>/dev/null || true
-nft add element eb-nat tcp2port { $SSH_PORT : 22 }
+nft delete element $TAG-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
+nft add element $TAG-nat tcp2ip { $SSH_PORT : $IP }
+nft delete element $TAG-nat tcp2port { $SSH_PORT } 2>/dev/null || true
+nft add element $TAG-nat tcp2port { $SSH_PORT : 22 }
 # tcp/9090
-nft delete element eb-nat tcp2ip { 9090 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 9090 : $IP }
-nft delete element eb-nat tcp2port { 9090 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 9090 : 9090 }
+nft delete element $TAG-nat tcp2ip { 9090 } 2>/dev/null || true
+nft add element $TAG-nat tcp2ip { 9090 : $IP }
+nft delete element $TAG-nat tcp2port { 9090 } 2>/dev/null || true
+nft add element $TAG-nat tcp2port { 9090 : 9090 }
 # udp/10000
-nft delete element eb-nat udp2ip { 10000 } 2>/dev/null || true
-nft add element eb-nat udp2ip { 10000 : $IP }
-nft delete element eb-nat udp2port { 10000 } 2>/dev/null || true
-nft add element eb-nat udp2port { 10000 : 10000 }
+nft delete element $TAG-nat udp2ip { 10000 } 2>/dev/null || true
+nft add element $TAG-nat udp2ip { 10000 : $IP }
+nft delete element $TAG-nat udp2port { 10000 } 2>/dev/null || true
+nft add element $TAG-nat udp2port { 10000 : 10000 }
 
 # ------------------------------------------------------------------------------
 # INIT
@@ -48,8 +48,8 @@ echo "-------------------------- $MACH --------------------------"
 # ------------------------------------------------------------------------------
 # stop the template container if it's running
 set +e
-lxc-stop -n eb-bullseye
-lxc-wait -n eb-bullseye -s STOPPED
+lxc-stop -n $TAG-bullseye
+lxc-wait -n $TAG-bullseye -s STOPPED
 set -e
 
 # remove the old container if exists
@@ -62,7 +62,7 @@ sleep 1
 set -e
 
 # create the new one
-lxc-copy -n eb-bullseye -N $MACH -p /var/lib/lxc/
+lxc-copy -n $TAG-bullseye -N $MACH -p /var/lib/lxc/
 
 # the shared directories
 mkdir -p $SHARED/cache
@@ -77,7 +77,7 @@ cat >> /var/lib/lxc/$MACH/config <<EOF
 lxc.start.auto = 1
 lxc.start.order = 301
 lxc.start.delay = 2
-lxc.group = eb-group
+lxc.group = $TAG-group
 lxc.group = onboot
 EOF
 
