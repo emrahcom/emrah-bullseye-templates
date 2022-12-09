@@ -150,8 +150,7 @@ debconf-set-selections <<< \
     'jitsi-videobridge2 jitsi-videobridge/jvb-hostname string $JITSI_FQDN'
 
 [[ -z "$JVB_VERSION" ]] && \
-    apt-get $APT_PROXY -y --install-recommends install \
-        jitsi-videobridge2 || \
+    apt-get $APT_PROXY -y --install-recommends install jitsi-videobridge2 || \
     apt-get $APT_PROXY -y --install-recommends install \
         jitsi-videobridge2=$JVB_VERSION
 
@@ -167,26 +166,8 @@ cp $ROOTFS/etc/jitsi/videobridge/jvb.conf \
 cp $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties \
     $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties.org
 
-# meta
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-mkdir -p /root/meta
-VERSION=\$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
-    cut -d' ' -f1 | rev)
-echo \$VERSION > /root/meta/jvb-version
-EOS
-
-# disable the certificate check for prosody connection
-cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
-org.jitsi.videobridge.xmpp.user.shard.DISABLE_CERTIFICATE_VERIFICATION=true
-EOF
-
-# default memory limit
-cat >>$ROOTFS/etc/jitsi/videobridge/config <<EOF
-
-# set the maximum memory for the JVB daemon
-VIDEOBRIDGE_MAX_MEMORY=3072m
-EOF
+# add the custom config
+cat etc/jitsi/videobridge/config.custom >>$ROOTFS/etc/jitsi/videobridge/config
 
 # colibri
 lxc-attach -n $MACH -- zsh <<EOS
@@ -197,14 +178,25 @@ hocon -f /etc/jitsi/videobridge/jvb.conf \
     set videobridge.ice.udp.port 10000
 EOS
 
-# NAT harvester. these will be needed if this is an in-house server.
-cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
-#org.ice4j.ice.harvest.NAT_HARVESTER_LOCAL_ADDRESS=$IP
-#org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=$REMOTE_IP
-EOF
+# cluster related
+sed -i "s/shard.HOSTNAME=.*/shard.HOSTNAME=$JITSI_FQDN/" \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
+sed -i "s/shard.PASSWORD=.*/shard.PASSWORD=$JVB_SHARD_PASSWD/" \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
 
-# restart
-lxc-attach -n $MACH -- systemctl restart jitsi-videobridge2.service
+# NAT harvester. these will be needed if this is an in-house server.
+cat etc/jitsi/videobridge/sip-communicator.custom.properties \
+    >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
+sed -i "s/___PUBLIC_IP___/$IP/" \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
+sed -i "s/___REMOTE_IP___/$REMOTE_IP/" \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
+
+if [[ "$EXTERNAL_IP" != "$REMOTE_IP" ]]; then
+    cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
+#org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=$EXTERNAL_IP
+EOF
+fi
 
 # jvb-config
 cp usr/local/sbin/jvb-config $ROOTFS/usr/local/sbin/
@@ -216,6 +208,9 @@ set -e
 systemctl daemon-reload
 systemctl enable jvb-config.service
 EOS
+
+# restart
+lxc-attach -n $MACH -- systemctl restart jitsi-videobridge2.service
 
 # ------------------------------------------------------------------------------
 # CONTAINER SERVICES
