@@ -1,0 +1,97 @@
+# The audience to use for the asap jwt we generate
+#ASAP_JWT_AUD='jitsi-component-selector'
+
+# The issuer to use when generating asap jwt
+#ASAP_JWT_ISS='jitsi-component-sidecar'
+
+# The kid used in the generated asap jwt tokens
+#ASAP_JWT_KID='jitsi/default'
+
+# The private key file that will be used for creating jwt tokens to connect to the selector component (required)
+ASAP_SIGNING_KEY_FILE=/etc/jitsi/sidecar/asap.key
+
+# The component type (JIBRI, SIP-JIBRI or JIGASI) that is served by this sidecar (required)
+COMPONENT_TYPE='JIBRI'
+
+#
+#ENABLE_STOP_INSTANCE=true
+ENABLE_STOP_INSTANCE=true
+
+# The environment name used by the selector to make selection decisions
+#ENVIRONMENT='default-env'
+
+# Defaults to the machine hostname
+#HOSTNAME=
+
+# Defaults to the hostname, an id to use when identifying the side car/component
+#INSTANCE_ID=
+
+# Human readable instance ID used by the selector to identify the component
+# defaults to the hostname with some randomness added
+#INSTANCE_KEY=
+
+#
+#INSTANCE_METADATA='{}'
+
+# Defaults to the value of INSTANCE_KEY
+#INSTANCE_NICK=
+
+#
+#LOG_LEVEL=info
+
+#
+#PORT=8017
+
+# The region where this sidecar is running, selector can choose components based on the region
+#REGION='default-region'
+
+#
+#REQUEST_RETRY_COUNT=2
+
+#
+#REQUEST_TIMEOUT_MS=8000
+
+# The URL the sidecar can hit on the local component to start a new service
+# e.g. 'http://localhost:2222/jibri/api/v1.0/startService' (jibri) or
+# 'http://localhost:8788/api/v1.0/startService' in case of jigasi
+#START_INSTANCE_URL=
+
+#
+#STATS_POLLING_INTERVAL=30
+
+#
+#STATS_REPORTING_INTERVAL=30
+
+# The URL the sidecar can hit on the local component to query for its health
+# e.g. 'http://localhost:2222/jibri/api/v1.0/health' (jibri) or
+# 'http://localhost:8788/about/health' in case of jigasi
+#STATS_RETRIEVE_URL=
+
+# The URL the sidecar can hit on the local component to stop a running service
+# e.g. 'http://localhost:2222/jibri/api/v1.0/stopService' (jibri) or
+# 'http://localhost:8788/api/v1.0/stopService' in case of jigasi
+#STOP_INSTANCE_URL=
+
+#
+#VOLATILE_EVENTS=true
+
+#
+#WS_SERVER_PATH='/jitsi-component-selector/ws'
+
+# the address of the selector (required)
+WS_SERVER_URL='wss://___JITSI_FQDN___'
+
+#
+#
+# SIP JIBRI configs
+#
+#
+
+# The value to be passed pjsua client as a sip password to be used
+#SIP_CLIENT_PASSWORD=''
+
+# The value to be passed pjsua client as a sip username to be used
+#SIP_CLIENT_USERNAME=''
+
+# Nordeck JMS self-signed certificate
+NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/jms-CA.crt
