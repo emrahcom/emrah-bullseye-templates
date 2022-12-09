@@ -81,6 +81,30 @@ if [[ -f "$JITSI_ROOTFS/usr/local/share/ca-certificates/jms-CA.crt" ]]; then
     scp_ $JITSI_ROOTFS/usr/local/share/ca-certificates/jms-CA.crt /root/.ssh/
 fi
 
+ssh_ "rm -f /root/jitsi-component-sidecar.deb"
+if [[ -f "/root/eb-store/jitsi-component-sidecar.deb" ]] && \
+   [[ "DONT_RUN_COMPONENT_SIDECAR" != false ]]; then
+    scp_ /root/eb-store/jitsi-component-sidecar.deb /root/
+fi
+
+ssh_ "rm -f /root/.ssh/sidecar.key"
+if [[ -f /root/.ssh/sidecar.key ]] && \
+   [[ "DONT_RUN_COMPONENT_SIDECAR" != false ]]; then
+    scp_ /root/.ssh/sidecar.key /root/.ssh/
+fi
+
+ssh_ "rm -f /root/.ssh/sidecar.pem"
+if [[ -f /root/.ssh/sidecar.pem ]] && \
+   [[ "DONT_RUN_COMPONENT_SIDECAR" != false ]]; then
+    scp_ /root/.ssh/sidecar.pem /root/.ssh/
+fi
+
+ssh_ "rm -f /root/env.sidecar"
+if [[ -f "$JITSI_ROOTFS/root/meta/env.sidecar.jibri" ]] && \
+   [[ "DONT_RUN_COMPONENT_SIDECAR" != false ]]; then
+    scp_ $JITSI_ROOTFS/root/meta/env.sidecar.jibri /root/env.sidecar
+fi
+
 
 # ------------------------------------------------------------------------------
 # installation
@@ -100,6 +124,7 @@ export JIBRI_VERSION=$JIBRI_VERSION
 export JIBRI_PASSWD=$JIBRI_PASSWD
 export RECORDER_PASSWD=$RECORDER_PASSWD
 export DONT_RUN_HOST_CUSTOM_CA=true
+export DONT_RUN_COMPONENT_SIDECAR=$DONT_RUN_COMPONENT_SIDECAR
 export APT_PROXY=$APT_PROXY
 
 cd /tmp
