@@ -16,6 +16,15 @@ cd $INSTALLER
 [[ "$DONT_RUN_INIT" = true ]] && exit
 
 # ------------------------------------------------------------------------------
+# CHECKS
+# ------------------------------------------------------------------------------
+echo
+
+[[ -z "$JITSI_FQDN" ]] && echo "JITSI_FQDN not found" && false
+[[ -z "$(dig +short $JITSI_FQDN)" ]] && echo "unresolvable JITSI_FQDN" && false
+[[ -z "$JVB_SHARD_PASSWD" ]] && echo "JVB_SHARD_PASSWD not found" && false
+
+# ------------------------------------------------------------------------------
 # INSTALLER CONFIGURATION
 # ------------------------------------------------------------------------------
-cp -ap ../eb-base/* .
+cp -ap ../$TAG-base/* .
