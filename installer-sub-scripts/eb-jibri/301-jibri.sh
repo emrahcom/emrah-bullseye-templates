@@ -89,15 +89,6 @@ hostname $MACH
 EOS
 
 # ------------------------------------------------------------------------------
-# HOST PACKAGES
-# ------------------------------------------------------------------------------
-zsh <<EOS
-set -e
-export DEBIAN_FRONTEND=noninteractive
-apt-get $APT_PROXY -y install kmod alsa-utils
-EOS
-
-# ------------------------------------------------------------------------------
 # PACKAGES
 # ------------------------------------------------------------------------------
 # fake install
@@ -316,19 +307,3 @@ lxc-wait -n $MACH -s STOPPED
 # CLEAN UP
 # ------------------------------------------------------------------------------
 find $ROOTFS/var/log/jitsi/jibri -type f -delete
-
-# ------------------------------------------------------------------------------
-# EPHEMERAL JIBRI CONTAINERS
-# ------------------------------------------------------------------------------
-# jibri-ephemeral-container service
-cp $MACHINES/$TAG-jibri-host/usr/local/sbin/jibri-ephemeral-start /usr/local/sbin/
-cp $MACHINES/$TAG-jibri-host/usr/local/sbin/jibri-ephemeral-stop /usr/local/sbin/
-chmod 744 /usr/local/sbin/jibri-ephemeral-start
-chmod 744 /usr/local/sbin/jibri-ephemeral-stop
-
-cp $MACHINES/$TAG-jibri-host/etc/systemd/system/jibri-ephemeral-container.service \
-    /etc/systemd/system/
-
-systemctl daemon-reload
-systemctl enable jibri-ephemeral-container.service
-systemctl start jibri-ephemeral-container.service
