@@ -7,7 +7,7 @@ source $INSTALLER/000-source
 # ------------------------------------------------------------------------------
 # ENVIRONMENT
 # ------------------------------------------------------------------------------
-MACH="eb-jvb-host"
+MACH="$TAG-jvb-host"
 cd $MACHINES/$MACH
 
 # ------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ cd $MACHINES/$MACH
 # NETWORK CONFIG
 # ------------------------------------------------------------------------------
 # changed/added system files
-cp etc/dnsmasq.d/eb-jvb /etc/dnsmasq.d/
+cp etc/dnsmasq.d/$TAG-jvb /etc/dnsmasq.d/
 
 # ------------------------------------------------------------------------------
 # NETWORK RELATED SERVICES
