@@ -20,8 +20,8 @@ echo "---------------------- CERTIFICATES -----------------------"
 # ------------------------------------------------------------------------------
 # SELF-SIGNED CERTIFICATE
 # ------------------------------------------------------------------------------
-cd /root/$TAG-ssl
-rm -f /root/$TAG-ssl/$TAG-jitsi.*
+cd /root/$TAG-certs
+rm -f /root/$TAG-certs/$TAG-jitsi.*
 
 # the extension file for multiple hosts:
 # the container IP, the host IP and the host names
@@ -56,6 +56,6 @@ echo "IP.$i = $REMOTE_IP" >>$TAG-jitsi.ext
 # the domain key and the domain certificate
 openssl req -nodes -newkey rsa:2048 \
     -keyout $TAG-jitsi.key -out $TAG-jitsi.csr \
-    -subj "/O=emrah-bullseye/OU=$TAG-jitsi/CN=$JITSI_FQDN"
-openssl x509 -req -CA $TAG-CA.pem -CAkey $TAG-CA.key -CAcreateserial -days 10950 \
-    -in $TAG-jitsi.csr -out $TAG-jitsi.pem -extfile $TAG-jitsi.ext
+    -subj "/O=$TAG/OU=$TAG-jitsi/CN=$JITSI_FQDN"
+openssl x509 -req -CA $TAG-CA.pem -CAkey $TAG-CA.key -CAcreateserial \
+    -days 10950 -in $TAG-jitsi.csr -out $TAG-jitsi.pem -extfile $TAG-jitsi.ext
