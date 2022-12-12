@@ -323,13 +323,17 @@ EOS
 # ------------------------------------------------------------------------------
 # PROSODY
 # ------------------------------------------------------------------------------
-cp $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua \
-    $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua.org
+cp $PROSODY_CONFIG $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua.org
 
 mkdir -p $ROOTFS/etc/systemd/system/prosody.service.d
 cp etc/systemd/system/prosody.service.d/override.conf \
     $ROOTFS/etc/systemd/system/prosody.service.d/
 
+# turns
+sed -i "/turns.*tcp/ s/host\s*=[^,]*/host = \"$TURN_FQDN\"/" $PROSODY_CONFIG
+sed -i "/turns.*tcp/ s/5349/443/" $PROSODY_CONFIG
+
+# network
 cp etc/prosody/conf.avail/network.cfg.lua $ROOTFS/etc/prosody/conf.avail/
 ln -s ../conf.avail/network.cfg.lua $ROOTFS/etc/prosody/conf.d/
 
@@ -337,16 +341,27 @@ sed -i "/rate *=.*kb.s/  s/[0-9]*kb/1024kb/" \
     $ROOTFS/etc/prosody/prosody.cfg.lua
 sed -i "s/^-- \(https_ports = { };\)/\1/" \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
-sed -i "/turns.*tcp/ s/host\s*=[^,]*/host = \"$TURN_FQDN\"/" \
-    $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
-sed -i "/turns.*tcp/ s/5349/443/" \
-    $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 
-cp usr/share/jitsi-meet/prosody-plugins/*.lua \
-    $ROOTFS/usr/share/jitsi-meet/prosody-plugins/
+# recorder
+cp etc/prosody/conf.avail/recorder.cfg.lua \
+    $ROOTFS/etc/prosody/conf.avail/recorder.$JITSI_FQDN.cfg.lua
+sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
+    $ROOTFS/etc/prosody/conf.avail/recorder.$JITSI_FQDN.cfg.lua
+ln -s ../conf.avail/recorder.$JITSI_FQDN.cfg.lua \
+    $ROOTFS/etc/prosody/conf.d/
 
+# restart
 lxc-attach -n $MACH -- systemctl daemon-reload
 lxc-attach -n $MACH -- systemctl restart prosody.service
+
+# register
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+prosodyctl unregister jibri auth.$JITSI_FQDN || true
+prosodyctl register jibri auth.$JITSI_FQDN $JIBRI_PASSWD
+prosodyctl unregister recorder recorder.$JITSI_FQDN || true
+prosodyctl register recorder recorder.$JITSI_FQDN $RECORDER_PASSWD
+EOS
 
 # ------------------------------------------------------------------------------
 # JICOFO
