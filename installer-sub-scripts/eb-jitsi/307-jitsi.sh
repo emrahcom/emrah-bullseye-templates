@@ -432,21 +432,8 @@ cp $ROOTFS/etc/jitsi/videobridge/jvb.conf \
 cp $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties \
     $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties.org
 
-# meta
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-mkdir -p /root/meta
-VERSION=\$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
-    cut -d' ' -f1 | rev)
-echo \$VERSION > /root/meta/jvb-version
-EOS
-
-# default memory limit
-cat >>$ROOTFS/etc/jitsi/videobridge/config <<EOF
-
-# set the maximum memory for the JVB daemon
-VIDEOBRIDGE_MAX_MEMORY=3072m
-EOF
+# add the custom config
+cat etc/jitsi/videobridge/config.custom >>$ROOTFS/etc/jitsi/videobridge/config
 
 # colibri
 lxc-attach -n $MACH -- zsh <<EOS
@@ -458,10 +445,12 @@ hocon -f /etc/jitsi/videobridge/jvb.conf \
 EOS
 
 # NAT harvester. these will be needed if this is an in-house server.
-cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
-#org.ice4j.ice.harvest.NAT_HARVESTER_LOCAL_ADDRESS=$IP
-#org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=$REMOTE_IP
-EOF
+cat etc/jitsi/videobridge/sip-communicator.custom.properties \
+    >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
+sed -i "s/___PUBLIC_IP___/$IP/" \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
+sed -i "s/___REMOTE_IP___/$REMOTE_IP/" \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties
 
 if [[ "$EXTERNAL_IP" != "$REMOTE_IP" ]]; then
     cat >>$ROOTFS/etc/jitsi/videobridge/sip-communicator.properties <<EOF
