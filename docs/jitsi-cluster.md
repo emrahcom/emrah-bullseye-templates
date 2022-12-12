@@ -44,11 +44,14 @@ Run each command on this tutorial as `root`.
 
 ## 2. JMS (Jitsi Meet Server)
 
-`JMS` is a standalone server with conference room, video recording and streaming
-features. If the load level is low and simultaneous recording will not be made,
-`JMS` can operate without an additional `JVB` or `Jibri` node.
+`JMS` is a standalone server which contains `jitsi-meet`, `prosody`, `jicofo`,
+`jvb` and `coturn` services. If the load level is low then `JMS` can operate
+without an additional `JVB` node.
 
-Additional `JVB` and `Jibri` nodes can be added in the future if needed.
+Additional `JVB` nodes can be added in the future if needed.
+
+For the server side recording and live streaming faetures, you will need to add
+additional `jibri` nodes.
 
 #### 2.1 Prerequisites
 
@@ -56,8 +59,7 @@ Complete the following steps before starting the `JMS` installation.
 
 ##### 2.1.1 Machine features
 
-At least 4 cores and 8 GB RAM (no recording / no streaming)\
-At least 8 cores and 8 GB RAM (with recording/streaming)
+At least 4 cores and 8 GB RAM
 
 ##### 2.1.2 DNS record for JMS
 
