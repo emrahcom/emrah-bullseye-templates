@@ -7,10 +7,10 @@ source $INSTALLER/000-source
 # ------------------------------------------------------------------------------
 # ENVIRONMENT
 # ------------------------------------------------------------------------------
-MACH="eb-jitsi-host"
+MACH="$TAG-jitsi-host"
 cd $MACHINES/$MACH
 
-JITSI_ROOTFS="/var/lib/lxc/eb-jitsi/rootfs"
+JITSI_ROOTFS="/var/lib/lxc/$TAG-jitsi/rootfs"
 
 # ------------------------------------------------------------------------------
 # INIT
