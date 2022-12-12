@@ -234,10 +234,11 @@ cp /root/.ssh/jibri.pub $ROOTFS/usr/share/jitsi-meet/static/
 # SYSTEM CONFIGURATION
 # ------------------------------------------------------------------------------
 # certificates
-cp /root/$TAG-ssl/$TAG-CA.pem $ROOTFS/usr/local/share/ca-certificates/jms-CA.crt
-cp /root/$TAG-ssl/$TAG-CA.pem $ROOTFS/usr/share/jitsi-meet/static/jms-CA.crt
-cp /root/$TAG-ssl/$TAG-jitsi.key $ROOTFS/etc/ssl/private/$TAG-cert.key
-cp /root/$TAG-ssl/$TAG-jitsi.pem $ROOTFS/etc/ssl/certs/$TAG-cert.pem
+cp /root/$TAG-certs/$TAG-CA.pem \
+    $ROOTFS/usr/local/share/ca-certificates/jms-CA.crt
+cp /root/$TAG-certs/$TAG-CA.pem $ROOTFS/usr/share/jitsi-meet/static/jms-CA.crt
+cp /root/$TAG-certs/$TAG-jitsi.key $ROOTFS/etc/ssl/private/$TAG-cert.key
+cp /root/$TAG-certs/$TAG-jitsi.pem $ROOTFS/etc/ssl/certs/$TAG-cert.pem
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
@@ -253,15 +254,13 @@ ln -s /etc/ssl/certs/$TAG-cert.pem /etc/jitsi/meet/$JITSI_FQDN.crt
 EOS
 
 # set-letsencrypt-cert
-cp $MACHINES/common/usr/local/sbin/set-letsencrypt-cert $ROOTFS/usr/local/sbin/
+cp usr/local/sbin/set-letsencrypt-cert $ROOTFS/usr/local/sbin/
 chmod 744 $ROOTFS/usr/local/sbin/set-letsencrypt-cert
 
 # certbot service
 mkdir -p $ROOTFS/etc/systemd/system/certbot.service.d
-cp $MACHINES/common/etc/systemd/system/certbot.service.d/override.conf \
+cp etc/systemd/system/certbot.service.d/override.conf \
     $ROOTFS/etc/systemd/system/certbot.service.d/
-echo 'ExecStartPost=systemctl restart coturn.service' >> \
-    $ROOTFS/etc/systemd/system/certbot.service.d/override.conf
 lxc-attach -n $MACH -- systemctl daemon-reload
 
 # ------------------------------------------------------------------------------
