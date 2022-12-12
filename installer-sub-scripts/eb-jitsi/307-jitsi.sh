@@ -251,10 +251,6 @@ sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" $ROOTFS/root/meta/env.sidecar.jibri
 # ------------------------------------------------------------------------------
 # JMS SSH KEY
 # ------------------------------------------------------------------------------
-mkdir -p /root/.ssh
-chmod 700 /root/.ssh
-cp $MACHINES/$TAG-jitsi-host/root/.ssh/jms-config /root/.ssh/
-
 # create ssh key if not exists
 if [[ ! -f /root/.ssh/jms ]] || [[ ! -f /root/.ssh/jms.pub ]]; then
     rm -f /root/.ssh/jms{,.pub}
