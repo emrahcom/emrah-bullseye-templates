@@ -7,7 +7,7 @@ source $INSTALLER/000-source
 # ------------------------------------------------------------------------------
 # ENVIRONMENT
 # ------------------------------------------------------------------------------
-MACH="eb-jitsi"
+MACH="$TAG-jitsi"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
@@ -96,22 +96,22 @@ chown dev:dev /home/dev/.zshrc
 EOS
 
 # store folder
-mkdir -p /root/eb-store
+mkdir -p /root/$TAG-store
 
 # lib-jitsi-meet
-if [[ ! -d /root/eb-store/lib-jitsi-meet ]]; then
+if [[ ! -d /root/$TAG-store/lib-jitsi-meet ]]; then
     git clone https://github.com/jitsi/lib-jitsi-meet.git \
-        /root/eb-store/lib-jitsi-meet
+        /root/$TAG-store/lib-jitsi-meet
 fi
 
 zsh <<EOS
 set -e
-cd /root/eb-store/lib-jitsi-meet
+cd /root/$TAG-store/lib-jitsi-meet
 git pull
 EOS
 
 rm -rf $ROOTFS/home/dev/lib-jitsi-meet
-cp -arp /root/eb-store/lib-jitsi-meet $ROOTFS/home/dev/
+cp -arp /root/$TAG-store/lib-jitsi-meet $ROOTFS/home/dev/
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
@@ -119,19 +119,19 @@ chown dev:dev /home/dev/lib-jitsi-meet -R
 EOS
 
 # jitsi-meet
-if [[ ! -d /root/eb-store/jitsi-meet ]]; then
+if [[ ! -d /root/$TAG-store/jitsi-meet ]]; then
     git clone https://github.com/jitsi/jitsi-meet.git \
-        /root/eb-store/jitsi-meet
+        /root/$TAG-store/jitsi-meet
 fi
 
 zsh <<EOS
 set -e
-cd /root/eb-store/jitsi-meet
+cd /root/$TAG-store/jitsi-meet
 git pull
 EOS
 
 rm -rf $ROOTFS/home/dev/jitsi-meet
-cp -arp /root/eb-store/jitsi-meet $ROOTFS/home/dev/
+cp -arp /root/$TAG-store/jitsi-meet $ROOTFS/home/dev/
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
