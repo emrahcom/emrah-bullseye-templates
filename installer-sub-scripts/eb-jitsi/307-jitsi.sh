@@ -203,6 +203,52 @@ apt-get $APT_PROXY -y install gcc git
 EOS
 
 # ------------------------------------------------------------------------------
+# META
+# ------------------------------------------------------------------------------
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+mkdir -p /root/meta
+chmod 700 /root/meta
+
+echo $JITSI_FQDN >/root/meta/jitsi-fqdn
+EOS
+
+# jvb
+JVB_SHARD_PASSWD=$(egrep '^org.jitsi.videobridge.xmpp.user.shard.PASSWORD=' \
+    $ROOTFS/etc/jitsi/videobridge/sip-communicator.properties | \
+    cut -d '=' -f2)
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+echo '$JVB_SHARD_PASSWD' >/root/meta/jvb-shard-passwd
+chmod 600 /root/meta/jvb-shard-passwd
+
+VERSION=\$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
+    cut -d' ' -f1 | rev)
+echo \$VERSION > /root/meta/jvb-version
+EOS
+
+# jibri
+JIBRI_PASSWD=$(openssl rand -hex 20)
+RECORDER_PASSWD=$(openssl rand -hex 20)
+
+lxc-attach -n $MACH -- zsh <<EOS
+set -e
+echo '$JIBRI_PASSWD' >/root/meta/jibri-passwd
+chmod 600 /root/meta/jibri-passwd
+echo '$RECORDER_PASSWD' >/root/meta/recorder-passwd
+chmod 600 /root/meta/recorder-passwd
+
+VERSION=\$(apt-cache policy jibri | grep Candidate | rev | cut -d' ' -f1 | rev)
+echo \$VERSION > /root/meta/jibri-version
+EOS
+
+# sidecar env files
+cp $MACHINES/$TAG-jibri-template/etc/jitsi/sidecar/env \
+    $ROOTFS/root/meta/env.sidecar.jibri
+sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" $ROOTFS/root/meta/env.sidecar.jibri
+
+# ------------------------------------------------------------------------------
 # JMS SSH KEY
 # ------------------------------------------------------------------------------
 mkdir -p /root/.ssh
