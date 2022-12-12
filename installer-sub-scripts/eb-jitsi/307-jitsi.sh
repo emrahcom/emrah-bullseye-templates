@@ -369,16 +369,17 @@ EOS
 cp $ROOTFS/etc/jitsi/jicofo/config $ROOTFS/etc/jitsi/jicofo/config.org
 cp $ROOTFS/etc/jitsi/jicofo/jicofo.conf $ROOTFS/etc/jitsi/jicofo/jicofo.conf.org
 
-cat >>$ROOTFS/etc/jitsi/jicofo/config <<EOF
-
-# set the maximum memory for the jicofo daemon
-JICOFO_MAX_MEMORY=3072m
-EOF
+# add the custom config
+cat etc/jitsi/jicofo/config.custom >>$ROOTFS/etc/jitsi/jicofo/config
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 hocon -f /etc/jitsi/jicofo/jicofo.conf \
     set jicofo.conference.enable-auto-owner true
+hocon -f /etc/jitsi/jicofo/jicofo.conf \
+    set jicofo.jibri.brewery-jid "\"JibriBrewery@internal.auth.$JITSI_FQDN\""
+hocon -f /etc/jitsi/jicofo/jicofo.conf \
+    set jicofo.jibri.pending-timeout "90 seconds"
 EOS
 
 lxc-attach -n $MACH -- systemctl restart jicofo.service
