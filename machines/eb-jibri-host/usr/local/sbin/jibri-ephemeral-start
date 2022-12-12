@@ -40,5 +40,6 @@ TAG=$(uuidgen | sed 's/-//g')
 for c in $(seq $CPI $CPI $N); do
     (( ID = c / $CPI ))
 
+    sleep 1
     lxc-copy -n eb-jibri-template -N eb-jibri-$TAG-$ID -e
 done
