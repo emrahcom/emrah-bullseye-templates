@@ -417,8 +417,6 @@ lxc-attach -n $MACH -- zsh <<EOS
 ln -s /usr/local/share/nginx/modules-available/jitsi-meet.conf \
     /etc/nginx/modules-enabled/99-jitsi-meet-custom.conf
 rm /etc/nginx/sites-enabled/default
-rm -rf /var/www/html
-ln -s /usr/share/jitsi-meet /var/www/html
 EOS
 
 lxc-attach -n $MACH -- systemctl daemon-reload
