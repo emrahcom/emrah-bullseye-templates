@@ -18,6 +18,7 @@ echo JITSI="$IP" >> $INSTALLER/000-source
 
 JITSI_MEET_CONFIG="$ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js"
 JITSI_MEET_INTERFACE="$ROOTFS/usr/share/jitsi-meet/interface_config.js"
+PROSODY_CONFIG="$ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua"
 
 # ------------------------------------------------------------------------------
 # NFTABLES RULES
@@ -106,7 +107,7 @@ lxc.mount.entry = $SHARED/recordings usr/local/$TAG/recordings none bind 0 0
 
 # Start options
 lxc.start.auto = 1
-lxc.start.order = 302
+lxc.start.order = 307
 lxc.start.delay = 2
 lxc.group = $TAG-group
 lxc.group = onboot
