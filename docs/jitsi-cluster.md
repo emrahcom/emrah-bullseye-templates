@@ -8,8 +8,7 @@
     - [2.1.1 Machine features](#211-machine-features)
     - [2.1.2 DNS record for JMS](#212-dns-record-for-jms)
     - [2.1.3 DNS record for TURN](#213-dns-record-for-turn)
-    - [2.1.4 The snd_aloop module](#214-the-snd_aloop-module)
-    - [2.1.5 Public ports](#215-public-ports)
+    - [2.1.4 Public ports](#214-public-ports)
   - [2.2 Installing JMS](#22-installing-jms)
     - [2.2.1 Downloading the installer](#221-downloading-the-installer)
     - [2.2.2 Setting the host addresses](#222-setting-the-host-addresses)
@@ -92,21 +91,7 @@ host turn.mydomain.corp
 >>> jitsi.mydomain.corp has address 1.2.3.4
 ```
 
-##### 2.1.4 The snd_aloop module
-
-`JMS` needs the `snd_aloop` kernel module to be able to record/stream a
-conference but some cloud computers have a kernel that doesn't support it. In
-this case, first install the standart Linux kernel and reboot the node with this
-kernel. If you don't know how to do this, check [FAQ](#5-faq).
-
-Run the following command to check the `snd_aloop` support. If the command has
-an output, it means that the kernel doesn't support it.
-
-```bash
-modprobe snd_aloop
-```
-
-##### 2.1.5 Public ports
+##### 2.1.4 Public ports
 
 If the `JMS` server is behind a firewall, open the following ports:
 
