@@ -21,7 +21,26 @@ echo
 echo "------------------- JITSI CUSTOMIZATION -------------------"
 
 # ------------------------------------------------------------------------------
-# JITSI-CUSTOMIZATION
+# CONFIG.JS
+# ------------------------------------------------------------------------------
+# recording
+cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.recording.js >> \
+    $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
+
+# livestreaming
+cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.recording.js >> \
+    $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
+
+# UI customizations
+cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.ui.js >> \
+    $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
+
+# substitutions
+sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
+    $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
+
+# ------------------------------------------------------------------------------
+# CUSTOMIZATION FOLDER & TOOLS
 # ------------------------------------------------------------------------------
 FOLDER="/root/jitsi-customization"
 
