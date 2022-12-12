@@ -472,13 +472,6 @@ cp $JITSI_MEET_CONFIG $JITSI_MEET_CONFIG.org
 cp $JITSI_MEET_INTERFACE $JITSI_MEET_INTERFACE.org
 
 # ------------------------------------------------------------------------------
-# TOOLS & SCRIPTS
-# ------------------------------------------------------------------------------
-# jicofo-log-analyzer
-cp usr/local/bin/jicofo-log-analyzer $ROOTFS/usr/local/bin/
-chmod 755 $ROOTFS/usr/local/bin/jicofo-log-analyzer
-
-# ------------------------------------------------------------------------------
 # CONTAINER SERVICES
 # ------------------------------------------------------------------------------
 lxc-stop -n $MACH
