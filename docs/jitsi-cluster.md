@@ -202,10 +202,8 @@ add-jvb-node 100.1.2.3
 
 ## 4. Additional Jibri node
 
-A standalone `JMS` installation can only record a limited number of concurrent
-conferences but the CPU and RAM capacities are the limiting factor for the
-`Jibri` component. It is easy to scale the `Jibri` pool horizontally by adding
-as many as `Jibri` nodes when needed.
+For the server side recording and live streaming features, install additional
+`jibri` nodes.
 
 #### 4.1 Prerequisites
 
