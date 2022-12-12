@@ -296,11 +296,8 @@ ls
 
 #### 5.4 I’ve setup the initial JMS node successfully, but getting a 'recording unavailable' error when trying to record.
 
-At least 8 cores are required to start a `Jibri` instance. The first 4 cores are
-reserved for the base processes. After these 4 cores, one `Jibri` instance is
-started for each additional 4 cores.
-
-Just shutdown the machine, increase the number of cores and reboot.
+Setup additional `jibri` nodes. Each `jibri` server should have at least 4 cores
+and 4 GB RAM.
 
 #### 5.5 How can I make a change/addition permanent in Jibri?
 
