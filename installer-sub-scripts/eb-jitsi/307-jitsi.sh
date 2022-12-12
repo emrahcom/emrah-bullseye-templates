@@ -7,11 +7,11 @@ source $INSTALLER/000-source
 # ------------------------------------------------------------------------------
 # ENVIRONMENT
 # ------------------------------------------------------------------------------
-MACH="eb-jitsi"
+MACH="$TAG-jitsi"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
-DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/eb-jitsi | head -n1)
+DNS_RECORD=$(grep "address=/$MACH/" /etc/dnsmasq.d/$TAG-jitsi | head -n1)
 IP=${DNS_RECORD##*/}
 SSH_PORT="30$(printf %03d ${IP##*.})"
 echo JITSI="$IP" >> $INSTALLER/000-source
@@ -23,30 +23,30 @@ JITSI_MEET_INTERFACE="$ROOTFS/usr/share/jitsi-meet/interface_config.js"
 # NFTABLES RULES
 # ------------------------------------------------------------------------------
 # the public ssh
-nft delete element eb-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
-nft add element eb-nat tcp2ip { $SSH_PORT : $IP }
-nft delete element eb-nat tcp2port { $SSH_PORT } 2>/dev/null || true
-nft add element eb-nat tcp2port { $SSH_PORT : 22 }
+nft delete element $TAG-nat tcp2ip { $SSH_PORT } 2>/dev/null || true
+nft add element $TAG-nat tcp2ip { $SSH_PORT : $IP }
+nft delete element $TAG-nat tcp2port { $SSH_PORT } 2>/dev/null || true
+nft add element $TAG-nat tcp2port { $SSH_PORT : 22 }
 # http
-nft delete element eb-nat tcp2ip { 80 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 80 : $IP }
-nft delete element eb-nat tcp2port { 80 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 80 : 80 }
+nft delete element $TAG-nat tcp2ip { 80 } 2>/dev/null || true
+nft add element $TAG-nat tcp2ip { 80 : $IP }
+nft delete element $TAG-nat tcp2port { 80 } 2>/dev/null || true
+nft add element $TAG-nat tcp2port { 80 : 80 }
 # https
-nft delete element eb-nat tcp2ip { 443 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 443 : $IP }
-nft delete element eb-nat tcp2port { 443 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 443 : 443 }
+nft delete element $TAG-nat tcp2ip { 443 } 2>/dev/null || true
+nft add element $TAG-nat tcp2ip { 443 : $IP }
+nft delete element $TAG-nat tcp2port { 443 } 2>/dev/null || true
+nft add element $TAG-nat tcp2port { 443 : 443 }
 # tcp/5222
-nft delete element eb-nat tcp2ip { 5222 } 2>/dev/null || true
-nft add element eb-nat tcp2ip { 5222 : $IP }
-nft delete element eb-nat tcp2port { 5222 } 2>/dev/null || true
-nft add element eb-nat tcp2port { 5222 : 5222 }
+nft delete element $TAG-nat tcp2ip { 5222 } 2>/dev/null || true
+nft add element $TAG-nat tcp2ip { 5222 : $IP }
+nft delete element $TAG-nat tcp2port { 5222 } 2>/dev/null || true
+nft add element $TAG-nat tcp2port { 5222 : 5222 }
 # udp/10000
-nft delete element eb-nat udp2ip { 10000 } 2>/dev/null || true
-nft add element eb-nat udp2ip { 10000 : $IP }
-nft delete element eb-nat udp2port { 10000 } 2>/dev/null || true
-nft add element eb-nat udp2port { 10000 : 10000 }
+nft delete element $TAG-nat udp2ip { 10000 } 2>/dev/null || true
+nft add element $TAG-nat udp2ip { 10000 : $IP }
+nft delete element $TAG-nat udp2port { 10000 } 2>/dev/null || true
+nft add element $TAG-nat udp2port { 10000 : 10000 }
 
 # ------------------------------------------------------------------------------
 # INIT
@@ -75,8 +75,8 @@ fi
 # ------------------------------------------------------------------------------
 # stop the template container if it's running
 set +e
-lxc-stop -n eb-bullseye
-lxc-wait -n eb-bullseye -s STOPPED
+lxc-stop -n $TAG-bullseye
+lxc-wait -n $TAG-bullseye -s STOPPED
 set -e
 
 # remove the old container if exists
@@ -89,7 +89,7 @@ sleep 1
 set -e
 
 # create the new one
-lxc-copy -n eb-bullseye -N $MACH -p /var/lib/lxc/
+lxc-copy -n $TAG-bullseye -N $MACH -p /var/lib/lxc/
 
 # the shared directories
 mkdir -p $SHARED/cache
@@ -98,17 +98,17 @@ mkdir -p $SHARED/recordings
 # the container config
 rm -rf $ROOTFS/var/cache/apt/archives
 mkdir -p $ROOTFS/var/cache/apt/archives
-rm -rf $ROOTFS/usr/local/eb/recordings
-mkdir -p $ROOTFS/usr/local/eb/recordings
+rm -rf $ROOTFS/usr/local/$TAG/recordings
+mkdir -p $ROOTFS/usr/local/$TAG/recordings
 
 cat >> /var/lib/lxc/$MACH/config <<EOF
-lxc.mount.entry = $SHARED/recordings usr/local/eb/recordings none bind 0 0
+lxc.mount.entry = $SHARED/recordings usr/local/$TAG/recordings none bind 0 0
 
 # Start options
 lxc.start.auto = 1
 lxc.start.order = 302
 lxc.start.delay = 2
-lxc.group = eb-group
+lxc.group = $TAG-group
 lxc.group = onboot
 EOF
 
@@ -206,7 +206,7 @@ EOS
 # ------------------------------------------------------------------------------
 mkdir -p /root/.ssh
 chmod 700 /root/.ssh
-cp $MACHINES/eb-jitsi-host/root/.ssh/jms-config /root/.ssh/
+cp $MACHINES/$TAG-jitsi-host/root/.ssh/jms-config /root/.ssh/
 
 # create ssh key if not exists
 if [[ ! -f /root/.ssh/jms ]] || [[ ! -f /root/.ssh/jms.pub ]]; then
@@ -221,22 +221,22 @@ cp /root/.ssh/jms.pub $ROOTFS/usr/share/jitsi-meet/static/
 # SYSTEM CONFIGURATION
 # ------------------------------------------------------------------------------
 # certificates
-cp /root/eb-ssl/eb-CA.pem $ROOTFS/usr/local/share/ca-certificates/jms-CA.crt
-cp /root/eb-ssl/eb-CA.pem $ROOTFS/usr/share/jitsi-meet/static/jms-CA.crt
-cp /root/eb-ssl/eb-jitsi.key $ROOTFS/etc/ssl/private/eb-cert.key
-cp /root/eb-ssl/eb-jitsi.pem $ROOTFS/etc/ssl/certs/eb-cert.pem
+cp /root/$TAG-ssl/$TAG-CA.pem $ROOTFS/usr/local/share/ca-certificates/jms-CA.crt
+cp /root/$TAG-ssl/$TAG-CA.pem $ROOTFS/usr/share/jitsi-meet/static/jms-CA.crt
+cp /root/$TAG-ssl/$TAG-jitsi.key $ROOTFS/etc/ssl/private/$TAG-cert.key
+cp /root/$TAG-ssl/$TAG-jitsi.pem $ROOTFS/etc/ssl/certs/$TAG-cert.pem
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 update-ca-certificates
 
-chmod 640 /etc/ssl/private/eb-cert.key
-chown root:ssl-cert /etc/ssl/private/eb-cert.key
+chmod 640 /etc/ssl/private/$TAG-cert.key
+chown root:ssl-cert /etc/ssl/private/$TAG-cert.key
 
 rm /etc/jitsi/meet/$JITSI_FQDN.key
 rm /etc/jitsi/meet/$JITSI_FQDN.crt
-ln -s /etc/ssl/private/eb-cert.key /etc/jitsi/meet/$JITSI_FQDN.key
-ln -s /etc/ssl/certs/eb-cert.pem /etc/jitsi/meet/$JITSI_FQDN.crt
+ln -s /etc/ssl/private/$TAG-cert.key /etc/jitsi/meet/$JITSI_FQDN.key
+ln -s /etc/ssl/certs/$TAG-cert.pem /etc/jitsi/meet/$JITSI_FQDN.crt
 EOS
 
 # set-letsencrypt-cert
@@ -258,7 +258,7 @@ cp $ROOTFS/etc/turnserver.conf $ROOTFS/etc/turnserver.conf.org
 
 cat >>$ROOTFS/etc/turnserver.conf <<EOF
 
-# the following lines added by eb-jitsi
+# the following lines added by $TAG-jitsi
 listening-ip=$IP
 allowed-peer-ip=$IP
 no-udp
@@ -443,7 +443,7 @@ done
 # HOST CUSTOMIZATION FOR JITSI
 # ------------------------------------------------------------------------------
 # jitsi tools
-cp $MACHINES/eb-jitsi-host/usr/local/sbin/add-jvb-node /usr/local/sbin/
-cp $MACHINES/eb-jitsi-host/usr/local/sbin/set-letsencrypt-cert /usr/local/sbin/
+cp $MACHINES/$TAG-jitsi-host/usr/local/sbin/add-jvb-node /usr/local/sbin/
+cp $MACHINES/$TAG-jitsi-host/usr/local/sbin/set-letsencrypt-cert /usr/local/sbin/
 chmod 744 /usr/local/sbin/add-jvb-node
 chmod 744 /usr/local/sbin/set-letsencrypt-cert
