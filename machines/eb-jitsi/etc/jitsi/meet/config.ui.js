@@ -1,3 +1,3 @@
 
 // UI customizations
-config.disableTileEnlargement = true;
+//config.disableTileEnlargement = true;
