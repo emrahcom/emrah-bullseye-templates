@@ -310,13 +310,9 @@ lxc-attach -n $MACH -- systemctl daemon-reload
 # ------------------------------------------------------------------------------
 cp $ROOTFS/etc/turnserver.conf $ROOTFS/etc/turnserver.conf.org
 
-cat >>$ROOTFS/etc/turnserver.conf <<EOF
-
-# the following lines added by $TAG-jitsi
-listening-ip=$IP
-allowed-peer-ip=$IP
-no-udp
-EOF
+# add the custom config
+cat etc/turnserver.custom.conf >>$ROOTFS/etc/turnserver.conf
+sed -i "s/___PUBLIC_IP___/$IP/" $ROOTFS/etc/turnserver.conf
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
