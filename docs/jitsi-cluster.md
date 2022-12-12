@@ -50,7 +50,7 @@ without an additional `JVB` node.
 
 Additional `JVB` nodes can be added in the future if needed.
 
-For the server side recording and live streaming faetures, you will need to add
+For the server side recording and live streaming features, you will need to add
 additional `jibri` nodes.
 
 #### 2.1 Prerequisites
@@ -163,7 +163,7 @@ Complete the following steps before starting the `JVB` installation.
 
 ##### 3.1.1 Machine features
 
-At least 4 cores and 8 GB RAM
+At least 4 cores and 4 GB RAM
 
 ##### 3.1.2 Public ports
 
