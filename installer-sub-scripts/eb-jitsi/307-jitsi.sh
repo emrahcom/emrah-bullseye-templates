@@ -484,12 +484,3 @@ for i in $(seq 0 9); do
     lxc-attach -n $MACH -- ping -c1 host.loc && break || true
     sleep 1
 done
-
-# ------------------------------------------------------------------------------
-# HOST CUSTOMIZATION FOR JITSI
-# ------------------------------------------------------------------------------
-# jitsi tools
-cp $MACHINES/$TAG-jitsi-host/usr/local/sbin/add-jvb-node /usr/local/sbin/
-cp $MACHINES/$TAG-jitsi-host/usr/local/sbin/set-letsencrypt-cert /usr/local/sbin/
-chmod 744 /usr/local/sbin/add-jvb-node
-chmod 744 /usr/local/sbin/set-letsencrypt-cert
