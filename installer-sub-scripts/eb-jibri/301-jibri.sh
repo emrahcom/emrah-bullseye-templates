@@ -327,4 +327,7 @@ find $ROOTFS/var/log/jitsi/jibri -type f -delete
 # ------------------------------------------------------------------------------
 systemctl daemon-reload
 systemctl enable jibri-ephemeral-container.service
-systemctl start jibri-ephemeral-container.service
+
+[[ "$DONT_RUN_COMPONENT_SIDECAR" = true ]] && \
+    systemctl start jibri-ephemeral-container.service || \
+    true
