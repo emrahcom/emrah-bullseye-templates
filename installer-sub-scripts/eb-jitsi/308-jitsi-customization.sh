@@ -28,7 +28,7 @@ cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.recording.js >> \
     $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
 
 # livestreaming
-cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.recording.js >> \
+cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.livestreaming.js >> \
     $JITSI_ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js
 
 # UI customizations
