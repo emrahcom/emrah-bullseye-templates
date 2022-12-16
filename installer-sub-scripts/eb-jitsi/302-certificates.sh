@@ -58,4 +58,5 @@ openssl req -nodes -newkey rsa:2048 \
     -keyout $TAG-jitsi.key -out $TAG-jitsi.csr \
     -subj "/O=$TAG/OU=$TAG-jitsi/CN=$JITSI_FQDN"
 openssl x509 -req -CA $TAG-CA.pem -CAkey $TAG-CA.key -CAcreateserial \
-    -days 10950 -in $TAG-jitsi.csr -out $TAG-jitsi.pem -extfile $TAG-jitsi.ext
+    -days 10950 -in $TAG-jitsi.csr -out $TAG-jitsi.pem \
+    -extfile $TAG-jitsi.ext
