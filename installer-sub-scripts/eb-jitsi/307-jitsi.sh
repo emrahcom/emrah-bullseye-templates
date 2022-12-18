@@ -94,16 +94,12 @@ lxc-copy -n $TAG-bullseye -N $MACH -p /var/lib/lxc/
 
 # the shared directories
 mkdir -p $SHARED/cache
-mkdir -p $SHARED/recordings
 
 # the container config
 rm -rf $ROOTFS/var/cache/apt/archives
 mkdir -p $ROOTFS/var/cache/apt/archives
-rm -rf $ROOTFS/usr/local/$TAG/recordings
-mkdir -p $ROOTFS/usr/local/$TAG/recordings
 
 cat >> /var/lib/lxc/$MACH/config <<EOF
-lxc.mount.entry = $SHARED/recordings usr/local/$TAG/recordings none bind 0 0
 
 # Start options
 lxc.start.auto = 1
