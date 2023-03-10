@@ -215,8 +215,13 @@ At least 4 cores and 4 GB RAM
 
 ##### 4.1.2 The snd_aloop module
 
-The `Jibri` node needs the `snd_aloop` module too. Therefore check the kernel
-first.
+The `Jibri` node needs the `snd_aloop` module. Therefore check the kernel first.
+If the following command has an output, this means that the kernel has no
+support for `snd-aloop`.
+
+```bash
+modprobe snd-aloop
+```
 
 ##### 4.1.3 Public ports
 
