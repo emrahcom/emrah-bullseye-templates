@@ -42,12 +42,17 @@ function remove-jibri-instances {
         grep 5222 | grep ESTABLISHED | grep -v '127.0.0.1' | \
         awk '{print \$5}' | cut -d: -f1 | grep -v '172.22.22.' | sort -R")
     do
+        # container
+        con=$(ssh -qF $SSH_CONFIG $ip -- \
+            lxc-ls --running --filter 'eb-jibri-\[0-9a-z\]+-1$' || true)
+        [[ -z "$con" ]] && continue
+
         # is it idle?
-        status=$(ssh -qF $SSH_CONFIG $ip -- \
-            lxc-attach -qn eb-jibri-1 -- \
+        state=$(ssh -qF $SSH_CONFIG $ip -- \
+            lxc-attach -qn $con -- \
             curl -s http://127.0.0.1:$JIBRI_API_PORT/jibri/api/v1.0/health | \
             jq -r .status.busyStatus || true)
-        [[ "$status" = "IDLE" ]] && (( idle += 1 )) || continue
+        [[ "$state" = "IDLE" ]] && (( idle += 1 )) || continue
 
         # is its uptime greater than 600 sec?
         uptime=$(ssh -qF $SSH_CONFIG $ip -- cut -d '.' -f1 /proc/uptime)
