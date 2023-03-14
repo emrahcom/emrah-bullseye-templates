@@ -44,8 +44,9 @@ function manage-jvb-instances {
         # is it idle?
         state=$(ssh -qF $SSH_CONFIG $ip -- \
             lxc-attach -qn eb-jvb -- \
-                curl -s http://127.0.0.1:8080/colibri/conferences || true)
-        [[ "$state" = "[]" ]] && (( idle += 1 )) || continue
+                curl -s http://127.0.0.1:8080/colibri/stats | \
+                jq .conferences || true)
+        [[ "$state" = "0" ]] && (( idle += 1 )) || continue
 
         # is its uptime greater than 600 sec?
         uptime=$(ssh -qF $SSH_CONFIG $ip -- cut -d '.' -f1 /proc/uptime)
