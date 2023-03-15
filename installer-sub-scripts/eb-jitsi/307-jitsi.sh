@@ -350,7 +350,7 @@ ln -s ../conf.avail/recorder.$JITSI_FQDN.cfg.lua \
     $ROOTFS/etc/prosody/conf.d/
 sed -i "/Component.*conference.$JITSI_FQDN/,/admins/ \
     s/}/, \"recorder@recorder.$JITSI_FQDN\" }/" \
-    /etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
+    $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 
 # restart
 lxc-attach -n $MACH -- systemctl daemon-reload
