@@ -349,7 +349,7 @@ sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
 ln -s ../conf.avail/recorder.$JITSI_FQDN.cfg.lua \
     $ROOTFS/etc/prosody/conf.d/
 sed -i "/Component.*conference.$JITSI_FQDN/,/admins/ \
-    s/}/, \"recorder@recorder.$JITSI_FQDN\" }/" \
+    s/admins = {/admins = { \"recorder@recorder.$JITSI_FQDN\",/" \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 
 # restart
