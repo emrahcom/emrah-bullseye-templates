@@ -155,7 +155,7 @@ CHROMEDRIVER_VER=\$(curl -s \
     https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROME_VER)
 wget -T 30 -qO /tmp/chromedriver_linux64.zip \
     https://chromedriver.storage.googleapis.com/\$CHROMEDRIVER_VER/chromedriver_linux64.zip
-unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
+unzip -o /tmp/chromedriver_linux64.zip -d /usr/local/bin/
 chmod 755 /usr/local/bin/chromedriver
 EOS
 
