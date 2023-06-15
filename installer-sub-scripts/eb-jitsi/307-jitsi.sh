@@ -408,6 +408,9 @@ sed -i "s/___LOCAL_IP___/$IP/" \
 sed -i "s/___TURN_FQDN___/$TURN_FQDN/" \
     $ROOTFS/usr/local/share/nginx/modules-available/jitsi-meet.conf
 
+mkdir -p $ROOTFS/etc/jitsi/meet/jaas
+cp etc/jitsi/meet/jaas/*.conf $ROOTFS/etc/jitsi/meet/jaas/
+
 cp etc/nginx/sites-available/jms.conf \
     $ROOTFS/etc/nginx/sites-available/$JITSI_FQDN.conf
 sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" \
