@@ -30,6 +30,12 @@ cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.recording.js >> $CONFIG_JS
 # livestreaming
 cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.livestreaming.js >> $CONFIG_JS
 
+# hidden domain
+cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.hiddendomain.js >> $CONFIG_JS
+
+# whiteboard
+cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.whiteboard.js >> $CONFIG_JS
+
 # UI customizations
 cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.ui.js >> $CONFIG_JS
 
