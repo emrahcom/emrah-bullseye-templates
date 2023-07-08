@@ -5,5 +5,3 @@ config.recordingService = {
   sharingEnabled: true,
   hideStorageWarning: false,
 };
-
-config.hiddenDomain = 'recorder.___JITSI_FQDN___';
