@@ -119,7 +119,8 @@ EOS
 # dev user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser dev --system --group --disabled-password --shell /bin/zsh --gecos ''
+adduser dev --system --group --disabled-password --shell /bin/zsh \
+    --home /home/dev
 EOS
 
 cp $MACHINE_COMMON/home/user/.tmux.conf $ROOTFS/home/dev/
