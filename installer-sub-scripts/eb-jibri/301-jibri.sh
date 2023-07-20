@@ -110,6 +110,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
+apt-get $APT_PROXY -y install jq
 apt-get $APT_PROXY -y install gnupg unzip unclutter
 apt-get $APT_PROXY -y install libnss3-tools
 apt-get $APT_PROXY -y install va-driver-all vdpau-driver-all
@@ -150,12 +151,15 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 CHROME_VER=\$(dpkg -s google-chrome-stable | egrep "^Version" | \
-    cut -d " " -f2 | cut -d. -f1)
-CHROMEDRIVER_VER=\$(curl -s \
-    https://chromedriver.storage.googleapis.com/LATEST_RELEASE_\$CHROME_VER)
-wget -T 30 -qO /tmp/chromedriver_linux64.zip \
-    https://chromedriver.storage.googleapis.com/\$CHROMEDRIVER_VER/chromedriver_linux64.zip
-unzip -o /tmp/chromedriver_linux64.zip -d /usr/local/bin/
+    cut -d " " -f2 | cut -d. -f1-3)
+CHROMELAB_LINK="https://googlechromelabs.github.io/chrome-for-testing"
+CHROMEDRIVER_LINK=\$(curl -s \
+    \$CHROMELAB_LINK/known-good-versions-with-downloads.json | \
+    jq -r ".versions[].downloads.chromedriver | select(. != null) | .[].url" | \
+    grep linux64 | grep "\$CHROME_VER" | tail -1)
+wget -T 30 -qO /tmp/chromedriver_linux64.zip \$CHROMEDRIVER_LINK
+unzip -o /tmp/chromedriver-linux64.zip -d /tmp
+mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
 chmod 755 /usr/local/bin/chromedriver
 EOS
 
