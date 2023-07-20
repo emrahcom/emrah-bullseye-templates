@@ -113,7 +113,9 @@ ssh_ <<EOS
 set -e
 apt-get -y --allow-releaseinfo-change update
 apt-get -y install wget
-wget $INSTALLER -O /tmp/eb -T 30
+
+rm -rf /tmp/eb-installer
+wget $INSTALLER -O /tmp/eb-installer -T 30
 EOS
 
 ssh_ <<EOS
@@ -129,7 +131,7 @@ export APT_PROXY=$APT_PROXY
 export REINSTALL_BULLSEYE_IF_EXISTS=$REINSTALL_BULLSEYE_IF_EXISTS
 
 cd /tmp
-bash eb $APP
+bash eb-installer $APP
 EOS
 
 
