@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 set -e
 
 JITSI_FQDN="___JITSI_FQDN___"
