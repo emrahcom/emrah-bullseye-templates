@@ -135,7 +135,7 @@ EOS
 # excalidraw user
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-adduser excalidraw --system --group --disabled-password --shell /bin/bash \
+adduser excalidraw --system --group --disabled-password --shell /usr/bin/bash \
     --home /home/excalidraw
 EOS
 
