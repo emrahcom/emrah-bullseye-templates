@@ -1,6 +1,7 @@
 [Unit]
 Description=JVB Config
-After=network.target
+Wants=network-online.target
+After=network-online.target
 Before=jitsi-videobridge2.service
 
 [Service]
