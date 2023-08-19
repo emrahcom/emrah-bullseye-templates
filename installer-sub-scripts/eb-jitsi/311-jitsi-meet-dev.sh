@@ -8,6 +8,7 @@ source $INSTALLER/000-source
 # ENVIRONMENT
 # ------------------------------------------------------------------------------
 MACH="$TAG-jitsi"
+MACH_HOST="$MACHINES/$TAG-jitsi-host"
 cd $MACHINES/$MACH
 
 ROOTFS="/var/lib/lxc/$MACH/rootfs"
@@ -166,3 +167,9 @@ set -e
 node --version
 npm --version
 EOS
+
+# ------------------------------------------------------------------------------
+# HOST
+# ------------------------------------------------------------------------------
+cp $MACH_HOST/etc/sysctl.d/eb-inotify-watcher.conf /etc/sysctl.d/
+sysctl -p /etc/sysctl.d/eb-inotify-watcher.conf
