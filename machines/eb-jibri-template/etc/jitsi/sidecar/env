@@ -93,5 +93,5 @@ WS_SERVER_URL='wss://___JITSI_FQDN___'
 # The value to be passed pjsua client as a sip username to be used
 #SIP_CLIENT_USERNAME=''
 
-# Nordeck JMS self-signed certificate
-NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/jms-CA.crt
+# Use openssl CA certificates
+NODE_OPTIONS="--use-openssl-ca"
