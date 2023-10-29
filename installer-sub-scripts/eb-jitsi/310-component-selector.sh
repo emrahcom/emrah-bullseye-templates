@@ -153,7 +153,6 @@ cp /root/$TAG-certs/$TAG-CA.pem \
     $ROOTFS/usr/local/share/ca-certificates/jms-CA.crt
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 update-ca-certificates
 EOS
 
