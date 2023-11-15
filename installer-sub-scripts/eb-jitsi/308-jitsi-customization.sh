@@ -39,6 +39,11 @@ cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.whiteboard.js >> $CONFIG_JS
 # UI customizations
 cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.ui.js >> $CONFIG_JS
 
+# Dynamic branding
+cat $MACHINES/$TAG-jitsi/etc/jitsi/meet/config.branding.js >> $CONFIG_JS
+cp $MACHINES/$TAG-jitsi/usr/share/jitsi-meet/static/branding.json \
+    JITSI_ROOTFS/usr/share/jitsi-meet/static/
+
 # substitutions
 sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/" $CONFIG_JS
 
