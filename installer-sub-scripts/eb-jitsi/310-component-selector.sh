@@ -19,6 +19,7 @@ echo COMPONENT_SELECTOR="$IP" >> $INSTALLER/000-source
 JITSI_MACH="$TAG-jitsi"
 JITSI_ROOTFS="/var/lib/lxc/$JITSI_MACH/rootfs"
 
+KID_SIGNAL="jitsi/default"
 KID_SIDECAR="jitsi/default"
 
 # ------------------------------------------------------------------------------
