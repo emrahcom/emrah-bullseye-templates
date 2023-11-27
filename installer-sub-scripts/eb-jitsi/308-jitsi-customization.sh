@@ -73,12 +73,3 @@ cp $CONFIG_JS $FOLDER/files/
 cp $JITSI_ROOTFS//usr/share/jitsi-meet/interface_config.js $FOLDER/files/
 cp $JITSI_ROOTFS/usr/share/jitsi-meet/images/favicon.ico $FOLDER/files/
 cp $JITSI_ROOTFS/usr/share/jitsi-meet/images/watermark.svg $FOLDER/files/
-
-# ------------------------------------------------------------------------------
-# FIXES
-# ------------------------------------------------------------------------------
-if [[ -z "$(egrep 'config.flags =' $CONFIG_JS)" ]]; then
-    sed -i "/config.flags.sourceNameSignaling/i \
-        config.flags = config.flags || {};" \
-        $CONFIG_JS
-fi
