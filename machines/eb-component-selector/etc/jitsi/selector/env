@@ -53,6 +53,10 @@
 #PROTECTED_API=true
 
 #
+#PROTECTED_SIGNAL_API=false
+PROTECTED_SIGNAL_API=true
+
+#
 #REDIS_DB=0
 
 #
@@ -84,6 +88,17 @@
 
 #
 #SIP_JIBRI_OUTBOUND_EMAIL=''
+
+# Used for verifying signal tokens, internal services using the selector
+# e.g. [{"kid": "kidPattern", baseUrl": "https://asap.org"}]
+#SIGNAL_ASAP_BASE_URL_MAPPINGS='[{"kid": "^jitsi/(.*)$", "baseUrl": "https://localhost:18443/signal"}]'
+SIGNAL_ASAP_BASE_URL_MAPPINGS='[{"kid": "^jitsi/(.*)$", "baseUrl": "https://___JITSI_FQDN___:18443/signal"}]'
+
+# The accepted issuers for the signal tokens we verify
+#SIGNAL_ASAP_JWT_ACCEPTED_HOOK_ISS='signal'
+
+# The audience value to be used in asap jwt tokens
+#SIGNAL_ASAP_JWT_AUD='jitsi-component-selector'
 
 # Used for verifying server tokens, remote services using the selector
 # e.g. [{"kid": "kidPattern", baseUrl": "https://asap.org"}]
