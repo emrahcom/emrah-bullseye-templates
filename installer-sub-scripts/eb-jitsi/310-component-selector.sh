@@ -175,6 +175,22 @@ lxc-attach -qn $JITSI_MACH -- true && \
     lxc-attach -n $JITSI_MACH -- systemctl restart nginx.service
 
 # ------------------------------------------------------------------------------
+# SIGNAL KEYS
+# ------------------------------------------------------------------------------
+# create signal keys if not exist
+if [[ ! -f /root/.ssh/signal.key ]] || [[ ! -f /root/.ssh/signal.pem ]]; then
+    rm -f /root/.ssh/signal.{key,pem}
+
+    ssh-keygen -qP '' -t rsa -b 4096 -m PEM -f /root/.ssh/signal.key
+    openssl rsa -in /root/.ssh/signal.key -pubout -outform PEM \
+        -out /root/.ssh/signal.pem
+    rm -f /root/.ssh/signal.key.pub
+fi
+
+HASH=$(echo -n "$KID_SIGNAL" | sha256sum | awk '{print $1}')
+cp /root/.ssh/signal.pem $JITSI_ROOTFS/var/www/asap/signal/$HASH.pem
+
+# ------------------------------------------------------------------------------
 # SIDECAR KEYS
 # ------------------------------------------------------------------------------
 # create sidecar keys if not exist
