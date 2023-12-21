@@ -28,9 +28,7 @@ JITSI_MEET_APP="$JITSI_ROOTFS/usr/share/jitsi-meet"
 # ------------------------------------------------------------------------------
 # custom files
 # ------------------------------------------------------------------------------
-[[ -f "$BASEDIR/files/favicon.ico" ]] && \
-    cp $BASEDIR/files/favicon.ico $JITSI_MEET_APP/
-[[ -f "$BASEDIR/files/favicon.ico" ]] && \
-    cp $BASEDIR/files/favicon.ico $JITSI_MEET_APP/images/
+[[ -f "$BASEDIR/files/favicon.svg" ]] && \
+    cp $BASEDIR/files/favicon.svg $JITSI_MEET_APP/images/
 [[ -f "$BASEDIR/files/watermark.svg" ]] && \
     cp $BASEDIR/files/watermark.svg $JITSI_MEET_APP/images/
