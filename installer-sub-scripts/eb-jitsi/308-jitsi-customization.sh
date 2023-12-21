@@ -71,5 +71,5 @@ sed -i "s/___JITSI_FQDN___/$JITSI_FQDN/g" $FOLDER/customize.sh
 mkdir -p $FOLDER/files
 cp $CONFIG_JS $FOLDER/files/
 cp $JITSI_ROOTFS//usr/share/jitsi-meet/interface_config.js $FOLDER/files/
-cp $JITSI_ROOTFS/usr/share/jitsi-meet/images/favicon.ico $FOLDER/files/
+cp $JITSI_ROOTFS/usr/share/jitsi-meet/images/favicon.svg $FOLDER/files/
 cp $JITSI_ROOTFS/usr/share/jitsi-meet/images/watermark.svg $FOLDER/files/
