@@ -352,7 +352,7 @@ ln -s ../conf.avail/recorder.$JITSI_FQDN.cfg.lua \
 sed -i 's/-- muc_lobby_whitelist/muc_lobby_whitelist/' \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 sed -i "/muc_password_whitelist =/a \
-\        \"recorder@recorder.$JITSI_HOST\"," \
+\        \"recorder@recorder.$JITSI_FQDN\"," \
     $ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua
 
 # restart
