@@ -6,7 +6,8 @@ Before=jitsi-videobridge2.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/sbin/jvb-config
+ExecStartPre=/usr/local/sbin/jvb-config
+ExecStart=sleep 1
 
 [Install]
 WantedBy=multi-user.target
