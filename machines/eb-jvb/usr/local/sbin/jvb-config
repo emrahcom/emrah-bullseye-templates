@@ -3,7 +3,12 @@
 sed -i "/^org.jitsi.videobridge.xmpp.user.shard.MUC_NICKNAME=/ \
      s/=.*/=$(uuidgen)/" /etc/jitsi/videobridge/sip-communicator.properties
 
+# If JMS cannot access JVB through its external IP then uncomment the following
+# line and set a hardcoded EXTERNAL_IP according to your environment.
 EXTERNAL_IP=$(curl -s ifconfig.me || true)
+
+# EXTERNAL_IP=1.2.3.4
+
 if [[ -n "$EXTERNAL_IP" ]]; then
     hocon -f /etc/jitsi/videobridge/jvb.conf \
         set videobridge.websockets.server-id "\"$EXTERNAL_IP\""
