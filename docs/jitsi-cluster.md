@@ -35,7 +35,9 @@
 ## 1. About
 
 This tutorial provides step by step instructions on how to create a Jitsi
-cluster based on `Debian 11 Bullseye`.
+cluster based on `Debian 11 Bullseye`. Please check
+[the new guide](https://github.com/nordeck/bookworm-lxc-jitsi/blob/main/INSTALL.md)
+to create a Jitsi cluster based on `Debian 12 Bookworm`.
 
 Create or install a `Debian 11 Bullseye` server for each node in this tutorial.
 Please, don't install a desktop environment, only the standard packages...
