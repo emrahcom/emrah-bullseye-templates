@@ -20,6 +20,9 @@ JITSI_MEET_CONFIG="$ROOTFS/etc/jitsi/meet/$JITSI_FQDN-config.js"
 JITSI_MEET_INTERFACE="$ROOTFS/usr/share/jitsi-meet/interface_config.js"
 PROSODY_CONFIG="$ROOTFS/etc/prosody/conf.avail/$JITSI_FQDN.cfg.lua"
 
+PROSODY_PLUGINS_VERSION=${PROSODY_PLUGINS_VERSION:-20241128}
+PROSODY_PLUGINS_ARCHIVE="https://github.com/jitsi-contrib/prosody-plugins/archive/refs/tags/v$PROSODY_PLUGINS_VERSION.tar.gz"
+
 # ------------------------------------------------------------------------------
 # NFTABLES RULES
 # ------------------------------------------------------------------------------
@@ -340,6 +343,15 @@ ln -s ../conf.avail/network.cfg.lua $ROOTFS/etc/prosody/conf.d/
 sed -i "/rate *=.*kb.s/  s/[0-9]*kb/1024kb/" \
     $ROOTFS/etc/prosody/prosody.cfg.lua
 sed -i "s/^-- \(https_ports = { };\)/\1/" $PROSODY_CONFIG
+
+# additional plugins
+sed -i '/^plugin_paths/ s~ }~, "/usr/share/jitsi-meet/prosody-plugins-contrib/" }~' \
+    $PROSODY_CONFIG
+
+wget -T 10 -O /tmp/v$PROSODY_PLUGINS_VERSION.tar.gz $PROSODY_PLUGINS_ARCHIVE
+tar -xf /tmp/v$PROSODY_PLUGINS_VERSION.tar.gz
+mv prosody-plugins-$PROSODY_PLUGINS_VERSION \
+    $ROOTFS/usr/share/jitsi-meet/prosody-plugins-contrib
 
 # recorder
 cp etc/prosody/conf.avail/recorder.cfg.lua \
