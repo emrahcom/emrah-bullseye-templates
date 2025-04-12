@@ -206,7 +206,8 @@ lxc-attach -n $MACH -- zsh <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY -y install gcc git
-apt-get $APT_PROXY -dy --allow-change-held-packages install jitsi-meet-tokens
+apt-get $APT_PROXY -dy --allow-change-held-packages install \
+    jitsi-meet-tokens=1.0.8448-1
 EOS
 
 # ------------------------------------------------------------------------------
