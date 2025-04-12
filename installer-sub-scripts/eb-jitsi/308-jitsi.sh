@@ -189,7 +189,14 @@ debconf-set-selections <<< \
 debconf-set-selections <<< \
     'jitsi-meet-web-config jitsi-meet/cert-choice select Generate a new self-signed certificate'
 
-apt-get $APT_PROXY -y --install-recommends install jitsi-meet
+apt-get $APT_PROXY -y --install-recommends install \
+    jitsi-meet=2.0.10078-1 \
+    jitsi-meet-web=1.0.8448-1 \
+    jitsi-meet-web-config=1.0.8448-1 \
+    jitsi-meet-prosody=1.0.8448-1 \
+    jitsi-meet-turnserver=1.0.8448-1 \
+    jitsi-videobridge2=2.3-209-gb5fbe618-1 \
+    jicofo=1.0-1124-1
 apt-get $APT_PROXY -y install libnginx-mod-stream
 apt-mark hold 'jitsi-*' jicofo
 EOS
@@ -223,9 +230,11 @@ set -e
 echo '$JVB_SHARD_PASSWD' >/root/meta/jvb-shard-passwd
 chmod 600 /root/meta/jvb-shard-passwd
 
-VERSION=\$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
-    cut -d' ' -f1 | rev)
-echo \$VERSION > /root/meta/jvb-version
+#VERSION=\$(apt-cache policy jitsi-videobridge2 | grep Installed | rev | \
+#    cut -d' ' -f1 | rev)
+#echo \$VERSION > /root/meta/jvb-version
+
+echo "2.3-209-gb5fbe618-1" > /root/meta/jvb-version
 EOS
 
 # jibri
@@ -239,8 +248,10 @@ chmod 600 /root/meta/jibri-passwd
 echo '$RECORDER_PASSWD' >/root/meta/recorder-passwd
 chmod 600 /root/meta/recorder-passwd
 
-VERSION=\$(apt-cache policy jibri | grep Candidate | rev | cut -d' ' -f1 | rev)
-echo \$VERSION > /root/meta/jibri-version
+#VERSION=\$(apt-cache policy jibri | grep Candidate | rev | cut -d' ' -f1 | rev)
+#echo \$VERSION > /root/meta/jibri-version
+
+echo "8.0-177-g3325e37-1" > /root/meta/jibri-version
 EOS
 
 # sidecar env files
